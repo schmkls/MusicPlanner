@@ -1,4 +1,3 @@
-# music-planner
 Plan Spotify music for a whole day
 
 # Figma prototype

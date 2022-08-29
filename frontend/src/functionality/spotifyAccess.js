@@ -1,4 +1,4 @@
-var SpotifyWebApi = require('spotify-web-api-node');
+import axios from 'axios';
 
 
 const spotifyAccess = () => {
@@ -8,12 +8,7 @@ const spotifyAccess = () => {
     const SPOTIFY_REFRESHTOKEN = 'spotify_refresh_token';
     const SPOTIFY_TOKEN_TIMEOUT = 'spotify_token_ending_time';
 
-    
-    const spotifyApi = new SpotifyWebApi({
-        redirectUri: 'http://localhost:3000/login',
-        clientId: process.env.MUSICPLANNER_SPOTIFY_CLIENT_ID,
-        clientSecret: process.env.MUSICPLANNER_SPOTIFY_CLIENT_SECRET
-    });
+    console.log("client id: " + process.env.REACT_APP_MUSICPLANNER_SPOTIFY_CLIENT_ID);
 
 
     const makeRandomString = (length) => {
@@ -48,25 +43,33 @@ const spotifyAccess = () => {
 
     /**
      * Authorizes Spotify user,
-     * localstores Spotify access token
-     * @param code 
-     * @returns promise with access token 
+     * localstores users Spotify-id
+     * localstores Spotify access-token
+     * @param {*} code 
+     * @returns 
      */
-     const authorizeSpotify = (code) => {
+    const authorizeSpotify = (code) => {
         console.log('authorizing Spotify');
         return new Promise((res, rej) => {
-            spotifyApi.authorizationCodeGrant(code)
-            .then((response) => {
-                spotifyApi.setAccessToken(response.body.access_token);
-                localStorage.setItem(SPOTIFY_ACCESSTOKEN, response.body.access_token);
+            axios.post('http://localhost:3002/login', {
+                code: code
+            })
+            .then((result) => {
+                if (result.status < 200 || result.status > 299) {
+                    console.log('spotify authorize error, response: ' + JSON.stringify(res));
+                    localStorage.clear(SPOTIFY_ACCESSTOKEN);
+                    localStorage.clear(SPOTIFY_REFRESHTOKEN);
+                    localStorage.clear(SPOTIFY_TOKEN_TIMEOUT);
+                    return rej();
+                }
 
-                spotifyApi.setRefreshToken(response.body.refresh_token);
-                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, response.body.expires_in);     
+                localStorage.setItem(SPOTIFY_ACCESSTOKEN, result.data.accessToken);
+                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, result.data.expiresIn);                    
+                res(result.data.accessToken);
             })
-            .catch(err => {
-                console.log("authorize error: " + JSON.stringify(err));
-                clearAccess();
-            })
+            .catch((err) => {
+                rej(err);
+            });
         });
     }
 
@@ -78,37 +81,40 @@ const spotifyAccess = () => {
      */
      const getSpotifyAccessToken = (minimumValidMins) => {
         const expirationTime = localStorage.getItem(SPOTIFY_TOKEN_TIMEOUT);
-        const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
+        if (!expirationTime || expirationTime == 'undefined') {
+            
+        }  
 
         const nowInSeconds = new Date().getTime() / 1000;
         const minTimeout = nowInSeconds + minimumValidMins * 60;
-        
-        if (!expirationTime || expirationTime == 'undefined') {
-            console.log("no expiration time stored for spotify access token");
-        }  
+
+
+        const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
 
         if (!accessToken || accessToken == undefined) {
             console.log('no access token stored');
             return null;
         }
-
-        if (expirationTime > minTimeout) {
-            return localStorage.getItem(SPOTIFY_ACCESSTOKEN);            
-        }
         
 
-        //refresh access-token if it will be invalid in less than five minutes
+        //refresh access-token if it is invalid in less than five minutes
         if (expirationTime < minTimeout) {
-            spotifyApi.refreshAccessToken()
-            .then((response) => {
-                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, response.body.expires_in);
-                localStorage.setItem(SPOTIFY_ACCESSTOKEN, response.body.access_token);
+            axios.post('http://localhost:3002/refresh')
+            .then((res) => {
+                console.log('refreshed token: ' + res.data.accessToken);
+                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, res.data.expiresIn);
+                localStorage.setItem(SPOTIFY_ACCESSTOKEN, res.data.accessToken);
             })
             .catch((err) => {
-                console.log('Could not refresh Spotify access token. Removing access. Error: ', err);
+                console.log('Could not refresh Spotify access token, clearing access');
+                console.log('refresh error: '  + err);
                 clearAccess();
             });
+        } else {
+            return localStorage.getItem(SPOTIFY_ACCESSTOKEN);            
         }
+
+        
     }
 
     return {

@@ -1,5 +1,5 @@
-import Start from "../pages/Start";
-
+import Start from "../pages/start/Start";
+import NotFound from "../pages/notFound/NotFound";
 
 /** 
 * Can get elements associated with a route.
@@ -9,15 +9,22 @@ const navigate = () => {
     const urlBeginning = 'http://localhost:3000';
 
     const pages = {
-        start: {
+        home: {
             path: '/', 
             element: <Start/>
         }, 
         tempoControl: {
             path: '/tempo-control',
             element: <h2>tempo control wihu</h2>
+        }, 
+        authRedirect: {
+            path: '/auth-callback', 
+            element: <h2>Wihu auth funkade</h2>
+        }, 
+        notFound: {
+            element: <NotFound/>
         }
-    }
+    };
 
 
     /** 
@@ -47,7 +54,7 @@ const navigate = () => {
             }
         }
 
-        if (result.length === 1) { //Nav is always found
+        if (result.length === 0) { //Nav is always found
             console.log('no elements found for: ' + window.location.pathname);
             result.push(pages.notFound.element);
         }

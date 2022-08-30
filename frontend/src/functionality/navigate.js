@@ -19,7 +19,8 @@ const navigate = () => {
         }, 
         authRedirect: {
             path: '/auth-callback', 
-            element: <h2>Wihu auth funkade</h2>
+            element: <h2/>,
+            redirectTo: '/'
         }, 
         notFound: {
             element: <NotFound/>
@@ -32,6 +33,7 @@ const navigate = () => {
      * @returns url associated to page
      */
      const getURL = (page) => {
+
         return new URL(urlBeginning + page.path);
     }
 
@@ -41,7 +43,7 @@ const navigate = () => {
      */
      const getElements = () => {
         const result = [];
- 
+        
         for (var key in pages) {
             if (!pages.hasOwnProperty(key)) {
                 continue;
@@ -52,6 +54,11 @@ const navigate = () => {
             if (window.location.pathname == page.path || page.path === 'all') {
                 result.push(page.element);
             }
+        }
+
+        //todo: find better solution
+        if (result.includes(pages.authRedirect.element)) {
+            window.location.href = pages.authRedirect.redirectTo;
         }
 
         if (result.length === 0) { //Nav is always found

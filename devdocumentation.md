@@ -4,5 +4,3 @@
 
 
 # Localstorage identifiers
-
-

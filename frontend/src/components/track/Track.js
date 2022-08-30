@@ -1,23 +1,21 @@
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+import spotifyAccess from '../../functionality/spotifyAccess';
 
 /**
- * 
- * @param props track data 
- * @returns component displaying track that can choose track on click 
+ * @param props.trackId track spotify id 
+ * @returns component displaying track that can open track on click
  */
 const Track = (props) => {
-    const track = props.track;
-    const id = track.id;
-    const name = track.name;
-    const image = track.album.images[0].url;
-    const artists = track.artists;
 
+    const [track, setTrack] = useState();
 
+    
     const makeArtistsString = () => {
         let str = '';
 
-        artists.map((artist, index) => {
-            if (index < artists.length && index > 0 && artists.length > 1) {
+        track?.artists.map((artist, index) => {
+            if (index < track.artists.length && index > 0 && track.artists.length > 1) {
                 str += ', '
             }
 
@@ -29,24 +27,33 @@ const Track = (props) => {
 
 
     const open = () => {
-        const getUrl = `https://api.spotify.com/v1/tracks/${id}`;
+        //window.location.assign(res.data.body.album.external_urls.spotify);
+    }
 
-        axios.get(getUrl)
-        .then((res) => {
-            window.location.assign(res.data.body.album.external_urls.spotify);
-            return false;
+
+    useEffect(() => {
+        const getUrl = `https://api.spotify.com/v1/tracks/${props.trackId}`;
+        const accessToken = spotifyAccess().getSpotifyAccessToken();
+        axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
+        .then((response) => {
+            if (response.status < 200 || response.status > 299) {
+                console.log("get track bad response");
+                return;
+            }
+
+            setTrack(response.data);
         })
         .catch((err) => console.log(err));
-    }
+    }, [props.trackId]);
     
 
     return (
         <div>
             <hr/>
             <p onClick={() => open()}>
-                {name} - {makeArtistsString()}
+                {track?.name} - {makeArtistsString()}
             </p>
-            <img src={image} width='50' height='50'/>
+            <img src={track?.album.images[0].url} width='50' height='50' alt=""/>
         </div>
     )
 }

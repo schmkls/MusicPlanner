@@ -64,29 +64,46 @@ const spotifyControl = () => {
     }
 
 
-    const smoothSkip = async() => {
-        let originalVolume = await getCurrVolume()
-        .catch((err) => {
-            console.log("Could not smooth skip", err);
-            return;
+    const slowlyLowerVolume = async() => {
+
+        let nTimes = 8;
+
+        return new Promise(async(res, rej) => {
+            let originalVolume = await getCurrVolume()
+            .catch((err) => {
+                return (rej("Could not slowly lower volume"));
+            });
+
+            let currVolume = originalVolume;
+            //hämta nuvarande volym
+
+            repeat(async() => {
+                console.log("controlling volume to: " + Math.round(currVolume - (originalVolume / nTimes)));
+                await controlVolume(Math.round(currVolume - (originalVolume / nTimes)));
+                currVolume = currVolume - (originalVolume / nTimes);
+                await sleep(500);
+                console.log("should have lowered volume");
+            }, nTimes)
+
+
+            return res("Volume lowered");
         });
+    }
 
-        let currVolume = originalVolume;
-        //hämta nuvarande volym
-        let times = 1;
 
-        repeat(async() => {
-            console.log("controlling volume to: " + Math.round(currVolume / 2));
-            await controlVolume(Math.round(currVolume / 2));
-            currVolume = currVolume / 2;
-            times++;
-            await sleep(2000);
-            console.log("should have lowered volume");
-        }, 4)
+    const slowlyHigherVolume = async() => {
 
+    }
+
+
+    const smoothSkip = async() => {
+        console.log("smooth skipping");
         
+        await slowlyLowerVolume()
+        .catch((err) => {
+            console.log("Could not smoothskip");
+        })
 
-        //sänk fr nuvarande till 0, vänta på varje sänkning med timeout
         //byt låt
         //höj på samma sätt
     }

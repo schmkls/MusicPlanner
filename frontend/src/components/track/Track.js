@@ -8,7 +8,7 @@ import spotifyAccess from '../../functionality/spotifyAccess';
  */
 const Track = (props) => {
 
-    const [track, setTrack] = useState();
+    const [track, setTrack] = useState(null);
 
     
     const makeArtistsString = () => {
@@ -27,7 +27,8 @@ const Track = (props) => {
 
 
     const open = () => {
-        //window.location.assign(res.data.body.album.external_urls.spotify);
+        if (!track) return;
+        window.open(track.album.external_urls.spotify, '_blank').focus();
     }
 
 
@@ -40,16 +41,15 @@ const Track = (props) => {
                 console.log("get track bad response");
                 return;
             }
-
             setTrack(response.data);
         })
         .catch((err) => console.log(err));
     }, [props.trackId]);
+
     
 
     return (
         <div>
-            <hr/>
             <p onClick={() => open()}>
                 {track?.name} - {makeArtistsString()}
             </p>

@@ -4,3 +4,7 @@
 
 
 # Localstorage identifiers
+*spotify_access_token* Spotify access token needed for making requests to Spotify API
+*spotify_refresh_token* token needed for refreshing the access token
+*spotify_token_ending_time* when current access token will expire
+

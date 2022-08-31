@@ -1,7 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Track from "../track/Track";
+import Playlist from "../playlist/Playlist";
+import Album from "../album/Album";
 import spotifyAccess from "../../functionality/spotifyAccess";
+
+
+const UPDATE_INTERVAL = 30000;  //30 seconds
 
 /**
  * Display currently playing track
@@ -9,13 +14,9 @@ import spotifyAccess from "../../functionality/spotifyAccess";
 const Playing = () => {
 
     const [currPlaying, setCp] = useState(null);
+    const [playlist, setPlaylist] = useState(null);
+    const [album, setAlbum] = useState(null);
     const spotifyAccessor = spotifyAccess();
-
-    const getCurrPlaying = async() => {
-
-        
-        
-    }
 
 
     useEffect(() => {
@@ -32,29 +33,65 @@ const Playing = () => {
                     setCp(null);
                     return;
                 }
-            
+
+                console.log("context: " + JSON.stringify(response.data.context, null, 2));
+                
+                if (response.data.context.type == 'playlist') {
+                    setPlaylist(response.data.context.uri);
+                }   
+
+                if (response.data.context.type == 'album') {
+                    setAlbum(response.data.context.uri);
+                }
+
                 setCp(response.data.item.id);
             })
             .catch((err) => {
                 console.log("get currently playing track error: " + err);
             });
+
+            setTimeout(() => {
+                setCp(null);
+                setPlaylist(null);
+                setAlbum(null);
+            }, UPDATE_INTERVAL);
       
-    }, []);
+    }, [currPlaying]);
 
 
 
     return (
         <div>
-            <br/>
+            <hr/>
             <h2>Currently playing: </h2>
             {
                 currPlaying != null ? 
                     <Track trackId={currPlaying}/>
                 :
-                    <></>
+                    <p>loading...</p>
             }
-            
-            <br/>
+            {
+                album != null ?
+                    <>
+                        <p> on </p>
+                        <Album albumUri={album}/>
+                    </>
+                    
+                :
+                    <></>
+
+            }
+            {
+                playlist != null ?
+                    <>
+                        <p> on </p>
+                        <Playlist playlistUri={playlist}/>
+                    </>
+                :
+                    <></>
+
+            }
+            <hr/>
         </div>
     )
 }

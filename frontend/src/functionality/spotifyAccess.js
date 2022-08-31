@@ -99,6 +99,8 @@ const spotifyAccess = () => {
 
         //refresh access-token if it is invalid in less than five minutes
         if (expirationTime < minTimeout) {
+            console.log("refreshing access-token");
+
             axios.post('http://localhost:3002/refresh')
             .then((res) => {
                 console.log('refreshed token: ' + res.data.accessToken);

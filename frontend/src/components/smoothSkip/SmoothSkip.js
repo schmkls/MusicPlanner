@@ -1,4 +1,6 @@
 import spotifyControl from "../../functionality/spotifyControl";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStepForward } from '@fortawesome/free-solid-svg-icons'
 
 
 /**
@@ -11,7 +13,10 @@ const SmoothSkip = (props) => {
             <button onClick={() => {
                 spotifyControl().smoothSkip()
                 .then(() => props.onSkip())
-            } }>Smooth skip</button>
+            } }>
+                Smooth skip
+                <FontAwesomeIcon icon={faStepForward} size='2x'/>
+            </button>
         </div>
     )
 }

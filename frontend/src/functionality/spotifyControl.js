@@ -5,7 +5,6 @@ const spotifyControl = () => {
 
     const accessor = spotifyAccess();
 
-
     const controlVolume = async(volume) => {
         if (volume > 100) volume = 100;
 
@@ -77,18 +76,10 @@ const spotifyControl = () => {
     }
 
 
-    const slowlyLowerVolume = async() => {
-
-        let nTimes = 8;
-
+    const slowlyLowerVolume = async(originalVolume) => {
         return new Promise(async(res, rej) => {
-            let originalVolume = await getCurrVolume()
-            .catch((err) => {
-                return (rej("Could not slowly lower volume"));
-            });
-
+            let nTimes = 2;
             let currVolume = originalVolume;
-            //hämta nuvarande volym
 
             await repeat(async() => {
                 console.log("controlling volume to: " + Math.round(currVolume - (originalVolume / nTimes)));
@@ -102,18 +93,17 @@ const spotifyControl = () => {
         });
     }
 
-
-    const slowlyHigherVolume = async() => {
-        let nTimes = 8;
+    //todo: höj till maxvolume
+    const slowlyHigherVolume = async(maxVolume) => {
+        let nTimes = 2;
 
         return new Promise(async(res, rej) => {
             let originalVolume = await getCurrVolume()
             .catch((err) => {
-                return (rej("Could not slowly higher volume"));
+                return (rej("Could not slowly higher volume: ", err));
             });
 
             let currVolume = originalVolume;
-            //hämta nuvarande volym
 
             await repeat(async() => {
                 console.log("controlling volume to: " + Math.round(currVolume + (100 / nTimes)));
@@ -130,21 +120,33 @@ const spotifyControl = () => {
 
     const smoothSkip = async() => {
         console.log("smooth skipping");
+
+        return new Promise(async(res, rej) => {
+
+            const originalVolume = await getCurrVolume()
+            .catch((err) => {
+                return rej("Could not smoothskip", err)
+            });
+            
+            await slowlyLowerVolume(originalVolume)
+            .catch((err) => {
+                console.log("Could not smoothskip ", err);
+            })
+
+            await skipTrack()
+            .catch((err) => {
+                console.log("Could not smoothskip ", err);
+            })
+
+            res("Skipped track");
+            
+
+            await slowlyHigherVolume()
+            .catch((err) => {
+                console.log("Could not smoothskip ", err);
+            })
+        });
         
-        await slowlyLowerVolume()
-        .catch((err) => {
-            console.log("Could not smoothskip ", err);
-        })
-
-        await skipTrack()
-        .catch((err) => {
-            console.log("Could not smoothskip ", err);
-        })
-
-        await slowlyHigherVolume()
-        .catch((err) => {
-            console.log("Could not smoothskip ", err);
-        })
     }
 
 

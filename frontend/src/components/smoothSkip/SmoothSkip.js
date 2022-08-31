@@ -4,19 +4,14 @@ import spotifyControl from "../../functionality/spotifyControl";
 /**
  * @returns button for smoothly skipping track
  */
-const SmoothSkip = () => {
-
-    const controller = spotifyControl();
-
-    const controlVolume = (val) => {
-        console.log("val: " + val);
-        controller.controlVolume(val);
-    }
+const SmoothSkip = (props) => {
 
     return (
         <div>
-            <input type="range" min="0" max="100" className="horizontalSlider" onChange={(e) => controlVolume(e.target.value)}></input>
-            <button onClick={() => controller.smoothSkip()}>Smooth skip</button>
+            <button onClick={() => {
+                spotifyControl().smoothSkip()
+                .then(() => props.onSkip())
+            } }>Smooth skip</button>
         </div>
     )
 }

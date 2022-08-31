@@ -1,12 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
 import spotifyAccess from "../../functionality/spotifyAccess";
 
 
-const UPDATE_INTERVAL = 30000;  //30 seconds
+const UPDATE_INTERVAL = 2000000;  //20 seconds
 
 /**
  * Display currently playing track
@@ -16,10 +16,10 @@ const Playing = () => {
     const [currPlaying, setCp] = useState(null);
     const [playlist, setPlaylist] = useState(null);
     const [album, setAlbum] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(true);
     const spotifyAccessor = spotifyAccess();
 
-
-    useEffect(() => {
+    const getPlayingData = () => {
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
 
         axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
@@ -45,6 +45,7 @@ const Playing = () => {
             }
 
             setCp(response.data.item.id);
+            setIsPlaying(response.data.is_playing);
         })
         .catch((err) => {
             console.log("get currently playing track error: " + err);
@@ -55,15 +56,29 @@ const Playing = () => {
             setPlaylist(null);
             setAlbum(null);
         }, UPDATE_INTERVAL);
-    
+    }
+
+
+    getPlayingData();
+
+
+    useEffect(() => {
+        getPlayingData();
     }, [currPlaying]);
 
 
 
     return (
-        <div>
+        <div onLoad={() => console.log("playing loaded")}>
             <hr/>
             <h2>Currently playing: </h2>
+            {
+                isPlaying ? 
+                    <></>
+                :
+                    <p>(paused)</p>
+
+            }
             {
                 currPlaying != null ? 
                     <Track trackId={currPlaying}/>

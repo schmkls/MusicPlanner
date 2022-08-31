@@ -29,6 +29,8 @@ const Playing = () => {
                 return;
             }
 
+            console.log("currently playing response: " + JSON.stringify(response, null, 2));
+
             if (!response.data.item || !response.data.item.id) {
                 setCp(null);
                 return;
@@ -69,7 +71,7 @@ const Playing = () => {
 
 
     return (
-        <div onLoad={() => console.log("playing loaded")}>
+        <div>
             <hr/>
             <h2>Currently playing: </h2>
             {

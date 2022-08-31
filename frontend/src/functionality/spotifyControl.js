@@ -78,24 +78,25 @@ const spotifyControl = () => {
 
     const slowlyLowerVolume = async(originalVolume) => {
         return new Promise(async(res, rej) => {
-            let nTimes = 2;
+            let nTimes = 4;
             let currVolume = originalVolume;
 
             await repeat(async() => {
                 console.log("controlling volume to: " + Math.round(currVolume - (originalVolume / nTimes)));
                 await controlVolume(Math.round(currVolume - (originalVolume / nTimes)));
                 currVolume = currVolume - (originalVolume / nTimes);
-                await sleep(500);
+                await sleep(100);
             }, nTimes)
 
 
-            return res("Volume lowered");
+            return res(currVolume);
         });
     }
 
-    //todo: höj till maxvolume
-    const slowlyHigherVolume = async(maxVolume) => {
-        let nTimes = 2;
+
+    const slowlyHigherVolume = async(currVolume, maxVolume) => {
+        let nTimes = 4;
+        let step = (maxVolume - currVolume) / nTimes;
 
         return new Promise(async(res, rej) => {
             let originalVolume = await getCurrVolume()
@@ -106,9 +107,9 @@ const spotifyControl = () => {
             let currVolume = originalVolume;
 
             await repeat(async() => {
-                console.log("controlling volume to: " + Math.round(currVolume + (100 / nTimes)));
-                await controlVolume(Math.round(currVolume + (100 / nTimes)));
-                currVolume = currVolume + (100 / nTimes);
+                console.log("controlling volume to: " + Math.round(currVolume + step));
+                await controlVolume(Math.round(currVolume + step));
+                currVolume = currVolume + step;
                 await sleep(500);
             }, nTimes)
 
@@ -128,7 +129,7 @@ const spotifyControl = () => {
                 return rej("Could not smoothskip", err)
             });
             
-            await slowlyLowerVolume(originalVolume)
+            const volume = await slowlyLowerVolume(originalVolume)
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
             })
@@ -139,9 +140,8 @@ const spotifyControl = () => {
             })
 
             res("Skipped track");
-            
 
-            await slowlyHigherVolume()
+            await slowlyHigherVolume(volume, originalVolume)
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
             })

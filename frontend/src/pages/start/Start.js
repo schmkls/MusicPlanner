@@ -1,11 +1,35 @@
 import Playing from "../../components/playing/Playing";
 import SmoothSkip from "../../components/smoothSkip/SmoothSkip";
 import React, { useEffect, useState, useReducer } from "react";
+import axios from "axios";
+import spotifyAccess from "../../functionality/spotifyAccess";
 
 const Start = () => {
 
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
-    console.log("returning Start");
+    const [deviceActive, setDeviceActive] = useState(true);
+
+
+    useEffect(() => {
+        const accessToken = spotifyAccess().getSpotifyAccessToken();
+        
+        axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })
+        .then((response) => {
+            console.log(JSON.stringify(response, null, 2));
+            if (response.status == 204 || !response.data || response.data == "") {
+                setDeviceActive(false);
+            }
+        });
+
+    });
+
+    if (!deviceActive) {
+        return (
+            <div>
+                <h2>Not playing anything in Spotify</h2>
+            </div>
+        )
+    }
 
     return (
         <>

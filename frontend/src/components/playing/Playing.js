@@ -6,19 +6,22 @@ import Album from "../album/Album";
 import spotifyAccess from "../../functionality/spotifyAccess";
 
 
-const UPDATE_INTERVAL = 2000000;  //20 seconds
+const UPDATE_INTERVAL = 10000;  //10 seconds
 
 /**
  * Display currently playing track
  */
 const Playing = () => {
 
-    const [currPlaying, setCp] = useState(null);
+    const [currPlaying, setCp] = useState(null);    //currently playing track
     const [playlist, setPlaylist] = useState(null);
     const [album, setAlbum] = useState(null);
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(true); //true if playing, false if paused
+    const [episode, setEpisode] = useState(false);  //true if episode being played
+
     const spotifyAccessor = spotifyAccess();
 
+    //todo: handle when not playing on album or playlist, for example wh e spotfu syggs
     const getPlayingData = () => {
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
 
@@ -29,14 +32,12 @@ const Playing = () => {
                 return;
             }
 
-            console.log("currently playing response: " + JSON.stringify(response, null, 2));
-
-            if (!response.data.item || !response.data.item.id) {
+            setIsPlaying(response.data.is_playing);
+            if (response.data.currently_playing_type == 'episode') {
+                setEpisode(true);
                 setCp(null);
                 return;
             }
-
-            console.log("context: " + JSON.stringify(response.data.context, null, 2));
             
             if (response.data.context.type == 'playlist') {
                 setPlaylist(response.data.context.uri);
@@ -47,16 +48,13 @@ const Playing = () => {
             }
 
             setCp(response.data.item.id);
-            setIsPlaying(response.data.is_playing);
         })
         .catch((err) => {
             console.log("get currently playing track error: " + err);
         });
 
         setTimeout(() => {
-            setCp(null);
-            setPlaylist(null);
-            setAlbum(null);
+            getPlayingData();
         }, UPDATE_INTERVAL);
     }
 
@@ -67,7 +65,6 @@ const Playing = () => {
     useEffect(() => {
         getPlayingData();
     }, [currPlaying]);
-
 
 
     return (
@@ -82,13 +79,19 @@ const Playing = () => {
 
             }
             {
-                currPlaying != null ? 
-                    <Track trackId={currPlaying}/>
+                episode ? 
+                    <p>An episode (no music)</p>
                 :
-                    <p>loading...</p>
+                    <></>
             }
             {
-                album != null ?
+                currPlaying ? 
+                    <Track trackId={currPlaying}/>
+                :
+                    <></>
+            }
+            {
+                album ?
                     <>
                         <p> on </p>
                         <Album albumUri={album}/>
@@ -99,7 +102,7 @@ const Playing = () => {
 
             }
             {
-                playlist != null ?
+                playlist ?
                     <>
                         <p> on </p>
                         <Playlist playlistUri={playlist}/>

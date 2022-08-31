@@ -64,7 +64,6 @@ const spotifyControl = () => {
             axios.post(postUrl, null, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
                 if (response.status < 200 || response.status > 299) return rej("Skip track bad resonse");
-                console.log("Skipped track!");
                 res("Skipped track");
             })
             .catch((err) => {return rej("Skip track error", err)})
@@ -139,12 +138,13 @@ const spotifyControl = () => {
                 console.log("Could not smoothskip ", err);
             })
 
-            res("Skipped track");
 
             await slowlyHigherVolume(volume, originalVolume)
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
             })
+
+            res("Skipped track");
         });
         
     }
@@ -163,9 +163,6 @@ const spotifyControl = () => {
 
     } 
 
-
-    
-    
 
     return {
         smoothSkip,

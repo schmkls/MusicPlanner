@@ -22,40 +22,40 @@ const Playing = () => {
     useEffect(() => {
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
 
-            axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
-            .then((response) => {
-                if (response.status < 200 || response.status > 299) {
-                    console.log("get currently playing track bad response");
-                    return;
-                }
+        axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
+        .then((response) => {
+            if (response.status < 200 || response.status > 299) {
+                console.log("get currently playing track bad response");
+                return;
+            }
 
-                if (!response.data.item || !response.data.item.id) {
-                    setCp(null);
-                    return;
-                }
-
-                console.log("context: " + JSON.stringify(response.data.context, null, 2));
-                
-                if (response.data.context.type == 'playlist') {
-                    setPlaylist(response.data.context.uri);
-                }   
-
-                if (response.data.context.type == 'album') {
-                    setAlbum(response.data.context.uri);
-                }
-
-                setCp(response.data.item.id);
-            })
-            .catch((err) => {
-                console.log("get currently playing track error: " + err);
-            });
-
-            setTimeout(() => {
+            if (!response.data.item || !response.data.item.id) {
                 setCp(null);
-                setPlaylist(null);
-                setAlbum(null);
-            }, UPDATE_INTERVAL);
-      
+                return;
+            }
+
+            console.log("context: " + JSON.stringify(response.data.context, null, 2));
+            
+            if (response.data.context.type == 'playlist') {
+                setPlaylist(response.data.context.uri);
+            }   
+
+            if (response.data.context.type == 'album') {
+                setAlbum(response.data.context.uri);
+            }
+
+            setCp(response.data.item.id);
+        })
+        .catch((err) => {
+            console.log("get currently playing track error: " + err);
+        });
+
+        setTimeout(() => {
+            setCp(null);
+            setPlaylist(null);
+            setAlbum(null);
+        }, UPDATE_INTERVAL);
+    
     }, [currPlaying]);
 
 

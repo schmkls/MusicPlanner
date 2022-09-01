@@ -87,8 +87,6 @@ const spotifyAccess = () => {
             minimumValidMins = 5;
         }
 
-        console.log("getting access token");
-
         const expirationTime = localStorage.getItem(SPOTIFY_TOKEN_TIMEOUT);
         const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
 

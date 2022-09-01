@@ -9,13 +9,12 @@ const Start = () => {
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
     const [deviceActive, setDeviceActive] = useState(true);
 
-
+ 
     const checkIfDeviceActive = () => {
         const accessToken = spotifyAccess().getSpotifyAccessToken();
         
         axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
-            console.log(JSON.stringify(response, null, 2));
             if (response.status == 204 || !response.data || response.data == "") {
                 setDeviceActive(false);
             }
@@ -28,6 +27,7 @@ const Start = () => {
     useEffect(() => {
         checkIfDeviceActive();
     });
+
 
     if (!deviceActive) {
         return (

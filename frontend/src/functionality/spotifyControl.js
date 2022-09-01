@@ -77,7 +77,7 @@ const spotifyControl = () => {
 
     const slowlyLowerVolume = async(originalVolume) => {
         return new Promise(async(res, rej) => {
-            let nTimes = 4;
+            let nTimes = 8;
             let currVolume = originalVolume;
 
             await repeat(async() => {
@@ -94,7 +94,7 @@ const spotifyControl = () => {
 
 
     const slowlyHigherVolume = async(currVolume, maxVolume) => {
-        let nTimes = 4;
+        let nTimes = 8;
         let step = (maxVolume - currVolume) / nTimes;
 
         return new Promise(async(res, rej) => {

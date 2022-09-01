@@ -18,6 +18,7 @@ const Playing = () => {
     const [album, setAlbum] = useState(null);
     const [isPlaying, setIsPlaying] = useState(true); //true if playing, false if paused
     const [episode, setEpisode] = useState(false);  //true if episode being played
+    const [warning, setWarning] = useState(null);
 
     const spotifyAccessor = spotifyAccess();
 
@@ -32,12 +33,24 @@ const Playing = () => {
                 return;
             }
 
+            //console.log(JSON.stringify(response, null, 2));
+
             setIsPlaying(response.data.is_playing);
             if (response.data.currently_playing_type == 'episode') {
                 setEpisode(true);
                 setCp(null);
                 return;
             }
+
+            if (response.data.context == null) {
+                setCp(response.data.item.id);
+
+                //if tempo or popularity filtering active
+                    setWarning("Play from an album or playlist in order for tempo and/or popularity filtering to work");
+                return;
+            }
+
+            setWarning(null);
             
             if (response.data.context.type == 'playlist') {
                 setPlaylist(response.data.context.uri);
@@ -111,6 +124,7 @@ const Playing = () => {
                     <></>
 
             }
+            {warning}
             <hr/>
         </div>
     )

@@ -68,6 +68,7 @@ const spotifyAccess = () => {
                 res(result.data.accessToken);
             })
             .catch((err) => {
+                clearAccess();
                 rej(err);
             });
         });
@@ -80,16 +81,23 @@ const spotifyAccess = () => {
      * @param minimumValidMins minimum minutes the token must be valid 
      */
      const getSpotifyAccessToken = (minimumValidMins) => {
+
+        //token valid atleast 5 minutes if no other minimum valid time given
+        if (!minimumValidMins) {
+            minimumValidMins = 5;
+        }
+
+        console.log("getting access token");
+
         const expirationTime = localStorage.getItem(SPOTIFY_TOKEN_TIMEOUT);
+        const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
+
         if (!expirationTime || expirationTime == 'undefined') {
-            
+            console.log("warning, no expiration time for access token");
         }  
 
         const nowInSeconds = new Date().getTime() / 1000;
         const minTimeout = nowInSeconds + minimumValidMins * 60;
-
-
-        const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
 
         if (!accessToken || accessToken == undefined) {
             console.log('no access token stored');

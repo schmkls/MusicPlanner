@@ -10,7 +10,7 @@ const Start = () => {
     const [deviceActive, setDeviceActive] = useState(true);
 
 
-    useEffect(() => {
+    const checkIfDeviceActive = () => {
         const accessToken = spotifyAccess().getSpotifyAccessToken();
         
         axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })
@@ -21,6 +21,12 @@ const Start = () => {
             }
         });
 
+        setTimeout(() => checkIfDeviceActive(), 5000);
+    }
+
+
+    useEffect(() => {
+        checkIfDeviceActive();
     });
 
     if (!deviceActive) {

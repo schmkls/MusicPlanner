@@ -131,12 +131,65 @@ const volumeControl = () => {
 
             res("Skipped track");
         });
-        
+    }
+
+    const enableVolumeControl = () => {
+        localStorage.setItem('VOLUME_CONTROL', 'ON');
     }
 
 
+    const getPrefferedVolume = () => {
+        const hrNow = new Date().getHours();
+        const hrNext = hrNow + 1;
+
+        const prefNow = localStorage.getItem(`PREF_VOLUME_${hrNow}`);
+        const prefNext = localStorage.getItem(`PREF_VOLUME_${hrNext}`);
+
+        console.log("preffered volume for " + hrNow + ": " + prefNow);
+        console.log("preffered volume for " + hrNext + ": " + prefNext);
+
+        const factor = new Date().getMinutes() / 60;
+
+        const prefferedVolume = (prefNow * (1 - factor) + prefNext * factor);
+        
+        return Math.round(prefferedVolume);
+    }
+
+    /**
+     * Keeps controlling volume while localstorage item 'VOLUME_CONTROL' equals 'ON'
+     */
+    const controlVolume = () => {
+
+        const prefVolume = getPrefferedVolume();
+
+        adjustVolume(prefVolume);
+
+        //continue controlling if volume control on
+        if (localStorage.getItem('VOLUME_CONTROL') == 'ON') {
+            setTimeout(() => controlVolume(), 4000);
+        }
+    }
+
+
+    const stopControlVolume = () => {
+        console.log("stopped volume control");
+        localStorage.setItem('VOLUME_CONTROL', 'OFF');
+    }
+
+
+    const setPreferredVolume = (volume, hour) => {
+        localStorage.setItem(`PREF_VOLUME_${hour}`, volume);
+    }
+
+
+
+
     return {
-        smoothSkip
+        enableVolumeControl,
+        setPreferredVolume,
+        smoothSkip, 
+        controlVolume, 
+        stopControlVolume
     }
 
 }

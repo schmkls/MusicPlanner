@@ -11,6 +11,8 @@ const Start = () => {
 
  
     const checkIfDeviceActive = () => {
+
+        
         const accessToken = spotifyAccess().getSpotifyAccessToken();
         
         axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })

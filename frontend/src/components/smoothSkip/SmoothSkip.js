@@ -1,4 +1,4 @@
-import spotifyControl from "../../functionality/spotifyControl";
+import volumeControl from "../../functionality/volumeControl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepForward } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
@@ -17,7 +17,7 @@ const SmoothSkip = (props) => {
         
         <div>
             <button onClick={() => {
-                spotifyControl().smoothSkip()
+                volumeControl().smoothSkip()
                 .then(() => props.onSkip())
             } }>
                 Smooth skip

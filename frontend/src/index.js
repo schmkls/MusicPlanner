@@ -4,7 +4,7 @@ import spotifyAccess from './functionality/spotifyAccess';
 import SpotifyAuth from './pages/spotifyAuth/SpotifyAuth';
 
 export default function App() {
-
+    
     const navigator = navigate();
     const spotifyAccessor = spotifyAccess();
     const spotifyAccessToken = spotifyAccessor.getSpotifyAccessToken();

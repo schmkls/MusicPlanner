@@ -8,9 +8,6 @@ const spotifyAccess = () => {
     const SPOTIFY_REFRESHTOKEN = 'spotify_refresh_token';
     const SPOTIFY_TOKEN_TIMEOUT = 'spotify_token_ending_time';
 
-    console.log("client id: " + process.env.REACT_APP_MUSICPLANNER_SPOTIFY_CLIENT_ID);
-
-
     const makeRandomString = (length) => {
         var result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

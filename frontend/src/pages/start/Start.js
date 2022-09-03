@@ -1,8 +1,10 @@
 import Playing from "../../components/playing/Playing";
 import SmoothSkip from "../../components/smoothSkip/SmoothSkip";
+import ControlVolume from "../controlVolume/ControlVolume";
 import React, { useEffect, useState, useReducer } from "react";
 import axios from "axios";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import spotifyControl from "../../functionality/spotifyControl";
 
 const Start = () => {
 
@@ -43,6 +45,10 @@ const Start = () => {
         <>
             <Playing/>
             <SmoothSkip onSkip={() => forceUpdate()}/>
+            <ControlVolume/>     
+            <button onClick={() => spotifyControl().readUpcomingTracks()}>
+                <h2>Läs kommande</h2>
+            </button>    
         </>
     )
 

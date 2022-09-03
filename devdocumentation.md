@@ -8,3 +8,6 @@
 *spotify_refresh_token* token needed for refreshing the access token
 *spotify_token_ending_time* when current access token will expire
 
+*VOLUME_CONTROL* if equal to *ON* volume control should be on 
+*PREF_VOLUME_[hour]* preferred volume at *hour*
+

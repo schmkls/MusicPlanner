@@ -6,6 +6,11 @@ const spotifyControl = () => {
     const accessor = spotifyAccess();
 
 
+    const addSource = (sourceLink) => {
+
+    }
+
+
     const skipTrack = async() => {
         return new Promise((res, rej) => {
             const accessToken = accessor.getSpotifyAccessToken();
@@ -64,7 +69,7 @@ const spotifyControl = () => {
                 return;
             }
 
-                console.log("number in playlist/album: " + JSON.stringify(response.data.item.track_number));
+            console.log("number in playlist/album: " + JSON.stringify(response.data.item.track_number));
             console.log("context type: " + JSON.stringify(response.data.context.type));
             console.log("uri of context: " + response.data.context.uri);
 
@@ -96,6 +101,7 @@ const spotifyControl = () => {
 
 
     return { 
+        addSource,
         readUpcomingTracks,
         skipTrack,
         keepFilteredTracksInQueue

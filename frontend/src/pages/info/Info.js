@@ -1,4 +1,4 @@
-import ExpandButton from '../../components/expander/ExpandButton';
+import ExpandButton from '../../components/expandButton/ExpandButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import navigate from '../../functionality/navigate';
@@ -27,7 +27,7 @@ const Info = () => {
                     1. Press "Control tempo"<br/>
                     2. Drag the nodes controlling prefferred tempo of music<br/>
                     3. Clear your Spotify queue<br/>
-                    4. (optional). Add sources of music.<br/>  
+                    4 (optional). Add sources of music.<br/>  
                     5. Play music from a playlist or album! 
                 </p>
             }/>
@@ -37,13 +37,13 @@ const Info = () => {
                     1. Press "Control popularity"<br/>
                     2. Drag the nodes controlling prefferred popularity of music<br/>
                     3. Clear your Spotify queue<br/>
-                    4. (optional). Add sources of music.<br/>  
+                    4 (optional). Add sources of music.<br/>  
                     5. Play music from a playlist or album! 
                 </p>
             }/>
         </div>
     )
-}
+}   
 
 
 export default Info;

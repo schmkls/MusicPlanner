@@ -138,7 +138,7 @@ const volumeControl = () => {
     }
 
 
-    const getPrefferedVolume = () => {
+    const getPreferredVolume = () => {
         const hrNow = new Date().getHours();
         const hrNext = hrNow + 1;
 
@@ -160,10 +160,11 @@ const volumeControl = () => {
      */
     const controlVolume = () => {
 
-        const prefVolume = getPrefferedVolume();
+        console.log("CONTROLLING VOLUME");
+        const prefVolume = getPreferredVolume();
 
-        adjustVolume(prefVolume);
-
+        prefVolume ? adjustVolume(prefVolume) : console.log("preffered volume not set");
+        
         //continue controlling if volume control on
         if (localStorage.getItem('VOLUME_CONTROL') == 'ON') {
             setTimeout(() => controlVolume(), 4000);

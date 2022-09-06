@@ -13,6 +13,8 @@ const UPDATE_INTERVAL = 10000;  //10 seconds
  */
 const Playing = () => {
 
+    console.log("returning playing");
+
     const [currPlaying, setCp] = useState(null);    //currently playing track
     const [playlist, setPlaylist] = useState(null);
     const [album, setAlbum] = useState(null);
@@ -22,8 +24,17 @@ const Playing = () => {
 
     const spotifyAccessor = spotifyAccess();
 
-    //todo: handle when not playing on album or playlist, for example wh e spotfu syggs
-    const getPlayingData = () => {
+
+    const setAllStatesNull = () => {
+        setCp(null);
+        setPlaylist(null);
+        setAlbum(null);
+        setEpisode(null);
+        setWarning(null);
+    }
+
+
+    const getPlayingData = () => {        
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
 
         axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
@@ -36,14 +47,15 @@ const Playing = () => {
             //console.log(JSON.stringify(response, null, 2));
 
             if (!response.data) {
-                setCp(null);
                 return;
             }
 
+            setAllStatesNull();
             setIsPlaying(response.data.is_playing);
+            setCp(response.data.item.id);
+
             if (response.data.currently_playing_type == 'episode') {
                 setEpisode(true);
-                setCp(null);
                 return;
             }
 
@@ -54,8 +66,6 @@ const Playing = () => {
                     setWarning("Tempo and popularity control will only work when playing a playlist or album");
                 return;
             }
-
-            setWarning(null);
             
             if (response.data.context.type == 'playlist') {
                 setPlaylist(response.data.context.uri);
@@ -63,9 +73,7 @@ const Playing = () => {
 
             if (response.data.context.type == 'album') {
                 setAlbum(response.data.context.uri);
-            }
-
-            setCp(response.data.item.id);
+            }            
         })
         .catch((err) => {
             console.log("get currently playing track error: " + err);
@@ -76,18 +84,14 @@ const Playing = () => {
         }, UPDATE_INTERVAL);
     }
 
-
-    getPlayingData();
-
-
     useEffect(() => {
         getPlayingData();
-    }, [currPlaying]);
+    },[]);
+
 
 
     return (
         <div>
-            <hr/>
             <h2>Currently playing: </h2>
             {
                 isPlaying ? 

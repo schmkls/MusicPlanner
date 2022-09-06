@@ -1,5 +1,6 @@
 import Playing from "../../components/playing/Playing";
 import SmoothSkip from "../../components/smoothSkip/SmoothSkip";
+import AddSources from "../../components/addSources/AddSources";
 import ControlVolume from "../controlVolume/ControlVolume";
 import React, { useEffect, useState, useReducer } from "react";
 import axios from "axios";
@@ -8,6 +9,8 @@ import spotifyControl from "../../functionality/spotifyControl";
 import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
+const UPDATE_INTERVAL = 5000;
 
 const Start = () => {
 
@@ -29,7 +32,7 @@ const Start = () => {
             }
         });
 
-        setTimeout(() => checkIfDeviceActive(), 5000);
+        setTimeout(() => checkIfDeviceActive(), UPDATE_INTERVAL);
     }
 
 
@@ -38,30 +41,28 @@ const Start = () => {
     });
 
 
-    if (!deviceActive) {
-        return (
-            <div>
-                <h2>Not playing anything in Spotify</h2>
-                <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
-                    <p>Help</p>
-                    <FontAwesomeIcon icon={faInfoCircle} size="2x"/>
-                </button>    
-            </div>
-        )
-    }
-
     return (
         <>
-            <Playing/>
-            <SmoothSkip onSkip={() => forceUpdate()}/>
+            <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
+                <p>Help</p>
+                <FontAwesomeIcon icon={faInfoCircle} size="2x"/>
+            </button>  
+            <AddSources/>
+            {
+                deviceActive ?
+                        <>
+                            <Playing/>
+                            <SmoothSkip onSkip={() => forceUpdate()}/>
+                        </> 
+                
+                    :
+                        <h2>Not playing anything in Spotify right now</h2>
+            }
             <ControlVolume/>     
             <button onClick={() => spotifyControl().readUpcomingTracks()}>
                 <h2>Läs kommande</h2>
             </button>    
-            <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
-                    <p>Help</p>
-                    <FontAwesomeIcon icon={faInfoCircle} size="2x"/>
-            </button>        
+                  
         </>
     )
 

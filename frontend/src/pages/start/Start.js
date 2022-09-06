@@ -9,9 +9,12 @@ import spotifyControl from "../../functionality/spotifyControl";
 import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 const UPDATE_INTERVAL = 5000;
 
+
+//todo: kolla hur använda bootstrap
 const Start = () => {
 
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
@@ -40,6 +43,11 @@ const Start = () => {
         checkIfDeviceActive();
     });
 
+    
+    const handleVolumeControl = (val) => {
+        console.log("val: " + val);
+    }
+
 
     return (
         <>
@@ -58,11 +66,6 @@ const Start = () => {
                     :
                         <h2>Not playing anything in Spotify right now</h2>
             }
-            <ControlVolume/>     
-            <button onClick={() => spotifyControl().readUpcomingTracks()}>
-                <h2>Läs kommande</h2>
-            </button>    
-                  
         </>
     )
 

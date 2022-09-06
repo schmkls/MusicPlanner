@@ -1,5 +1,6 @@
 import Start from "../pages/start/Start";
 import Info from "../pages/info/Info";
+import VolumeControl from "./volumeControl";
 import NotFound from "../pages/notFound/NotFound";
 
 /** 
@@ -15,8 +16,12 @@ const navigate = () => {
             element: <Start/>
         }, 
         tempoControl: {
-            path: '/tempo-control',
+            path: '/volume-control',
             element: <h2>tempo control wihu</h2>
+        }, 
+        volumeControl: {
+            path: '/volume-control',
+            element: <VolumeControl/>
         }, 
         authRedirect: {
             path: '/auth-callback', 

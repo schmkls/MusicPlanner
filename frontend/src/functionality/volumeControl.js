@@ -167,7 +167,7 @@ const volumeControl = () => {
         
         //continue controlling if volume control on
         if (localStorage.getItem('VOLUME_CONTROL') == 'ON') {
-            setTimeout(() => controlVolume(), 4000);
+            setTimeout(() => controlVolume(), 30000);
         }
     }
 

@@ -10,11 +10,16 @@ const ControlVolume = () => {
 
     return (
         <div>   
+            <h2>todo wihu rita graf för volym över dagen</h2>
            <button onClick={() => {
                 volumeController.enableVolumeControl();
                 volumeController.controlVolume();
             }}>
-                Starta volume control
+                Start volume control
+           </button>
+
+           <button onClick={() => volumeController.stopControlVolume()}>
+                Stop volume control
            </button>
         </div>
     )

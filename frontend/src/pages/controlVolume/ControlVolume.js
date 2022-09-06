@@ -31,7 +31,7 @@ const ControlVolume = () => {
 
     return (
         <div>   
-            todo: hur rita volymgraf
+           
         </div>
     )
 

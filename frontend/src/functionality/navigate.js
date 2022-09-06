@@ -1,4 +1,5 @@
 import Start from "../pages/start/Start";
+import Info from "../pages/info/Info";
 import NotFound from "../pages/notFound/NotFound";
 
 /** 
@@ -19,9 +20,13 @@ const navigate = () => {
         }, 
         authRedirect: {
             path: '/auth-callback', 
-            element: <h2/>,
+            element: <div/>,
             redirectTo: '/'
         }, 
+        info: {
+            path: '/info',
+            element: <Info/>
+        },
         notFound: {
             element: <NotFound/>
         }
@@ -61,7 +66,7 @@ const navigate = () => {
             window.location.href = pages.authRedirect.redirectTo;
         }
 
-        if (result.length === 0) { //Nav is always found
+        if (result.length === 0) { 
             console.log('no elements found for: ' + window.location.pathname);
             result.push(pages.notFound.element);
         }

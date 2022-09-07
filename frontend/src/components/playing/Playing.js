@@ -116,7 +116,7 @@ const Playing = () => {
                 album ?
                     <>
                         <p> on </p>
-                        <Album albumUri={album}/>
+                        <Album albumUri={album} openable={true}/>
                     </>
                     
                 :
@@ -127,7 +127,7 @@ const Playing = () => {
                 playlist ?
                     <>
                         <p> on </p>
-                        <Playlist playlistUri={playlist}/>
+                        <Playlist playlistUri={playlist} openable={true}/>
                     </>
                 :
                     <></>

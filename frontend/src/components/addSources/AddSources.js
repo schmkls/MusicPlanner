@@ -3,16 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faClose } from '@fortawesome/free-solid-svg-icons'
 import spotifyControl from "../../functionality/spotifyControl";
 import './AddSources.css';
+import SearchAlbum from "../searchAlbums/SearchAlbums";
 
 const AddSources = () => {
     
     const [isExpanded, setIsExpanded] = useState(false);
-    const [sourceLink, setSourceLink] = useState(null);
 
-    const addSource = (link) => {
-        spotifyControl().addSource(link);
+    const addSource = (uri) => {
+        spotifyControl().addSource(uri);
+        setIsExpanded(false);
     }
-    
 
     if (isExpanded) {
         return (
@@ -20,10 +20,7 @@ const AddSources = () => {
                 <button onClick={() => setIsExpanded(false)}>
                     <FontAwesomeIcon icon={faClose}/>
                 </button>
-                Playlist or album link: <input type="text" onChange={(e) => setSourceLink(e.target.value)}/>
-                    <button>
-                        Add source
-                    </button>            
+                <SearchAlbum chooseFunc={addSource}/>      
             </div>
         )
     }

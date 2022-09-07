@@ -1,7 +1,7 @@
 import Playing from "../../components/playing/Playing";
 import SmoothSkip from "../../components/smoothSkip/SmoothSkip";
 import AddSources from "../../components/addSources/AddSources";
-import ControlVolume from "../controlVolume/ControlVolume";
+import SourcesDisplay from "../../components/sourcesDisplay/SourcesDisplay";
 import React, { useEffect, useState, useReducer } from "react";
 import axios from "axios";
 import spotifyAccess from "../../functionality/spotifyAccess";
@@ -9,7 +9,6 @@ import spotifyControl from "../../functionality/spotifyControl";
 import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import ToggleButton from 'react-bootstrap/ToggleButton';
 
 const UPDATE_INTERVAL = 5000;
 
@@ -24,8 +23,6 @@ const Start = () => {
 
  
     const checkIfDeviceActive = () => {
-
-        
         const accessToken = spotifyAccess().getSpotifyAccessToken();
         
         axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })
@@ -49,6 +46,8 @@ const Start = () => {
     }
 
 
+    //todo: displaya sources
+
     return (
         <>
             <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
@@ -56,6 +55,7 @@ const Start = () => {
                 <FontAwesomeIcon icon={faInfoCircle} size="2x"/>
             </button>  
             <AddSources/>
+            <SourcesDisplay/>
             {
                 deviceActive ?
                         <>

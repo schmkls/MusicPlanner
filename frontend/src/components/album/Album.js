@@ -13,6 +13,7 @@ const Album = (props) => {
     const [album, setalbum] = useState(null);
     
     const open = () => {
+        if (!props.openable) return;
         if (!album) return;
         window.open(album.external_urls.spotify, '_blank').focus();
     }

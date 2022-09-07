@@ -6,8 +6,34 @@ const spotifyControl = () => {
     const accessor = spotifyAccess();
 
 
-    const addSource = (sourceLink) => {
+    const isAlbum = (uri) => {
+        return (uri.includes(':album:'));
+    }
 
+
+    const isPlaylist = (uri) => {
+        return (uri.includes(':playlist:'));
+
+    }
+
+    const addSource = (sourceUri) => {
+        let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) ? JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) : [] ;
+        let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES")) ? JSON.parse(localStorage.getItem("ALBUM_SOURCES")) : [] ;
+
+        if (isAlbum(sourceUri)) {
+            albumSources.push(sourceUri);
+            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources));
+            console.log("albumsources after push: " + JSON.stringify(albumSources));
+            console.log("actual albumsources after push: " + JSON.parse(localStorage.getItem("ALBUM_SOURCES")));
+        }
+
+        if (isPlaylist(sourceUri)) {
+            playlistSources.push(sourceUri);
+            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources));
+            console.log("playlistsources after push: " + JSON.stringify(playlistSources));
+        }
+
+        console.log("source to add: " + sourceUri);
     }
 
 

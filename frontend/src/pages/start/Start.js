@@ -29,6 +29,7 @@ const Start = () => {
             if (response.status == 204 || !response.data || response.data == "") {
                 setDeviceActive(false);
             }
+            setDeviceActive(true);
         });
 
         setTimeout(() => checkIfDeviceActive(), UPDATE_INTERVAL);

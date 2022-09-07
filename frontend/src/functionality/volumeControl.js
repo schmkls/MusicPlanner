@@ -67,7 +67,8 @@ const volumeControl = () => {
             let currVolume = originalVolume;
 
             await repeat(async() => {
-                await adjustVolume(Math.round(currVolume - (originalVolume / nTimes)));
+                await adjustVolume(Math.round(currVolume - (originalVolume / nTimes)))
+                .catch((err) => rej(err));
                 currVolume = currVolume - (originalVolume / nTimes);
                 await sleep(100);
             }, nTimes)
@@ -116,17 +117,20 @@ const volumeControl = () => {
             const volume = await slowlyLowerVolume(originalVolume)
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
+                rej(err);
             })
 
             await spotifyControl().skipTrack()
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
+                rej(err);
             })
 
 
             await slowlyHigherVolume(volume, originalVolume)
             .catch((err) => {
                 console.log("Could not smoothskip ", err);
+                rej(err);
             })
 
             res("Skipped track");

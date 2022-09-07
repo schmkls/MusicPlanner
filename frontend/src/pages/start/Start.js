@@ -9,6 +9,7 @@ import spotifyControl from "../../functionality/spotifyControl";
 import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 
 const UPDATE_INTERVAL = 5000;
 
@@ -16,7 +17,6 @@ const UPDATE_INTERVAL = 5000;
 //todo: kolla hur använda bootstrap
 const Start = () => {
 
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
     const [deviceActive, setDeviceActive] = useState(true);
 
     const navigator = navigate();
@@ -45,14 +45,18 @@ const Start = () => {
         console.log("val: " + val);
     }
 
+    const handleMusicControl = () => {
+        
+    }
+
 
     //todo: displaya sources
 
     return (
         <>
             <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
-                <p>Help</p>
-                <FontAwesomeIcon icon={faInfoCircle} size="2x"/>
+                Help
+                <FontAwesomeIcon icon={faInfoCircle}/>
             </button>  
             <AddSources/>
             <SourcesDisplay/>
@@ -60,12 +64,22 @@ const Start = () => {
                 deviceActive ?
                         <>
                             <Playing/>
-                            <SmoothSkip onSkip={() => forceUpdate()}/>
                         </> 
                 
                     :
                         <h2>Not playing anything in Spotify right now</h2>
             }
+            
+            <BootstrapSwitchButton
+                checked={false}
+                onlabel='ON'
+                offlabel='OFF'
+                size='lg'
+                onChange={(e) => {
+                    console.log(JSON.stringify(e));
+                }}
+
+            />
         </>
     )
 

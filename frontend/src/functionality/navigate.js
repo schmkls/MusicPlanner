@@ -19,7 +19,7 @@ const navigate = () => {
             path: '/volume-control',
             element: <h2>tempo control wihu</h2>
         }, 
-        volumeControl: {
+        volumeControl : {
             path: '/volume-control',
             element: <VolumeControl/>
         }, 

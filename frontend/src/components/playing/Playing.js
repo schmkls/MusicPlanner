@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
+import SmoothSkip from "../smoothSkip/SmoothSkip";
 import spotifyAccess from "../../functionality/spotifyAccess";
 
 
@@ -134,6 +135,7 @@ const Playing = () => {
 
             }
             {warning}
+            <SmoothSkip onSkip={() => {}}/>
             <hr/>
         </div>
     )

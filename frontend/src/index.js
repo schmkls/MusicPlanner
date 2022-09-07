@@ -4,6 +4,7 @@ import spotifyAccess from './functionality/spotifyAccess';
 import SpotifyAuth from './pages/spotifyAuth/SpotifyAuth';
 import spotifyControl from './functionality/spotifyControl';
 import volumeControl from './functionality/volumeControl';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
     
@@ -24,6 +25,7 @@ export default function App() {
         )
     }
 
+    
     return (
         <>
             {

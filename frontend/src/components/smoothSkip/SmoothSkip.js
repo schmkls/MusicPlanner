@@ -11,7 +11,29 @@ import spotifyAccess from "../../functionality/spotifyAccess";
 const SmoothSkip = (props) => {
 
     const [active, setIsActive] = useState(true);
-   
+    const [failed, setFailed] = useState(false);
+
+
+    const fail = () => {
+        setFailed(true);
+
+        setTimeout(() => setFailed(false), 4000);
+    }
+
+    if (failed) {
+        return (
+            <div>
+                <button onClick={() => {
+                    volumeControl().smoothSkip()
+                    .then(() => props.onSkip())
+                    .catch((err) => alert(err))
+                } }>
+                    Could not smooth skip...
+                    <FontAwesomeIcon icon={faStepForward} size='2x'/>
+                </button>
+            </div>
+        ) 
+    }
 
     return (
         
@@ -19,6 +41,7 @@ const SmoothSkip = (props) => {
             <button onClick={() => {
                 volumeControl().smoothSkip()
                 .then(() => props.onSkip())
+                .catch((err) => fail())
             } }>
                 Smooth skip
                 <FontAwesomeIcon icon={faStepForward} size='2x'/>

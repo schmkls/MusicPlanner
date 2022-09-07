@@ -21,3 +21,10 @@ He chooses to filter his music by activating and drawing in the *tempo* and *dec
 
 # Cred
 To Viktor, Emanuel, for the idea!
+
+# Todos
+* Add multiple sources
+* Queue from the sources
+* Only display smooth skip if playing on current device?
+* Control volume with graph
+* Control preferred tempo and popularity with graph 

@@ -28,8 +28,8 @@ const AddSources = () => {
     if (!isExpanded) {
         return (
             <button onClick={() => setIsExpanded(true)}>
-                <p>Add sources</p>
-                <FontAwesomeIcon icon={faCirclePlus} size="3x"/>
+                Add sources
+                <FontAwesomeIcon icon={faCirclePlus}/>
             </button>
         )
     }

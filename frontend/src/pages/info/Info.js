@@ -10,7 +10,7 @@ const Info = () => {
     return (
         <div>
             <button onClick={(e) => window.location.assign(navigator.getURL(navigator.pages.home))}>
-                <FontAwesomeIcon icon={faArrowLeft} size="4x"/>    
+                <FontAwesomeIcon icon={faArrowLeft}/>    
             </button>
             
             <h2>How to use MusicPlanner</h2>

@@ -17,23 +17,53 @@ const spotifyControl = () => {
     }
 
     const addSource = (sourceUri) => {
-        let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) ? JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) : [] ;
-        let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES")) ? JSON.parse(localStorage.getItem("ALBUM_SOURCES")) : [] ;
 
         if (isAlbum(sourceUri)) {
+            let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES")) ? JSON.parse(localStorage.getItem("ALBUM_SOURCES")) : [] ;
             albumSources.push(sourceUri);
-            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources));
-            console.log("albumsources after push: " + JSON.stringify(albumSources));
+            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources, null, 2));
+            console.log("albumsources after push: " + JSON.stringify(albumSources, null, 2));
             console.log("actual albumsources after push: " + JSON.parse(localStorage.getItem("ALBUM_SOURCES")));
         }
 
         if (isPlaylist(sourceUri)) {
-            playlistSources.push(sourceUri);
-            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources));
-            console.log("playlistsources after push: " + JSON.stringify(playlistSources));
+            let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) ? JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) : [] ;
+            playlistSources.remove(sourceUri);
+            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources, null, 2));
+            console.log("playlistsources after push: " + JSON.stringify(playlistSources, null, 2));
         }
 
         console.log("source to add: " + sourceUri);
+    }
+
+
+
+    const deleteSource = (sourceUri) => {
+        if (isAlbum(sourceUri)) {
+            let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES"));
+            if (!albumSources) return;
+
+            //remove album from array of albums
+            let index = albumSources.indexOf(sourceUri);
+            if (index !== -1) {
+                albumSources.splice(index, 1);
+            }
+            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources, null, 2));
+            console.log("albumsources after remove: " + JSON.stringify(albumSources, null, 2));
+        }
+
+        if (isPlaylist(sourceUri)) {
+            let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES"));
+            if (!playlistSources) return;
+
+            //remove playlist from array of playlists
+            let index = playlistSources.indexOf(sourceUri);
+            if (index !== -1) {
+                playlistSources.splice(index, 1);
+            }       
+            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources, null, 2));
+            console.log("playlistsources after remove: " + JSON.stringify(playlistSources, null, 2));
+        }
     }
 
 
@@ -128,6 +158,7 @@ const spotifyControl = () => {
 
     return { 
         addSource,
+        deleteSource,
         readUpcomingTracks,
         skipTrack,
         keepFilteredTracksInQueue

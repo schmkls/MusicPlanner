@@ -1,7 +1,15 @@
-.sourcesContainer {
-
+.sourcesGrid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    grid-template-rows: 100px 1fr;
 }
 
-.smallAlbum {
-    max-width: 200px;
+
+.sourceDisplayed {
+    border-style: solid;
+    border-color: grey;
+    background-color: lightgray;
 }
+
+
+

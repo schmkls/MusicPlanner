@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import spotifyAccess from '../../functionality/spotifyAccess';
+import './Track.css';
 
 /**
  * @param props.trackId track spotify id 
@@ -49,7 +50,7 @@ const Track = (props) => {
     
 
     return (
-        <div>
+        <div className='track'>
             <p onClick={() => open()}>
                 {track?.name} - {makeArtistsString()}
             </p>

@@ -1,7 +1,7 @@
-
 import axios from "axios";
 import { useEffect, useState } from "react";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import './Album.css';
 
 /**
  * @param props.albumUri album uri 
@@ -34,7 +34,7 @@ const Album = (props) => {
     }, []);
 
     return (
-        <div>
+        <div className='albumContainer'>
             <p onClick={() => open()}>
                 {album?.name}
             </p>

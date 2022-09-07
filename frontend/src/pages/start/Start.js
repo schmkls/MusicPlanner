@@ -1,15 +1,14 @@
 import Playing from "../../components/playing/Playing";
-import SmoothSkip from "../../components/smoothSkip/SmoothSkip";
-import AddSources from "../../components/addSources/AddSources";
-import SourcesDisplay from "../../components/sourcesDisplay/SourcesDisplay";
-import React, { useEffect, useState, useReducer } from "react";
+import SourcesDisplay from "../../components/sources/Sources";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import spotifyAccess from "../../functionality/spotifyAccess";
-import spotifyControl from "../../functionality/spotifyControl";
 import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const UPDATE_INTERVAL = 5000;
 
@@ -50,6 +49,11 @@ const Start = () => {
     }
 
 
+    const handleSourceAdd = () => {
+
+    }
+
+
     //todo: displaya sources
 
     return (
@@ -58,8 +62,9 @@ const Start = () => {
                 Help
                 <FontAwesomeIcon icon={faInfoCircle}/>
             </button>  
-            <AddSources/>
             <SourcesDisplay/>
+            <br/>
+            <br/>
             {
                 deviceActive ?
                         <>

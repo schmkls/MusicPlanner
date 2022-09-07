@@ -93,7 +93,7 @@ const Playing = () => {
 
     return (
         <div>
-            <h2>Currently playing: </h2>
+            <h3>Currently playing</h3>
             {
                 isPlaying ? 
                     <></>

@@ -5,22 +5,27 @@ import spotifyControl from "../../functionality/spotifyControl";
 import './AddSources.css';
 import SearchAlbum from "../searchAlbums/SearchAlbums";
 
-const AddSources = () => {
+
+/**
+ * 
+ * @param props.addSource function for adding a source with playlist/album uri as parameter
+ * @returns 
+ */
+const AddSources = (props) => {
     
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const addSource = (uri) => {
-        spotifyControl().addSource(uri);
-        setIsExpanded(false);
-    }
-
+    
     if (isExpanded) {
         return (
             <div className="expanded">
                 <button onClick={() => setIsExpanded(false)}>
                     <FontAwesomeIcon icon={faClose}/>
                 </button>
-                <SearchAlbum chooseFunc={addSource}/>      
+                <SearchAlbum chooseFunc={(uri) => {
+                    props.addSource(uri);
+                    setIsExpanded(false);
+                }}/>      
             </div>
         )
     }

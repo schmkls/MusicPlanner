@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import './Playlist.css';
 
 /**
  * @param props.playlistUri playlist uri 
@@ -33,7 +34,7 @@ const Playlist = (props) => {
     }, []);
 
     return (
-        <div>
+        <div className='playlist'>
             <p onClick={() => open()}>
                 {playlist?.name}
             </p>

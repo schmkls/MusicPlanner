@@ -53,6 +53,16 @@ const SourcesDisplay = (props) => {
                     </div>
                 ))
             }
+             {
+                playlistSources?.map((playlistUri, index) => (
+                    <div className='sourceDisplayed' key={index}>
+                        <Playlist playlistUri={playlistUri}/>
+                        <button onClick={() => deleteSource(playlistUri)}>
+                            <FontAwesomeIcon icon={faMinusCircle}/>
+                        </button>
+                    </div>
+                ))
+            }
             </div>
         </div>
     );

@@ -28,7 +28,7 @@ const spotifyControl = () => {
 
         if (isPlaylist(sourceUri)) {
             let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) ? JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) : [] ;
-            playlistSources.remove(sourceUri);
+            playlistSources.push(sourceUri);
             localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources, null, 2));
             console.log("playlistsources after push: " + JSON.stringify(playlistSources, null, 2));
         }

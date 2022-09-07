@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faClose } from '@fortawesome/free-solid-svg-icons'
 import spotifyControl from "../../functionality/spotifyControl";
 import './AddSources.css';
-import SearchAlbum from "../searchAlbums/SearchAlbums";
-
+import SearchSources from "../searchSources/SearchSources";
 
 /**
  * 
@@ -22,7 +21,7 @@ const AddSources = (props) => {
                 <button onClick={() => setIsExpanded(false)}>
                     <FontAwesomeIcon icon={faClose}/>
                 </button>
-                <SearchAlbum chooseFunc={(uri) => {
+                <SearchSources chooseFunc={(uri) => {
                     props.addSource(uri);
                     setIsExpanded(false);
                 }}/>      

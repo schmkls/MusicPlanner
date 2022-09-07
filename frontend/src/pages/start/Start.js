@@ -7,7 +7,6 @@ import navigate from "../../functionality/navigate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const UPDATE_INTERVAL = 5000;
@@ -84,7 +83,6 @@ const Start = () => {
                 onChange={(e) => {
                     console.log(JSON.stringify(e));
                 }}
-
             />
         </>
     )

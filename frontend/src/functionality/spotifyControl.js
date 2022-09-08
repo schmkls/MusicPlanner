@@ -151,6 +151,24 @@ const spotifyControl = () => {
      * tempo/popularity. 
      */
     const keepFilteredTracksInQueue = () => {
+        console.log("keeping filtered tracks in queue");
+
+        //om antal i kö < 3
+        //hämta 3stk random från sources som uppfyller filtreringskrav, lägg till i kö, ta bort från sources
+
+        if (localStorage.getItem('TEMPO_CONTROL' == 'ON') || localStorage.getItem('POPULARITY_CONTROL' == 'ON')) {
+            setTimeout(() => keepFilteredTracksInQueue(), 6000);
+        }
+
+    }
+
+
+    const enableTempoControl = () => {
+        localStorage.setItem('TEMPO_CONTROL', 'ON');
+    }
+
+    const disableTempoControl = () => {
+        localStorage.setItem('TEMPO_CONTROL', 'OFF');
 
     }
     

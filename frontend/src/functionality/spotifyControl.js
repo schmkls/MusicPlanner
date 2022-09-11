@@ -5,7 +5,15 @@ const spotifyControl = () => {
 
     const accessor = spotifyAccess();
 
+    const tempoControlOn = () => {
+        return localStorage.getItem('TEMPO_CONTROL') == 'ON';
+    }
 
+    const popularityControlOn = () => {
+        return localStorage.getItem('POPULARITY_CONTROL') == 'ON';
+    }
+
+   
     const isAlbum = (uri) => {
         return (uri.includes(':album:'));
     }
@@ -13,34 +21,52 @@ const spotifyControl = () => {
 
     const isPlaylist = (uri) => {
         return (uri.includes(':playlist:'));
-
     }
 
-    const addSource = (sourceUri) => {
-
-        if (isAlbum(sourceUri)) {
-            let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES")) ? JSON.parse(localStorage.getItem("ALBUM_SOURCES")) : [] ;
-            albumSources.push(sourceUri);
-            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources, null, 2));
-            console.log("albumsources after push: " + JSON.stringify(albumSources, null, 2));
-            console.log("actual albumsources after push: " + JSON.parse(localStorage.getItem("ALBUM_SOURCES")));
-        }
-
-        if (isPlaylist(sourceUri)) {
-            let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) ? JSON.parse(localStorage.getItem("PLAYLIST_SOURCES")) : [] ;
-            playlistSources.push(sourceUri);
-            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources, null, 2));
-            console.log("playlistsources after push: " + JSON.stringify(playlistSources, null, 2));
-        }
-
-        console.log("source to add: " + sourceUri);
+    const spotifyIdFromUri = (uri) => {
+        return uri.substring(uri.lastIndexOf(':') + 1);
     }
 
 
+    const addTrackSources = (uri) => {
+        const accessToken = accessor.getSpotifyAccessToken();
+        const id = spotifyIdFromUri(uri);
+        if (isPlaylist(uri)) {
+            const getUrl = `https://api.spotify.com/v1/playlists/${id}`
+            axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
+            .then((response) => {
+                console.log("in addTrackSources, get playlist: ", JSON.stringify(response.data.items, null, 2))
+            })
+            .catch((err) => console.log("add track sources error: ", err));
+        } 
+        
+    }
 
+
+    /**
+     * @param uri spotify playlist or album uri  
+     */
+    const addSource = (uri) => {
+        if (isAlbum(uri)) {
+            let albumSources = JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) ? JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) : [] ;
+            albumSources.push(uri);
+            localStorage.setItem("SOURCES_ALBUMS", JSON.stringify(albumSources));
+        }
+
+        if (isPlaylist(uri)) {
+            let playlistSources = JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS")) ? JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS")) : [] ;
+            playlistSources.push(uri);
+            localStorage.setItem("SOURCES_PLAYLISTS", JSON.stringify(playlistSources));
+        }
+
+        addTrackSources(uri);
+    }
+
+
+    //todo
     const deleteSource = (sourceUri) => {
         if (isAlbum(sourceUri)) {
-            let albumSources = JSON.parse(localStorage.getItem("ALBUM_SOURCES"));
+            let albumSources = JSON.parse(localStorage.getItem("SOURCES_ALBUMS"));
             if (!albumSources) return;
 
             //remove album from array of albums
@@ -48,12 +74,12 @@ const spotifyControl = () => {
             if (index !== -1) {
                 albumSources.splice(index, 1);
             }
-            localStorage.setItem("ALBUM_SOURCES", JSON.stringify(albumSources, null, 2));
+            localStorage.setItem("SOURCES_ALBUMS", JSON.stringify(albumSources, null, 2));
             console.log("albumsources after remove: " + JSON.stringify(albumSources, null, 2));
         }
 
         if (isPlaylist(sourceUri)) {
-            let playlistSources = JSON.parse(localStorage.getItem("PLAYLIST_SOURCES"));
+            let playlistSources = JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS"));
             if (!playlistSources) return;
 
             //remove playlist from array of playlists
@@ -61,7 +87,7 @@ const spotifyControl = () => {
             if (index !== -1) {
                 playlistSources.splice(index, 1);
             }       
-            localStorage.setItem("PLAYLIST_SOURCES", JSON.stringify(playlistSources, null, 2));
+            localStorage.setItem("SOURCES_PLAYLISTS", JSON.stringify(playlistSources, null, 2));
             console.log("playlistsources after remove: " + JSON.stringify(playlistSources, null, 2));
         }
     }
@@ -81,87 +107,68 @@ const spotifyControl = () => {
     }
 
 
-    const getNextInPlaylist = async(playlistUri, trackNr) => {
-
-        return new Promise((res, rej) => {
-            const accessToken = accessor.getSpotifyAccessToken();
-            const playlistId = playlistUri.substr(playlistUri.lastIndexOf(":") + 1);
-            axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, { headers: { Authorization: `Bearer ${accessToken}`} })
-            .then((response) => {
-                //
-            })
-            .catch((err) => {});
-        });
-        
-    }
-
-    const getNextInAlbum = (albumUri, trackNr) => {
-
+    const sourcesTracksLeft = () => {
+        return JSON.parse(localStorage.getItem("SOURCES_TRACKS"))?.length > 0;
     }
 
 
-
-    const readUpcomingTracks = async() => {
-        const accessToken = accessor.getSpotifyAccessToken();
-
-        axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
-        .then((response) => {
-            if (response.status < 200 || response.status > 299) {
-                console.log("get currently playing track bad response");
-                return;
-            }
-
-            console.log("currently playing response: " + JSON.stringify(response, null, 2));
-
-            //console.log("context: " + JSON.stringify(response.data.context, null, 2));
-
-            if (!response.data.context) {
-                console.log("cannot read coming tracks, no context available");
-                return;
-            }
-
-            if (response.data.context.type != "playlist" && response.data.context.type != "album") {
-                console.log("cannot read coming tracks, not playing from playlist or album");
-                return;
-            }
-
-            console.log("number in playlist/album: " + JSON.stringify(response.data.item.track_number));
-            console.log("context type: " + JSON.stringify(response.data.context.type));
-            console.log("uri of context: " + response.data.context.uri);
-
-
-            if (response.data.context.type == 'playlist') {
-                getNextInPlaylist(response.data.context.uri, response.data.item.track_number);
-            }
-
-            if (response.data.context.type == 'album') {
-                getNextInAlbum(response.data.context.uri, response.data.item.track_number);
-            }
-
-        })
-        .catch((err) => {
-            console.log("get currently playing track error: " + err);
-        });
-
-    }
 
 
     /**
      * Keeps tracks in queue that is filtered according to prefered
-     * tempo/popularity. 
+     * tempo/popularity, from added sources.  
      */
-    const keepFilteredTracksInQueue = () => {
+    const controlQueue = () => {
+        if (!tempoControlOn() && !popularityControlOn()) {
+            return;
+        }
 
+
+
+        if (sourcesTracksLeft()) {
+            setTimeout(() => controlQueue(), 30000);
+        }
+        
+    }
+
+
+    const turnOnTempoControl = () => {
+        localStorage.setItem('TEMPO_CONTROL', 'ON');
+
+        controlQueue();
+    }
+
+    const turnOnPopularityControl = () => {
+        localStorage.setItem('POPULARITY_CONTROL', 'ON');
+        controlQueue();
     }
     
 
+    const turnOffTempoControl = () => {
+        localStorage.setItem('TEMPO_CONTROL', 'OFF');
+    }
+
+    const turnOffPopularityControl = () => {
+        localStorage.setItem('POPULARITY_CONTROL', 'OFF');
+    }
+
+    const sourcesAdded = () => {
+
+    }
+
 
     return { 
+        sourcesTracksLeft, 
+        spotifyIdFromUri, 
         addSource,
         deleteSource,
-        readUpcomingTracks,
         skipTrack,
-        keepFilteredTracksInQueue
+        controlQueue,
+
+        turnOnTempoControl, 
+        turnOnPopularityControl, 
+        turnOffTempoControl,  
+        turnOffPopularityControl,
     }
 }
 

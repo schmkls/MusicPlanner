@@ -1,5 +1,4 @@
 import Playing from "../../components/playing/Playing";
-import SourcesDisplay from "../../components/sources/Sources";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import spotifyAccess from "../../functionality/spotifyAccess";
@@ -37,7 +36,7 @@ const Start = () => {
 
     useEffect(() => {
         checkIfDeviceActive();
-    });
+    }, []);
 
     
     const handleVolumeControl = (val) => {
@@ -62,7 +61,6 @@ const Start = () => {
                 Help
                 <FontAwesomeIcon icon={faInfoCircle}/>
             </button>  
-            <SourcesDisplay/>
             <br/>
             <br/>
             {

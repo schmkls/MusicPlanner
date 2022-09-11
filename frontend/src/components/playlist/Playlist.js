@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import spotifyControl from "../../functionality/spotifyControl";
 import './Playlist.css';
 
 /**
@@ -9,7 +10,7 @@ import './Playlist.css';
  */
 const Playlist = (props) => {
 
-    const playlistId = props.playlistUri.substr(props.playlistUri.lastIndexOf(":") + 1);
+    const playlistId = spotifyControl().spotifyIdFromUri(props.playlistUri);
     const [playlist, setPlaylist] = useState(null);
     
     const open = () => {

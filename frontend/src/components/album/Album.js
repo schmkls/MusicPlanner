@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import spotifyControl from "../../functionality/spotifyControl";
 import './Album.css';
 
 /**
@@ -9,7 +10,7 @@ import './Album.css';
  */
 const Album = (props) => {
 
-    const albumId = props.albumUri.substr(props.albumUri.lastIndexOf(":") + 1);
+    const albumId = spotifyControl().spotifyIdFromUri(props.albumUri);
     const [album, setalbum] = useState(null);
     
     const open = () => {

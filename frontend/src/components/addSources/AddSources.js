@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import spotifyControl from "../../functionality/spotifyControl";
 import './AddSources.css';
 import SearchSources from "../searchSources/SearchSources";
 

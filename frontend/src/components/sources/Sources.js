@@ -9,14 +9,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 
 
-const SourcesDisplay = (props) => {
+const Sources = (props) => {
 
     const [albumSources, setAlbumSources] = useState([]);
     const [playlistSources, setPlaylistSources] = useState([]);
 
     const getSources = () => {
-        const playlistSrcs = JSON.parse(localStorage.getItem('PLAYLIST_SOURCES'));
-        const albumSrcs = JSON.parse(localStorage.getItem('ALBUM_SOURCES'));
+        const playlistSrcs = JSON.parse(localStorage.getItem('SOURCES_PLAYLISTS'));
+        const albumSrcs = JSON.parse(localStorage.getItem('SOURCES_ALBUMS'));
         setAlbumSources(albumSrcs);
         setPlaylistSources(playlistSrcs);
     }
@@ -31,7 +31,6 @@ const SourcesDisplay = (props) => {
         getSources();
     }
 
-  
 
     useEffect(() => {
         getSources();
@@ -41,7 +40,6 @@ const SourcesDisplay = (props) => {
     return (
         <div>
             <AddSources addSource={addSource}/>
-            Mix of music to come:
             <div className='sourcesGrid'>
             {
                 albumSources?.map((albumUri, index) => (
@@ -69,4 +67,4 @@ const SourcesDisplay = (props) => {
 }
 
 
-export default SourcesDisplay;
+export default Sources;

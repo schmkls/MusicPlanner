@@ -3,8 +3,11 @@ import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
+import Sources from "../sources/Sources";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
+import AddSources from "../addSources/AddSources";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import spotifyControl from "../../functionality/spotifyControl";
 
 
 const UPDATE_INTERVAL = 10000;  //10 seconds
@@ -22,6 +25,8 @@ const Playing = () => {
     const [isPlaying, setIsPlaying] = useState(true); //true if playing, false if paused
     const [episode, setEpisode] = useState(false);  //true if episode being played
     const [warning, setWarning] = useState(null); 
+    const [playingFromSources, setPlayingFromSources] = useState(false);    //true when playing from added sources
+
 
     const spotifyAccessor = spotifyAccess();
 
@@ -63,8 +68,6 @@ const Playing = () => {
             if (response.data.context == null) {
                 setCp(response.data.item.id);
 
-                //if tempo or popularity filtering active
-                    setWarning("Tempo and popularity control will only work when playing a playlist or album");
                 return;
             }
             
@@ -87,55 +90,48 @@ const Playing = () => {
 
     useEffect(() => {
         getPlayingData();
+        setPlayingFromSources(spotifyControl().sourcesTracksLeft());
     },[]);
 
+
+    console.log("playlist = " + playlist, ", album = " + album + ", playingfROMsOURCES = " + playingFromSources);
 
 
     return (
         <div>
-            <h3>Currently playing</h3>
+            <SmoothSkip onSkip={() => {}}/>
             {
                 isPlaying ? 
-                    <></>
+                    episode ? 
+                        <p>An episode (no music)</p>
+                    :
+                        currPlaying ? 
+                            <Track trackId={currPlaying}/>
+                        :
+                            <p>Unknown track playing</p>
                 :
                     <p>(paused)</p>
-
             }
+            from
             {
-                episode ? 
-                    <p>An episode (no music)</p>
-                :
-                    <></>
-            }
-            {
-                currPlaying ? 
-                    <Track trackId={currPlaying}/>
-                :
-                    <></>
-            }
-            {
-                album ?
-                    <>
-                        <p> on </p>
-                        <Album albumUri={album} openable={true}/>
-                    </>
-                    
-                :
-                    <></>
-
-            }
-            {
-                playlist ?
-                    <>
-                        <p> on </p>
-                        <Playlist playlistUri={playlist} openable={true}/>
-                    </>
-                :
-                    <></>
-
+                
+                    playingFromSources ? 
+                        <Sources/>
+                    :
+                        album ?
+                            <>
+                                <Album albumUri={album} openable={true}/>
+                            </>
+                        :
+                            playlist ?
+                                <>
+                                    <Playlist playlistUri={playlist} openable={true}/>
+                                </>
+                            :
+                                <p>Unknown source</p>
             }
             {warning}
-            <SmoothSkip onSkip={() => {}}/>
+            <AddSources/>
             <hr/>
         </div>
     )

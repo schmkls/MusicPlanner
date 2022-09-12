@@ -7,8 +7,7 @@ import spotifyAccess from '../../functionality/spotifyAccess';
 import './SearchSources.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react'
-
+import spotifyControl from '../../functionality/spotifyControl';
 
 
 const SEARCHING = 1;
@@ -29,6 +28,7 @@ const SearchSources = (props) => {
     const [playlists, setPlaylists] = useState([]);
     const [state, setState] = useState(NOT_SEARCHING);
     const [searchingFor, setSearchingFor] = useState('PLAYLISTS');
+
 
     const search = () => {
         setAlbums([]);
@@ -59,7 +59,6 @@ const SearchSources = (props) => {
                 alert('Could not search');
             });
         }
-       
     }
 
 
@@ -94,7 +93,7 @@ const SearchSources = (props) => {
                         {
                             <Album albumUri={album.uri} key={index}/>
                         } 
-                        <button onClick={() => props.chooseFunc(album.uri)}>
+                        <button onClick={() => props.onChoose(album.uri)}>
                             Add album to sources
                             <FontAwesomeIcon icon={faCirclePlus}/>
                         </button>
@@ -107,7 +106,7 @@ const SearchSources = (props) => {
                         {
                             <Playlist playlistUri={playlist.uri} key={index}/>
                         } 
-                        <button onClick={() => props.chooseFunc(playlist.uri)}>
+                        <button onClick={() => props.onChoose(playlist.uri)}>
                             Add playlist to sources
                             <FontAwesomeIcon icon={faCirclePlus}/>
                         </button>

@@ -17,8 +17,6 @@ const UPDATE_INTERVAL = 10000;  //10 seconds
  */
 const Playing = () => {
 
-    console.log("returning playing");
-
     const [currPlaying, setCp] = useState(null);    //currently playing track
     const [playlist, setPlaylist] = useState(null);
     const [album, setAlbum] = useState(null);
@@ -42,6 +40,9 @@ const Playing = () => {
 
     const getPlayingData = () => {        
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
+
+        setPlayingFromSources(spotifyControl().sourcesTracksLeft());
+        //console.log("playing from sources = ", spotifyControl().sourcesTracksLeft());
 
         axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
@@ -90,16 +91,14 @@ const Playing = () => {
 
     useEffect(() => {
         getPlayingData();
-        setPlayingFromSources(spotifyControl().sourcesTracksLeft());
     },[]);
 
 
-    console.log("playlist = " + playlist, ", album = " + album + ", playingfROMsOURCES = " + playingFromSources);
 
 
     return (
         <div>
-            <SmoothSkip onSkip={() => {}}/>
+            <SmoothSkip onSkip={() => {console.log("smooth skip callbacked")}}/>
             {
                 isPlaying ? 
                     episode ? 
@@ -114,10 +113,10 @@ const Playing = () => {
             }
             from
             {
-                
                     playingFromSources ? 
                         <Sources/>
                     :
+
                         album ?
                             <>
                                 <Album albumUri={album} openable={true}/>
@@ -131,8 +130,12 @@ const Playing = () => {
                                 <p>Unknown source</p>
             }
             {warning}
-            <AddSources/>
-            <hr/>
+            <AddSources onAdd={(uri) => {
+                spotifyControl().addSource(uri);
+                getPlayingData();
+                //setPlayingFromSources(true);
+            }}/>
+            <hr/>   
         </div>
     )
 }

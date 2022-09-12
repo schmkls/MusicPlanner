@@ -27,19 +27,34 @@ const spotifyControl = () => {
         return uri.substring(uri.lastIndexOf(':') + 1);
     }
 
-
+    //todo
     const addTrackSources = (uri) => {
+        
+        let tracks = localStorage.getItem('SOURCES_TRACKS') ? JSON.parse(localStorage.getItem('SOURCES_TRACKS')) : [];
+
+        console.log("sources tracks: ", JSON.stringify(tracks));
+
+        let trackUri;
         const accessToken = accessor.getSpotifyAccessToken();
         const id = spotifyIdFromUri(uri);
         if (isPlaylist(uri)) {
             const getUrl = `https://api.spotify.com/v1/playlists/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
-                console.log("in addTrackSources, get playlist: ", JSON.stringify(response.data.items, null, 2))
+                console.log("in addTrackSources, playlist tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
+                
+                for (let track in response.data.tracks.items) {
+                    console.log("track uri: ", response.data.tracks.items[track].track.uri);
+                    trackUri = response.data.tracks.items[track].track.uri;
+                    tracks.push({uri, trackUri});    //todo get and add track popularity and tempo
+                }
+                
+                localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
             })
             .catch((err) => console.log("add track sources error: ", err));
         } 
         
+       
     }
 
 
@@ -47,6 +62,7 @@ const spotifyControl = () => {
      * @param uri spotify playlist or album uri  
      */
     const addSource = (uri) => {
+        console.log("ADDING SOURCE: ", uri);
         if (isAlbum(uri)) {
             let albumSources = JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) ? JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) : [] ;
             albumSources.push(uri);
@@ -123,8 +139,6 @@ const spotifyControl = () => {
             return;
         }
 
-
-
         if (sourcesTracksLeft()) {
             setTimeout(() => controlQueue(), 30000);
         }
@@ -137,6 +151,7 @@ const spotifyControl = () => {
 
         controlQueue();
     }
+
 
     const turnOnPopularityControl = () => {
         localStorage.setItem('POPULARITY_CONTROL', 'ON');

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 
 
-const Sources = (props) => {
+function Sources() {
 
     const [albumSources, setAlbumSources] = useState([]);
     const [playlistSources, setPlaylistSources] = useState([]);
@@ -21,16 +21,11 @@ const Sources = (props) => {
         setPlaylistSources(playlistSrcs);
     }
 
-    const addSource = (uri) => {
-        spotifyControl().addSource(uri);
-        getSources();
-    }
-
+    
     const deleteSource = (uri) => {
         spotifyControl().deleteSource(uri);
         getSources();
     }
-
 
     useEffect(() => {
         getSources();
@@ -39,7 +34,6 @@ const Sources = (props) => {
 
     return (
         <div>
-            <AddSources addSource={addSource}/>
             <div className='sourcesGrid'>
             {
                 albumSources?.map((albumUri, index) => (

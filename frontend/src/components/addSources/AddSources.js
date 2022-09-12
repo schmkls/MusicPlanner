@@ -6,22 +6,20 @@ import SearchSources from "../searchSources/SearchSources";
 
 /**
  * 
- * @param props.addSource function for adding a source with playlist/album uri as parameter
+ * @param addSource function for adding a source with playlist/album uri as parameter
  * @returns 
  */
 const AddSources = (props) => {
-    
     const [isExpanded, setIsExpanded] = useState(false);
 
-    
     if (isExpanded) {
         return (
             <div className="expanded">
                 <button onClick={() => setIsExpanded(false)}>
                     <FontAwesomeIcon icon={faClose}/>
                 </button>
-                <SearchSources chooseFunc={(uri) => {
-                    props.addSource(uri);
+                <SearchSources onChoose={(uri) => {
+                    props.onAdd(uri);
                     setIsExpanded(false);
                 }}/>      
             </div>

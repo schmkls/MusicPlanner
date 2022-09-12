@@ -65,12 +65,12 @@ const Start = () => {
             <br/>
             {
                 deviceActive ?
-                        <>
-                            <Playing/>
-                        </> 
-                
-                    :
-                        <h2>Not playing anything in Spotify right now</h2>
+                    <>
+                        <Playing/>
+                    </> 
+            
+                :
+                    <h2>Not playing anything in Spotify right now</h2>
             }
             
             <BootstrapSwitchButton

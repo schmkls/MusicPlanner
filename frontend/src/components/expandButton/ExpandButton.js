@@ -14,9 +14,9 @@ const ExpandButton = (props) => {
         <button onClick={() => setIsExpanded(!isExpanded)}>
             {
                 isExpanded ?
-                        props.expandElement? props.expandElement : <></>
-                    :
-                        props.normalElement? props.normalElement : <></>
+                    props.expandElement? props.expandElement : <></>
+                :
+                    props.normalElement? props.normalElement : <></>
             }
         </button>
     )

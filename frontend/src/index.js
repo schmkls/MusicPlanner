@@ -18,7 +18,7 @@ export default function App() {
 
     //start any background tasks that should run
     volumeController.controlVolume();
-    spotifyController.keepFilteredTracksInQueue();
+    spotifyController.controlQueue();
 
     
     if (!spotifyAccessToken) {

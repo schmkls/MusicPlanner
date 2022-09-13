@@ -27,6 +27,7 @@ const spotifyControl = () => {
         return uri.substring(uri.lastIndexOf(':') + 1);
     }
 
+
     //todo
     const addTrackSources = (uri) => {
         
@@ -44,7 +45,6 @@ const spotifyControl = () => {
                 console.log("in addTrackSources, playlist tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
                 
                 for (let track in response.data.tracks.items) {
-                    console.log("track uri: ", response.data.tracks.items[track].track.uri);
                     trackUri = response.data.tracks.items[track].track.uri;
                     tracks.push({uri, trackUri});    //todo get and add track popularity and tempo
                 }
@@ -53,8 +53,23 @@ const spotifyControl = () => {
             })
             .catch((err) => console.log("add track sources error: ", err));
         } 
-        
-       
+
+
+        if (isAlbum(uri)) {
+            const getUrl = `https://api.spotify.com/v1/albums/${id}`
+            axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
+            .then((response) => {
+                console.log("in addTrackSources, album tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
+                
+                for (let item in response.data.tracks.items) {
+                    trackUri = response.data.tracks.items[item].uri;
+                    tracks.push({uri, trackUri});    //todo get and add track popularity and tempo*/
+                }
+                
+                localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
+            })
+            .catch((err) => console.log("add track sources error: ", err));
+        } 
     }
 
 

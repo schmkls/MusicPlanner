@@ -11,6 +11,9 @@
 *VOLUME_CONTROL* if equal to *ON* volume control should be on 
 *PREF_VOLUME_[hour]* preferred volume at *hour*
 
+*MUSIC_CONTROL* if equal to *ON* music control should be on 
+
+
 *SOURCES_TRACKS* tracks from added sources, should be updated so played tracks are not part of
 *SOURCES_ALBUMS* albums added as sources
 *SOURCES_PLAYLISTS* playlists added as sources

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import spotifyAccess from "../../functionality/spotifyAccess";
 import navigate from "../../functionality/navigate";
+import volumeControl from "../../functionality/volumeControl";
+import spotifyControl from "../../functionality/spotifyControl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
@@ -17,6 +19,8 @@ const Start = () => {
     const [deviceActive, setDeviceActive] = useState(true);
 
     const navigator = navigate();
+    const volumeController = volumeControl();
+    const spotifyController = spotifyControl();
 
  
     const checkIfDeviceActive = () => {
@@ -39,12 +43,20 @@ const Start = () => {
     }, []);
 
     
-    const handleVolumeControl = (val) => {
-        console.log("val: " + val);
+    const handleVolumeControl = (on) => {
+        if (on) {
+            navigator.navigate(navigator.pages.volumeControl);
+        } else {
+            volumeController.stopControlVolume()
+        }
     }
 
-    const handleMusicControl = () => {
-        
+    const handleMusicControl = (on) => {
+        if (on) {
+            navigator.navigate(navigator.pages.musicControl);
+        } else {
+            spotifyController.stopControlMusic()
+        }
     }
 
 
@@ -72,16 +84,30 @@ const Start = () => {
                 :
                     <h2>Not playing anything in Spotify right now</h2>
             }
-            
+            <p>Volume control: </p>
             <BootstrapSwitchButton
                 checked={false}
                 onlabel='ON'
                 offlabel='OFF'
                 size='lg'
                 onChange={(e) => {
-                    console.log(JSON.stringify(e));
+                    handleVolumeControl(e);
                 }}
             />
+            <br/>
+            <br/>
+            <p>Music control: </p>
+            <BootstrapSwitchButton
+                checked={false}
+                onlabel='ON'
+                offlabel='OFF'
+                size='lg'
+                onChange={(e) => {
+                    handleMusicControl(e);
+                }}
+            />
+            <br/>
+
         </>
     )
 

@@ -22,23 +22,11 @@ const Info = () => {
                 </p>
             }/>
             <hr/>
-            <ExpandButton normalElement={<p>Control tempo</p>} expandElement={
+            <ExpandButton normalElement={<p>Control music</p>} expandElement={
                 <p>
-                    1. Press "Control tempo"<br/>
-                    2. Drag the nodes controlling prefferred tempo of music<br/>
-                    3. Clear your Spotify queue<br/>
-                    4. Add sources of music.<br/>  
-                    5. Play! 
-                </p>
-            }/>
-            <hr/>
-            <ExpandButton normalElement={<p>Control popularity</p>} expandElement={
-                <p>
-                    1. Press "Control popularity"<br/>
-                    2. Drag the nodes controlling prefferred popularity of music<br/>
-                    3. Clear your Spotify queue<br/>
-                    4. Add sources of music.<br/>  
-                    5. Play!
+                    1. wihu<br/>
+                    2. wihu2<br/>
+                    
                 </p>
             }/>
         </div>

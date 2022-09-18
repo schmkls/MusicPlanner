@@ -159,21 +159,25 @@ const volumeControl = () => {
         return Math.round(prefferedVolume);
     }
 
+    const volumeControlIsOn = () => {
+        return localStorage.getItem('VOLUME_CONTROL') === "ON";
+    }
+
     /**
      * Keeps controlling volume while localstorage item 'VOLUME_CONTROL' equals 'ON'
      */
     const controlVolume = () => {
+        if (!volumeControlIsOn()) return
 
         console.log("CONTROLLING VOLUME");
         const prefVolume = getPreferredVolume();
 
         prefVolume ? adjustVolume(prefVolume) : console.log("preffered volume not set");
         
-        //continue controlling if volume control on
-        if (localStorage.getItem('VOLUME_CONTROL') == 'ON') {
-            setTimeout(() => controlVolume(), 30000);
-        }
+        setTimeout(() => controlVolume(), 30000);
     }
+
+
 
 
     const stopControlVolume = () => {

@@ -5,15 +5,6 @@ const spotifyControl = () => {
 
     const accessor = spotifyAccess();
 
-    const tempoControlOn = () => {
-        return localStorage.getItem('TEMPO_CONTROL') == 'ON';
-    }
-
-    const popularityControlOn = () => {
-        return localStorage.getItem('POPULARITY_CONTROL') == 'ON';
-    }
-
-   
     const isAlbum = (uri) => {
         return (uri.includes(':album:'));
     }
@@ -46,7 +37,7 @@ const spotifyControl = () => {
                 
                 for (let track in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[track].track.uri;
-                    tracks.push({uri, trackUri});    //todo get and add track popularity and tempo
+                    tracks.push({uri, trackUri});    
                 }
                 
                 localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
@@ -63,7 +54,7 @@ const spotifyControl = () => {
                 
                 for (let item in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[item].uri;
-                    tracks.push({uri, trackUri});    //todo get and add track popularity and tempo*/
+                    tracks.push({uri, trackUri});    
                 }
                 
                 localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
@@ -142,48 +133,38 @@ const spotifyControl = () => {
         return JSON.parse(localStorage.getItem("SOURCES_TRACKS"))?.length > 0;
     }
 
-
+    const musicControlIsOn = () => {
+        return localStorage.getItem("MUSIC_CONTROL") == "ON";
+    }
 
 
     /**
      * Keeps tracks in queue that is filtered according to prefered
      * tempo/popularity, from added sources.  
      */
-    const controlQueue = () => {
-        if (!tempoControlOn() && !popularityControlOn()) {
-            return;
-        }
+    const controlMusic = () => {
+        if (!musicControlIsOn()) return;
+
+        console.log("controlling music");
+
+        //todo: queue tracks added for this time period
 
         if (sourcesTracksLeft()) {
-            setTimeout(() => controlQueue(), 30000);
+            setTimeout(() => controlMusic(), 30000);
         }
         
     }
 
 
-    const turnOnTempoControl = () => {
-        localStorage.setItem('TEMPO_CONTROL', 'ON');
-
-        controlQueue();
+    const stopControlMusic = () => {
+        console.log('stopping controlling music');
+        localStorage.setItem("MUSIC_CONTROL", "OFF");
     }
 
 
-    const turnOnPopularityControl = () => {
-        localStorage.setItem('POPULARITY_CONTROL', 'ON');
-        controlQueue();
-    }
-    
-
-    const turnOffTempoControl = () => {
-        localStorage.setItem('TEMPO_CONTROL', 'OFF');
-    }
-
-    const turnOffPopularityControl = () => {
-        localStorage.setItem('POPULARITY_CONTROL', 'OFF');
-    }
-
-    const sourcesAdded = () => {
-
+    const enableMusicControl = () => {
+        console.log("enabling music control");
+        localStorage.setItem("MUSIC_CONTROL", "ON");
     }
 
 
@@ -193,12 +174,9 @@ const spotifyControl = () => {
         addSource,
         deleteSource,
         skipTrack,
-        controlQueue,
-
-        turnOnTempoControl, 
-        turnOnPopularityControl, 
-        turnOffTempoControl,  
-        turnOffPopularityControl,
+        enableMusicControl,
+        controlMusic, 
+        stopControlMusic
     }
 }
 

@@ -1,6 +1,7 @@
 import Start from "../pages/start/Start";
 import Info from "../pages/info/Info";
-import VolumeControl from "./volumeControl";
+import ControlVolume from "../pages/controlVolume/ControlVolume";
+import ControlMusic from "../pages/controlMusic/ControlMusic";
 import NotFound from "../pages/notFound/NotFound";
 
 /** 
@@ -15,13 +16,13 @@ const navigate = () => {
             path: '/', 
             element: <Start/>
         }, 
-        tempoControl: {
-            path: '/volume-control',
-            element: <h2>tempo control wihu</h2>
+        musicControl: {
+            path: '/music-control',
+            element: <ControlMusic/>
         }, 
         volumeControl : {
             path: '/volume-control',
-            element: <VolumeControl/>
+            element: <ControlVolume/>
         }, 
         authRedirect: {
             path: '/auth-callback', 
@@ -79,8 +80,13 @@ const navigate = () => {
         return result;
     }
 
+    const navigate = (page) => {
+        window.location.href = getURL(page);
+    }
+
 
     return {
+        navigate,
         pages, 
         getURL,
         getElements

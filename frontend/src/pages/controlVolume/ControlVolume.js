@@ -1,29 +1,56 @@
 import volumeControl from "../../functionality/volumeControl";
 import "./ControlVolume.css";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
+import AdjacentSliders from "../../components/timeSliders/TimeSliders";
 
 const ControlVolume = () => {
 
-    const [volumeIsSet, setVolumeIsSet] = useState(false); //true when preffered volume is set (changed from default)
-
-    const [val, setVal] = useState(0);
+    /**
+     * vals = 
+     * [[hour, preferredVolume, touched], [hour, preferredVolume, touched], ...]
+     * 
+     *              where: 
+     *                  hour = when volume is preferred
+     *                  preferredVolume = preferred volume for hour (from 0 to 100)
+     *                  touched = true if value has been changed from default
+     */
+    const [vals, setVals] = useState([]);        
+    
     const volumeController = volumeControl();
+
+    const handleGoHome = async() => {
+        return new Promise((res) => {
+            for (let i = 0; i < vals.length; i++) {
+                console.log("vals[i]: ", vals[i]);
+                if (vals[i][2] === "touched") {
+                    volumeController.setPreferredVolume(vals[i][1], vals[i][0]);
+                    console.log("TOUUUUCHHHHEDDD-----------------: ", vals[i]);
+                }
+            }
+    
+            volumeController.enableVolumeControl();
+            volumeController.controlVolume();
+            return res();
+        });
+        
+    }
+
+
+    useEffect(() => {
+        console.log("vals: ", vals);
+    }, [vals]);
 
     return (
         <div>   
-            <GoHomeButton onGoHome={() => {
-                if (!volumeIsSet) return;
-
-                volumeController.enableVolumeControl();
-                volumeController.controlVolume();
-            }}/>
-            
-
-            {/*
-                todo: many of these sliders for each time step
-            */}
-            <input value={val} type="range" min="0" max="100" className="horizontalSlider" onChange={(e) => setVal(e.target.value)}></input>   
+            <GoHomeButton onGoHome={handleGoHome}/>
+            <AdjacentSliders
+                onChange={(prefVolumes) => setVals(Array.from(prefVolumes))}
+                getOriginalValue={(hour) => {
+                    return volumeController.getPreferredVolumeForHour(hour);
+                }}
+                defaultValue={100}
+            />
         </div>
     )
 

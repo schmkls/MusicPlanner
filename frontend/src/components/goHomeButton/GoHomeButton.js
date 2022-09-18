@@ -6,8 +6,14 @@ const GoHomeButton = (props) => {
     const navigator = navigate();
 
     const goHome = () => {
-        props.onGoHome();
-        navigator.navigate(navigator.pages.home);
+        if (!props.onGoHome){
+            navigator.navigate(navigator.pages.home);
+            return;
+        } 
+
+        props.onGoHome()
+        .then(() => navigator.navigate(navigator.pages.home))
+        .catch((err) => navigator.navigate(navigator.pages.home));
     }
 
     return (

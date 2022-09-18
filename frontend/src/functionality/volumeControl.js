@@ -6,6 +6,7 @@ const volumeControl = () => {
 
     const accessor = spotifyAccess();
 
+
     const adjustVolume = async(volume) => {
         if (volume > 100) volume = 100;
 
@@ -137,20 +138,26 @@ const volumeControl = () => {
         });
     }
 
+
     const enableVolumeControl = () => {
         localStorage.setItem('VOLUME_CONTROL', 'ON');
     }
 
+    const setPreferredVolume = (volume, hour) => {
+        localStorage.setItem(`PREF_VOLUME_${hour}`, volume);
+    }
 
-    const getPreferredVolume = () => {
+    const getPreferredVolumeForHour = (hour) => {
+        return localStorage.getItem(`PREF_VOLUME_${hour}`);
+    }
+
+
+    const getPreferredVolumeNow = () => {
         const hrNow = new Date().getHours();
         const hrNext = hrNow + 1;
 
-        const prefNow = localStorage.getItem(`PREF_VOLUME_${hrNow}`);
-        const prefNext = localStorage.getItem(`PREF_VOLUME_${hrNext}`);
-
-        console.log("preffered volume for " + hrNow + ": " + prefNow);
-        console.log("preffered volume for " + hrNext + ": " + prefNext);
+        const prefNow = getPreferredVolumeForHour(hrNow);
+        const prefNext = getPreferredVolumeForHour(hrNext);
 
         const factor = new Date().getMinutes() / 60;
 
@@ -158,6 +165,7 @@ const volumeControl = () => {
         
         return Math.round(prefferedVolume);
     }
+
 
     const volumeControlIsOn = () => {
         return localStorage.getItem('VOLUME_CONTROL') === "ON";
@@ -170,7 +178,7 @@ const volumeControl = () => {
         if (!volumeControlIsOn()) return
 
         console.log("CONTROLLING VOLUME");
-        const prefVolume = getPreferredVolume();
+        const prefVolume = getPreferredVolumeNow();
 
         prefVolume ? adjustVolume(prefVolume) : console.log("preffered volume not set");
         
@@ -186,16 +194,10 @@ const volumeControl = () => {
     }
 
 
-    const setPreferredVolume = (volume, hour) => {
-        localStorage.setItem(`PREF_VOLUME_${hour}`, volume);
-    }
-
-
-
-
     return {
         enableVolumeControl,
         setPreferredVolume,
+        getPreferredVolumeForHour,
         smoothSkip, 
         controlVolume, 
         stopControlVolume

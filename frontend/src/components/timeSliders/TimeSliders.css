@@ -1,0 +1,26 @@
+.slider {    
+    -webkit-appearance: none;  /* Override default CSS styles */
+    background-color: lightgray;
+    transform: rotate(270deg);
+    width: 400px;
+    cursor: pointer;
+}
+
+.touched::-webkit-slider-thumb {
+    background: green;
+}
+
+.touched::-moz-range-thumb {
+    background: green;
+}
+
+
+.slidersContainer {
+    width: 50px;
+}
+
+.outmost {
+    padding-top: 200px;
+    display: flex;
+    flex-direction: row;
+}

@@ -107,7 +107,7 @@ const Playing = () => {
                         currPlaying ? 
                             <Track trackId={currPlaying}/>
                         :
-                            <p>Unknown track playing</p>
+                            <p>Unknown/no track playing</p>
                 :
                     <p>(paused)</p>
             }
@@ -127,7 +127,7 @@ const Playing = () => {
                                     <Playlist playlistUri={playlist} openable={true}/>
                                 </>
                             :
-                                <p>Unknown source</p>
+                                <p>Unknown/no source</p>
             }
             {warning}
             <AddSources onAdd={(uri) => {

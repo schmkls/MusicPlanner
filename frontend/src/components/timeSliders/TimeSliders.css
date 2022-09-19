@@ -1,9 +1,21 @@
 .slider {    
     -webkit-appearance: none;  /* Override default CSS styles */
-    background-color: lightgray;
-    transform: rotate(270deg);
-    width: 400px;
+    background-color: transparent;
     cursor: pointer;
+    width: 400px;
+    height: 20px;
+}
+
+.oneSliderContainer {
+    width: 400px;
+    height: 60px;
+    bottom: 0px;   
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.label {
+    margin: 20px;
 }
 
 .touched::-webkit-slider-thumb {
@@ -16,11 +28,15 @@
 
 
 .slidersContainer {
-    width: 50px;
+    transform: rotate(270deg);
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin-left: 300px;
+    margin-top: -200px;
 }
 
 .outmost {
-    padding-top: 200px;
-    display: flex;
-    flex-direction: row;
+    bottom: 0px;
+    height: 400px;
 }

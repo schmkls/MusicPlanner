@@ -5,8 +5,7 @@ import volumeControl from "../../functionality/volumeControl";
 const TOUCHED = "touched";
 const UNTOUCHED ="unTouched"; 
 
-const times = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
-
+const times = volumeControl().times;
 /**
  * Sliders controlling some values in time.  
  * 
@@ -45,6 +44,8 @@ const TimeSliders = (props) => {
 
     /**
      * Change value of sliders in between touched sliders. 
+     * 
+     * todo: handle 
      */
     const autoDrag = (volumes) => {
         for (let i = 1; i < times.length - 1; i++) {
@@ -89,6 +90,7 @@ const TimeSliders = (props) => {
         setVals(temp);
     }
 
+
     const reset = () => {
         console.log('resetting');
         let temp = Array.from(vals);
@@ -104,14 +106,17 @@ const TimeSliders = (props) => {
         props.onChange(vals);
     }, [vals]);
 
+
     return (
         <div className="outmost">
             <button onClick={() => reset()}>
                 Reset
             </button>
+
+            <div className="slidersContainer">
             {
                 vals.map((val, index) => (
-                    <div key={index} className="slidersContainer">
+                    <div className='oneSliderContainer' key={index}>
                         <input 
                             value={val[1]} 
                             type="range" 
@@ -119,13 +124,19 @@ const TimeSliders = (props) => {
                             max="100" 
                             className={ val[2] === TOUCHED && numberOfTouched > 1 ? 'touched slider' : 'unTouched slider' }
                             onChange={(e) => handleChange(index, e.target.value)}
-                            onChangeCapture={() => console.log("drag ended???")}
-                            key={index}
                         />
+                        <p className="label">
+                            {
+                                times[index].toString().length === 1 ? 
+                                    "0" + times[index] + ":00"
+                                :
+                                    times[index] + ":00"
+                            }
+                        </p>
                     </div>
                 ))
             }
-            
+            </div>
         </div>
     )
 

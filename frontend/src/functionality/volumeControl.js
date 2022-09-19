@@ -148,22 +148,54 @@ const volumeControl = () => {
     }
 
     const getPreferredVolumeForHour = (hour) => {
+        if (!volumeControlIsOn()) return null;
         return localStorage.getItem(`PREF_VOLUME_${hour}`);
     }
 
-
+    //todo 
     const getPreferredVolumeNow = () => {
         const hrNow = new Date().getHours();
-        const hrNext = hrNow + 1;
-
-        const prefNow = getPreferredVolumeForHour(hrNow);
-        const prefNext = getPreferredVolumeForHour(hrNext);
-
-        const factor = new Date().getMinutes() / 60;
-
-        const prefferedVolume = (prefNow * (1 - factor) + prefNext * factor);
+        const timeNow = new Date().getHours() + (new Date().getMinutes() / 60);
         
-        return Math.round(prefferedVolume);
+        let preferredVolume;
+
+        let leftPreferred;
+        let leftTime;
+        let rightPreferred;
+        let rightTime;
+
+        for (let i = 0; i <= 24; i++) {
+            console.log("pv for hour ", i, ": ", getPreferredVolumeForHour(i));
+        }
+
+        
+        for (let i = hrNow - 1; i >= 0; i--) {
+            leftPreferred = getPreferredVolumeForHour(i);
+            console.log("?left: ", leftPreferred);
+            leftTime = i;
+            if (leftPreferred) break;
+        }
+
+        
+        for (let j = hrNow + 1; j <= 24; j++) {
+            rightPreferred = getPreferredVolumeForHour(j);
+            rightTime = j;
+            if (rightPreferred) break;
+        }
+
+        if (! (leftPreferred && rightPreferred)) {
+            console.error("could not find surrounding preferred volumes for hour", hrNow);
+            return null;
+        }
+
+        console.log("time: ", timeNow);
+        console.log("right neighbor: ", rightPreferred, ", ", rightTime);
+        console.log("left neighbor: ", leftPreferred, ", ", leftTime);
+
+        let lean = (parseFloat(rightPreferred) - parseFloat(leftPreferred)) / (rightTime - leftTime);
+        preferredVolume = parseFloat(leftPreferred) + lean * (timeNow - leftTime);
+
+        return Math.round(preferredVolume);
     }
 
 
@@ -182,25 +214,32 @@ const volumeControl = () => {
 
         prefVolume ? adjustVolume(prefVolume) : console.log("preffered volume not set");
         
-        setTimeout(() => controlVolume(), 30000);
+        console.log("preferred volume for now:", prefVolume);
+        setTimeout(() => controlVolume(), 5000);
     }
 
 
 
 
-    const stopControlVolume = () => {
-        console.log("stopped volume control");
-        localStorage.setItem('VOLUME_CONTROL', 'OFF');
+    const stopControlVolume = async() => {
+        return new Promise((res, rej) => {
+            localStorage.setItem('VOLUME_CONTROL', 'OFF');
+            for (let hr = 0; hr < 24; hr ++) {
+                localStorage.removeItem(`PREF_VOLUME_${hr}`);
+            }
+            return res();
+        });
+        
     }
 
 
     return {
         enableVolumeControl,
+        controlVolume,         //calling enableVolumeControl and controlVolume will start volume control
+        stopControlVolume, 
         setPreferredVolume,
         getPreferredVolumeForHour,
         smoothSkip, 
-        controlVolume, 
-        stopControlVolume
     }
 
 }

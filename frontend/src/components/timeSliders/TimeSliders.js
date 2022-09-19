@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import './TimeSliders.css';
+import volumeControl from "../../functionality/volumeControl";
 
 const TOUCHED = "touched";
 const UNTOUCHED ="unTouched"; 
@@ -40,6 +41,7 @@ const TimeSliders = (props) => {
     }
 
     const [vals, setVals] = useState(defaults);
+    const [numberOfTouched, setNumberOfTouched] = useState(0);
 
     /**
      * Change value of sliders in between touched sliders. 
@@ -68,9 +70,6 @@ const TimeSliders = (props) => {
 
             if (touchedLeftNeighbor && touchedRightNeighbor) {
                 let lean = (touchedRightNeighbor[1] - touchedLeftNeighbor[1]) / (touchedRightNeighbor[0] - touchedLeftNeighbor[0]);
-                console.log("lean at: ", volumes[i], ": ", lean);
-                console.log("left neighbor: ", touchedLeftNeighbor, ", right neighbor: ", touchedRightNeighbor);
-                console.log("expected value: " + parseFloat(touchedLeftNeighbor[1] + lean * (curr[0] - touchedLeftNeighbor[0])));
                 curr[1] = (parseFloat(touchedLeftNeighbor[1]) + lean * (parseFloat(curr[0]) - parseFloat(touchedLeftNeighbor[0])));
                 curr[2] = TOUCHED;
             }
@@ -81,9 +80,23 @@ const TimeSliders = (props) => {
 
     const handleChange = (index, val) => {
         let temp = Array.from(vals);
+        if (temp[index][2] === UNTOUCHED) {
+            setNumberOfTouched(numberOfTouched + 1); 
+        }
+
         temp[index] = [times[index], val, TOUCHED];
         temp = autoDrag(temp);
         setVals(temp);
+    }
+
+    const reset = () => {
+        console.log('resetting');
+        let temp = Array.from(vals);
+        for (let i = 0; i < temp.length; i++) {
+            temp[i] = [times[i], 100, UNTOUCHED];
+        }
+        setVals(temp);
+        props.onReset();
     }
 
 
@@ -93,6 +106,9 @@ const TimeSliders = (props) => {
 
     return (
         <div className="outmost">
+            <button onClick={() => reset()}>
+                Reset
+            </button>
             {
                 vals.map((val, index) => (
                     <div key={index} className="slidersContainer">
@@ -101,13 +117,15 @@ const TimeSliders = (props) => {
                             type="range" 
                             min="0" 
                             max="100" 
-                            className={ val[2] === TOUCHED ? 'touched slider' : 'unTouched slider' }
+                            className={ val[2] === TOUCHED && numberOfTouched > 1 ? 'touched slider' : 'unTouched slider' }
                             onChange={(e) => handleChange(index, e.target.value)}
+                            onChangeCapture={() => console.log("drag ended???")}
                             key={index}
                         />
                     </div>
                 ))
             }
+            
         </div>
     )
 

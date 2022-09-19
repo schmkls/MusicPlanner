@@ -3,6 +3,9 @@ import "./ControlVolume.css";
 import React, {useEffect, useState} from "react";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import AdjacentSliders from "../../components/timeSliders/TimeSliders";
+import ExpandButton from "../../components/expandButton/ExpandButton";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 const ControlVolume = () => {
 
@@ -21,12 +24,22 @@ const ControlVolume = () => {
 
     const handleGoHome = async() => {
         return new Promise((res) => {
+
+            let prefVolumeSet = false;
+
             for (let i = 0; i < vals.length; i++) {
                 if (vals[i][2] === "touched") {
                     volumeController.setPreferredVolume(vals[i][1], vals[i][0]);
+                    prefVolumeSet = true;
                 }
             }
-    
+            
+            if (!prefVolumeSet) {
+                console.log("no pref volume set, stops controlling volume");
+                volumeController.stopControlVolume();
+                return res();
+            }
+
             volumeController.enableVolumeControl();
             volumeController.controlVolume();
             return res();
@@ -37,13 +50,31 @@ const ControlVolume = () => {
     return (
         <div>   
             <GoHomeButton onGoHome={handleGoHome}/>
+            <ExpandButton 
+                normalElement={
+                    <div>
+                        Help
+                        <FontAwesomeIcon icon={faInfoCircle}/>
+                    </div>
+                } 
+                expandElement={
+                    <p>
+                        1. Press control volume<br/>
+                        2. Drag the nodes controlling Spotify-volume per hour<br/>
+                           Green nodes show times when volume is chosen<br/>
+                        4. Play music!<br/>
+                    </p>
+                }
+            />
             <AdjacentSliders
                 onChange={(prefVolumes) => setVals(Array.from(prefVolumes))}
                 getOriginalValue={(hour) => {
                     return volumeController.getPreferredVolumeForHour(hour);
                 }}
                 defaultValue={100}
+                onReset={() => volumeController.stopControlVolume()}
             />
+
         </div>
     )
 

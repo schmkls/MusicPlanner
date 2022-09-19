@@ -25,5 +25,3 @@ To Viktor, Emanuel, for the inspiration!
 * Add multiple sources
 * Queue from the sources
 * Only display smooth skip if playing on current device?
-* Control volume with graph
-* Control preferred tempo and popularity with graph 

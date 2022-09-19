@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
-import Sources from "../sources/Sources";
+import SourcesDisplay from "../sources/sourcesDisplay/SourcesDisplay";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
-import AddSources from "../addSources/AddSources";
+import AddSources from "../sources/addSources/AddSources";
 import spotifyAccess from "../../functionality/spotifyAccess";
 import spotifyControl from "../../functionality/spotifyControl";
 
@@ -114,7 +114,7 @@ const Playing = () => {
             from
             {
                     playingFromSources ? 
-                        <Sources/>
+                        <SourcesDisplay/>
                     :
 
                         album ?

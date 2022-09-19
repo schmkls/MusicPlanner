@@ -1,13 +1,13 @@
 
 import {React, useState} from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
-import Album from '../album/Album';
-import Playlist from '../playlist/Playlist';
-import spotifyAccess from '../../functionality/spotifyAccess';
+import Album from '../../album/Album';
+import Playlist from '../../playlist/Playlist';
+import spotifyAccess from '../../../functionality/spotifyAccess';
 import './SearchSources.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import spotifyControl from '../../functionality/spotifyControl';
+import spotifyControl from '../../../functionality/spotifyControl';
 
 
 const SEARCHING = 1;

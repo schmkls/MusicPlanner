@@ -22,10 +22,8 @@ const ControlVolume = () => {
     const handleGoHome = async() => {
         return new Promise((res) => {
             for (let i = 0; i < vals.length; i++) {
-                console.log("vals[i]: ", vals[i]);
                 if (vals[i][2] === "touched") {
                     volumeController.setPreferredVolume(vals[i][1], vals[i][0]);
-                    console.log("TOUUUUCHHHHEDDD-----------------: ", vals[i]);
                 }
             }
     
@@ -35,11 +33,6 @@ const ControlVolume = () => {
         });
         
     }
-
-
-    useEffect(() => {
-        console.log("vals: ", vals);
-    }, [vals]);
 
     return (
         <div>   

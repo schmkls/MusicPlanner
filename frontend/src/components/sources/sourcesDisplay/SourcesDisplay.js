@@ -1,15 +1,14 @@
-
-import Album from "../album/Album";
-import Playlist from "../playlist/Playlist";
+import Album from "../../album/Album";
+import Playlist from "../../playlist/Playlist";
 import AddSources from "../addSources/AddSources";
 import { useState, useEffect } from "react";
-import './Sources.css';
-import spotifyControl from "../../functionality/spotifyControl";
+import './SourcesDisplay.css';
+import spotifyControl from "../../../functionality/spotifyControl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 
 
-function Sources() {
+const SourcesDisplay = () => {
 
     const [albumSources, setAlbumSources] = useState([]);
     const [playlistSources, setPlaylistSources] = useState([]);
@@ -61,4 +60,4 @@ function Sources() {
 }
 
 
-export default Sources;
+export default SourcesDisplay;

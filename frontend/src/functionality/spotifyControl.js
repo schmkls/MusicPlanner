@@ -1,6 +1,9 @@
 import spotifyAccess from "./spotifyAccess"
 import axios from "axios";
 
+const times = [6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4]   
+
+
 const spotifyControl = () => {
 
     const accessor = spotifyAccess();
@@ -183,7 +186,8 @@ const spotifyControl = () => {
         skipTrack,
         startMusicControl,
         controlMusic, 
-        stopControlMusic
+        stopControlMusic, 
+        times
     }
 }
 

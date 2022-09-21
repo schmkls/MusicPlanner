@@ -47,16 +47,19 @@ const TimeSliders = (props) => {
      * todo: handle 
      */
     const autoDrag = (volumes) => {
-        for (let i = 1; i < times.length - 1; i++) {
+        for (let i = 1; i < times.length; i++) {
             let curr = volumes[i]
-            if (curr[2] !== UNTOUCHED) continue;
+            if (curr[2] === TOUCHED) continue;
             
             let touchedLeftNeighbor = null;
-            let touchedRightNeighbor = null;
+            let leftIndex;
+            let touchedRightNeighbor = null
+            let rightIndex;
 
             for (let j = i - 1; j >= 0; j--) {
                 if (volumes[j][2] === TOUCHED) {
                     touchedLeftNeighbor = volumes[j];
+                    leftIndex = j;
                     break;
                 }
             }
@@ -64,13 +67,14 @@ const TimeSliders = (props) => {
             for (let k = i + 1; k < times.length; k++) {
                 if (volumes[k][2] === TOUCHED) {
                     touchedRightNeighbor = volumes[k];
+                    rightIndex = k;
                     break;
                 }
             }
 
             if (touchedLeftNeighbor && touchedRightNeighbor) {
-                let lean = (touchedRightNeighbor[1] - touchedLeftNeighbor[1]) / (touchedRightNeighbor[0] - touchedLeftNeighbor[0]);
-                curr[1] = (parseFloat(touchedLeftNeighbor[1]) + lean * (parseFloat(curr[0]) - parseFloat(touchedLeftNeighbor[0])));
+                let lean = (touchedRightNeighbor[1] - touchedLeftNeighbor[1]) / (rightIndex - leftIndex);
+                curr[1] = (parseFloat(touchedLeftNeighbor[1]) + lean * (i - leftIndex));
                 curr[2] = TOUCHED;
             }
         }
@@ -134,9 +138,6 @@ const TimeSliders = (props) => {
             </div>
         </div>
     )
-
-
-
 }
 
 export default TimeSliders;

@@ -2,7 +2,7 @@ import spotifyAccess from "./spotifyAccess";
 import spotifyControl from "./spotifyControl";
 import axios from "axios";
 
-const times = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+const times = [6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4]   
 
 
 const volumeControl = () => {
@@ -156,6 +156,7 @@ const volumeControl = () => {
     }
 
     const getPreferredVolumeForHour = (hour) => {
+        console.log('pref volume for hour: ', hour, ": ", localStorage.getItem(`PREF_VOLUME_${hour}`));
         return localStorage.getItem(`PREF_VOLUME_${hour}`);
     }
 

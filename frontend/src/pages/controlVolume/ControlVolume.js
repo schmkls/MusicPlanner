@@ -7,6 +7,9 @@ import ExpandButton from "../../components/expandButton/ExpandButton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
+const TOUCHED = "touched";
+const UNTOUCHED ="unTouched"; 
+
 const ControlVolume = () => {
 
     /**
@@ -22,29 +25,30 @@ const ControlVolume = () => {
     
     const volumeController = volumeControl();
 
+
     const handleGoHome = async() => {
         return new Promise((res) => {
 
-            let prefVolumeSet = false;
+            let scheduled = false;
+
+            for (let i = 0;  i < vals.length; i++) {
+                if (vals[i][2] === TOUCHED) scheduled = true;
+            }
+
+            //return if no volume scheduled
+            if (!scheduled) return res();
 
             for (let i = 0; i < vals.length; i++) {
-                if (vals[i][2] === "touched") {
-                    volumeController.setPreferredVolume(vals[i][1], vals[i][0]);
-                    prefVolumeSet = true;
-                }
-            }
-            
-            if (!prefVolumeSet) {
-                console.log("no pref volume set, stops controlling volume");
-                volumeController.stopControlVolume();
-                return res();
+                volumeController.setPreferredVolume(vals[i][1], vals[i][0]);
             }
 
-            volumeController.enableVolumeControl();
-            volumeController.controlVolume();
             return res();
         });
-        
+    }
+
+    const handleReset = () => {
+        volumeController.stopControlVolume();
+        volumeController.removeSchedule();
     }
 
     return (
@@ -73,7 +77,7 @@ const ControlVolume = () => {
                     return volumeController.getPreferredVolumeForHour(hour);
                 }}
                 defaultValue={100}
-                onReset={() => volumeController.stopControlVolume()}
+                onReset={() => handleReset()}
             />
 
         </div>

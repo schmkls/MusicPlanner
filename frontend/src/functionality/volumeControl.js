@@ -203,14 +203,18 @@ const volumeControl = () => {
     }
 
     const volumesScheduled = () => {
+        let debugg = true;
         for (let i = 0; i < times.length; i++) {
             if (!getPreferredVolumeForHour(times[i])) {
                 console.log("missing preferred volume for: ", times[i]);
-                return false;
+                debugg = false;
             }
         }
-
-        return true;
+        
+        if (debugg) {
+            console.log("NO MISSING VOLUME");
+        }
+        return debugg;
     }
 
     const startVolumeControl = () => {
@@ -236,11 +240,14 @@ const volumeControl = () => {
     const stopControlVolume = async() => {
         return new Promise((res, rej) => {
             localStorage.setItem('VOLUME_CONTROL', 'OFF');
-            for (let hr = 0; hr <= 24; hr++) {
-                localStorage.removeItem(`PREF_VOLUME_${hr}`);
-            }
             return res();
         });   
+    }
+
+    const removeSchedule = () => {
+        for (let i = 0; i < times.length; i++) {
+            localStorage.removeItem(`PREF_VOLUME_${times[i]}`);
+        }
     }
 
 
@@ -250,6 +257,7 @@ const volumeControl = () => {
         startVolumeControl,
         controlVolume,         //calling enableVolumeControl and controlVolume will start volume control
         stopControlVolume, 
+        removeSchedule,
         setPreferredVolume,
         getPreferredVolumeForHour,
         smoothSkip, 

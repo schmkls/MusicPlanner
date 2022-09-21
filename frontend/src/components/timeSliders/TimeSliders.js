@@ -40,7 +40,6 @@ const TimeSliders = (props) => {
     }
 
     const [vals, setVals] = useState(defaults);
-    const [numberOfTouched, setNumberOfTouched] = useState(0);
 
     /**
      * Change value of sliders in between touched sliders. 
@@ -81,10 +80,6 @@ const TimeSliders = (props) => {
 
     const handleChange = (index, val) => {
         let temp = Array.from(vals);
-        if (temp[index][2] === UNTOUCHED) {
-            setNumberOfTouched(numberOfTouched + 1); 
-        }
-
         temp[index] = [times[index], val, TOUCHED];
         temp = autoDrag(temp);
         setVals(temp);
@@ -122,7 +117,7 @@ const TimeSliders = (props) => {
                             type="range" 
                             min="0" 
                             max="100" 
-                            className={ val[2] === TOUCHED && numberOfTouched > 1 ? 'touched slider' : 'unTouched slider' }
+                            className={ val[2] === TOUCHED ? 'touched slider' : 'unTouched slider' }
                             onChange={(e) => handleChange(index, e.target.value)}
                         />
                         <p className="label">

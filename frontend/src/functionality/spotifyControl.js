@@ -175,11 +175,13 @@ const spotifyControl = () => {
     }
 
 
-   
+   const musicScheduled = () => {
+        return false;
+   }
 
 
     return { 
-        sourcesTracksLeft, 
+        musicScheduled,
         spotifyIdFromUri, 
         addSource,
         deleteSource,

@@ -55,20 +55,17 @@
  
  
  app.post("/refresh", (req, res) => {
-     spotifyApi
-     .refreshAccessToken()
+     spotifyApi.refreshAccessToken()
      .then((result) => {
- 
-         console.log("expiresIn = " + result.body.expires_in);
-         res.json({
+        return res.json({
              accessToken: result.body.access_token, 
              expiresIn: result.body.expires_in
-         });
+        });
      })
-         .catch((err) => {
-         console.log("------------------------------------------------------------");
-         console.log("------------------------------------------------------------");
-         console.log("refresh error: " + err);
-         res.sendStatus(400);
-     });
+    .catch((err) => {
+        console.log("------------------------------------------------------------");
+        console.log("------------------------------------------------------------");
+        console.log("refresh error: " + err);
+        res.sendStatus(400);
+    });
  });

@@ -29,11 +29,13 @@ const spotifyAccess = () => {
 
 
     /**
-     * Localstores timeout for access token
+     * Localstores timeout for item
      */
     const setTimeOut = (item, validDuration) => {
         const now = new Date().getTime() / 1000; //now in seconds 
         const timeOut = now + validDuration;
+
+        console.log("setting timeout in: ", timeOut - now);
         localStorage.setItem(item, timeOut);
     }
 
@@ -62,11 +64,11 @@ const spotifyAccess = () => {
 
                 localStorage.setItem(SPOTIFY_ACCESSTOKEN, result.data.accessToken);
                 setTimeOut(SPOTIFY_TOKEN_TIMEOUT, result.data.expiresIn);                    
-                res(result.data.accessToken);
+                return res(result.data.accessToken);
             })
             .catch((err) => {
                 clearAccess();
-                rej(err);
+                return rej(err);
             });
         });
     }
@@ -78,6 +80,7 @@ const spotifyAccess = () => {
      * @param minimumValidMins minimum minutes the token must be valid 
      */
      const getSpotifyAccessToken = (minimumValidMins) => {
+        let accessTokenMissing = false;
 
         //token valid atleast 5 minutes if no other minimum valid time given
         if (!minimumValidMins) {
@@ -88,20 +91,19 @@ const spotifyAccess = () => {
         const accessToken = localStorage.getItem(SPOTIFY_ACCESSTOKEN);
 
         if (!expirationTime || expirationTime == 'undefined') {
-            console.log("warning, no expiration time for access token");
+            console.error("warning, no expiration time for access token");
         }  
 
         const nowInSeconds = new Date().getTime() / 1000;
         const minTimeout = nowInSeconds + minimumValidMins * 60;
 
         if (!accessToken || accessToken == undefined) {
-            console.log('no access token stored');
-            return null;
+            console.error('no access token stored');
+            accessTokenMissing = true;
         }
-        
-
-        //refresh access-token if it is invalid in less than five minutes
-        if (expirationTime < minTimeout) {
+    
+        //refresh access-token if it is invalid in less than five minutes or no access token at all
+        if (expirationTime < minTimeout || accessTokenMissing) {
             console.log("refreshing access-token");
 
             axios.post('http://localhost:3002/refresh')
@@ -109,10 +111,11 @@ const spotifyAccess = () => {
                 console.log('refreshed token: ' + res.data.accessToken);
                 setTimeOut(SPOTIFY_TOKEN_TIMEOUT, res.data.expiresIn);
                 localStorage.setItem(SPOTIFY_ACCESSTOKEN, res.data.accessToken);
+                return res.data.accessToken;
             })
             .catch((err) => {
                 console.log('Could not refresh Spotify access token, clearing access');
-                console.log('refresh error: '  + err);
+                console.log('refresh error: ', err);
                 clearAccess();
             });
         } else {

@@ -204,18 +204,13 @@ const volumeControl = () => {
     }
 
     const volumesScheduled = () => {
-        let debugg = true;
         for (let i = 0; i < times.length; i++) {
             if (!getPreferredVolumeForHour(times[i])) {
-                console.log("missing preferred volume for: ", times[i]);
-                debugg = false;
+                return false;
             }
         }
-        
-        if (debugg) {
-            console.log("NO MISSING VOLUME");
-        }
-        return debugg;
+
+        return true;
     }
 
     const startVolumeControl = () => {

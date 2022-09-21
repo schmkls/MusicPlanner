@@ -20,8 +20,10 @@ export default function App() {
     volumeController.controlVolume();
     spotifyController.controlMusic();
 
+
     
     if (!spotifyAccessToken) {
+        console.log('No Spotify access token');
         return (
             <SpotifyAuth/>
         )

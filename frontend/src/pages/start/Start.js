@@ -10,7 +10,7 @@ import { faInfoCircle, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 
 
-const UPDATE_INTERVAL = 5000;
+const UPDATE_INTERVAL = 10000;
 
 
 //todo: kolla hur använda bootstrap
@@ -18,6 +18,8 @@ const Start = () => {
 
     const [deviceActive, setDeviceActive] = useState(true);
     const [volumeWarning, setVolumeWarning] = useState(false);
+    const [musicWarning, setMusicWarning] = useState(false);
+
 
     const navigator = navigate();
     const volumeController = volumeControl();
@@ -62,8 +64,17 @@ const Start = () => {
     }
 
     const handleMusicControl = (on) => {
+        setMusicWarning();
         if (on) {
             spotifyController.startMusicControl();
+            if (!spotifyController.musicScheduled()) {
+                setMusicWarning(
+                    <div>
+                        <p>Click here to make music schedule</p>
+                        <FontAwesomeIcon icon={faArrowDown}/>
+                    </div>
+                )
+            }
         } else {
             spotifyController.stopControlMusic()
         }
@@ -75,8 +86,10 @@ const Start = () => {
     }
 
 
+    if (!deviceActive) {
+        
+    }
     //todo: displaya sources
-
     return (
         <>
             <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
@@ -109,7 +122,8 @@ const Start = () => {
             />
             <br/>
             <br/>
-            <button onClick={() => navigator.navigate(navigator.pages.musicsControl)}>
+            {musicWarning}
+            <button onClick={() => navigator.navigate(navigator.pages.musicControl)}>
                 Music control
             </button>
             <BootstrapSwitchButton

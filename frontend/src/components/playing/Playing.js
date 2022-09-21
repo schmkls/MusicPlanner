@@ -3,12 +3,8 @@ import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
-import SourcesDisplay from "../sources/sourcesDisplay/SourcesDisplay";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
-import AddSources from "../sources/addSources/AddSources";
 import spotifyAccess from "../../functionality/spotifyAccess";
-import spotifyControl from "../../functionality/spotifyControl";
-
 
 const UPDATE_INTERVAL = 10000;  //10 seconds
 
@@ -23,7 +19,6 @@ const Playing = () => {
     const [isPlaying, setIsPlaying] = useState(true); //true if playing, false if paused
     const [episode, setEpisode] = useState(false);  //true if episode being played
     const [warning, setWarning] = useState(null); 
-    const [playingFromSources, setPlayingFromSources] = useState(false);    //true when playing from added sources
 
 
     const spotifyAccessor = spotifyAccess();
@@ -40,10 +35,6 @@ const Playing = () => {
 
     const getPlayingData = () => {        
         const accessToken = spotifyAccessor.getSpotifyAccessToken();
-
-        setPlayingFromSources(spotifyControl().sourcesTracksLeft());
-        //console.log("playing from sources = ", spotifyControl().sourcesTracksLeft());
-
 
         axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
@@ -113,28 +104,19 @@ const Playing = () => {
             }
             from
             {
-                    playingFromSources ? 
-                        <SourcesDisplay/>
+                album ?
+                    <>
+                        <Album albumUri={album} openable={true}/>
+                    </>
+                :
+                    playlist ?
+                        <>
+                            <Playlist playlistUri={playlist} openable={true}/>
+                        </>
                     :
-
-                        album ?
-                            <>
-                                <Album albumUri={album} openable={true}/>
-                            </>
-                        :
-                            playlist ?
-                                <>
-                                    <Playlist playlistUri={playlist} openable={true}/>
-                                </>
-                            :
-                                <p>Unknown/no source</p>
+                        <p>Unknown/no source</p>
             }
             {warning}
-            <AddSources onAdd={(uri) => {
-                spotifyControl().addSource(uri);
-                getPlayingData();
-                //setPlayingFromSources(true);
-            }}/>
             <hr/>   
         </div>
     )

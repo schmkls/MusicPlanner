@@ -6,7 +6,7 @@ import navigate from "../../functionality/navigate";
 import volumeControl from "../../functionality/volumeControl";
 import spotifyControl from "../../functionality/spotifyControl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 
 
@@ -17,6 +17,7 @@ const UPDATE_INTERVAL = 5000;
 const Start = () => {
 
     const [deviceActive, setDeviceActive] = useState(true);
+    const [volumeWarning, setVolumeWarning] = useState(false);
 
     const navigator = navigate();
     const volumeController = volumeControl();
@@ -44,8 +45,17 @@ const Start = () => {
 
     
     const handleVolumeControl = (on) => {
+        setVolumeWarning();
         if (on) {
-            navigator.navigate(navigator.pages.volumeControl);
+            volumeController.startVolumeControl();
+            if (!volumeController.volumesScheduled()) {
+                setVolumeWarning(
+                    <div>
+                        <p>Click here to make volume schedule</p>
+                        <FontAwesomeIcon icon={faArrowDown}/>
+                    </div>
+                )
+            } 
         } else {
             volumeController.stopControlVolume()
         }
@@ -53,7 +63,7 @@ const Start = () => {
 
     const handleMusicControl = (on) => {
         if (on) {
-            navigator.navigate(navigator.pages.musicControl);
+            spotifyController.startMusicControl();
         } else {
             spotifyController.stopControlMusic()
         }
@@ -84,9 +94,12 @@ const Start = () => {
                 :
                     <h2>Not playing anything in Spotify right now</h2>
             }
-            <p>Volume control: </p>
+            {volumeWarning}
+            <button onClick={() => navigator.navigate(navigator.pages.volumeControl)}>
+                Volume control
+            </button>
             <BootstrapSwitchButton
-                checked={false}
+                checked={volumeController.volumeControlIsOn()}
                 onlabel='ON'
                 offlabel='OFF'
                 size='lg'
@@ -96,7 +109,9 @@ const Start = () => {
             />
             <br/>
             <br/>
-            <p>Music control: </p>
+            <button onClick={() => navigator.navigate(navigator.pages.musicsControl)}>
+                Music control
+            </button>
             <BootstrapSwitchButton
                 checked={false}
                 onlabel='ON'

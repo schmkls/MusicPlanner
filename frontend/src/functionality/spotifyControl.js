@@ -138,6 +138,17 @@ const spotifyControl = () => {
     }
 
 
+    const enableMusicControl = () => {
+        console.log("enabling music control");
+        localStorage.setItem("MUSIC_CONTROL", "ON");
+    }
+
+
+    const startMusicControl = () => {
+        enableMusicControl();
+        controlMusic();
+    }
+
     /**
      * Keeps tracks in queue that is filtered according to prefered
      * tempo/popularity, from added sources.  
@@ -152,7 +163,6 @@ const spotifyControl = () => {
         if (sourcesTracksLeft()) {
             setTimeout(() => controlMusic(), 30000);
         }
-        
     }
 
 
@@ -162,10 +172,7 @@ const spotifyControl = () => {
     }
 
 
-    const enableMusicControl = () => {
-        console.log("enabling music control");
-        localStorage.setItem("MUSIC_CONTROL", "ON");
-    }
+   
 
 
     return { 
@@ -174,7 +181,7 @@ const spotifyControl = () => {
         addSource,
         deleteSource,
         skipTrack,
-        enableMusicControl,
+        startMusicControl,
         controlMusic, 
         stopControlMusic
     }

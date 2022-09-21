@@ -185,21 +185,8 @@ const volumeControl = () => {
             if (rightPreferred) break;
         }
 
-        if (!leftPreferred) {
-            leftPreferred = 100;
-            leftTime = hrNow - 2;
-        }
-
-        
-        if (!rightPreferred) {
-            if ((rightPreferred = getPreferredVolumeForHour(0))) {
-                rightTime = 24;
-            } else {
-                console.log("wihu oo noo");
-                rightPreferred = 100;
-                rightTime = hrNow + 2;
-
-            }
+        if (!leftPreferred || !rightPreferred) {
+            return null;
         }
 
         console.log('left: ', leftPreferred, " , ", leftTime, 'right: ', rightPreferred, ", ", rightTime);
@@ -213,6 +200,22 @@ const volumeControl = () => {
 
     const volumeControlIsOn = () => {
         return localStorage.getItem('VOLUME_CONTROL') === "ON";
+    }
+
+    const volumesScheduled = () => {
+        for (let i = 0; i < times.length; i++) {
+            if (!getPreferredVolumeForHour(times[i])) {
+                console.log("missing preferred volume for: ", times[i]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    const startVolumeControl = () => {
+        enableVolumeControl();
+        controlVolume();
     }
 
     /**
@@ -242,7 +245,9 @@ const volumeControl = () => {
 
 
     return {
-        enableVolumeControl,
+        volumeControlIsOn, 
+        volumesScheduled,
+        startVolumeControl,
         controlVolume,         //calling enableVolumeControl and controlVolume will start volume control
         stopControlVolume, 
         setPreferredVolume,

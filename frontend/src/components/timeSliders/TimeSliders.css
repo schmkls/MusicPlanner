@@ -3,7 +3,12 @@
     background-color: transparent;
     cursor: pointer;
     width: 400px;
-    height: 20px;
+    height: 1px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 1px;
+    border-color: gray;
+    border-style: solid;
 }
 
 .oneSliderContainer {

@@ -2,7 +2,7 @@ import volumeControl from "../../functionality/volumeControl";
 import "./ControlVolume.css";
 import React, {useEffect, useState} from "react";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
-import AdjacentSliders from "../../components/timeSliders/TimeSliders";
+import TimeSliders from "../../components/timeSliders/TimeSliders";
 import ExpandButton from "../../components/expandButton/ExpandButton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -61,12 +61,13 @@ const ControlVolume = () => {
                     <p>
                         1. Press control volume<br/>
                         2. Drag the nodes controlling Spotify-volume per hour<br/>
-                           Green nodes show times when volume is chosen<br/>
-                        4. Play music!<br/>
+                            (green nodes show times when volume is set)<br/>
+                        3. Keep MusicPlanner open in a tab in your web browser.<br/>
+                        3. Play music!<br/>
                     </p>
                 }
             />
-            <AdjacentSliders
+            <TimeSliders
                 onChange={(prefVolumes) => setVals(Array.from(prefVolumes))}
                 getOriginalValue={(hour) => {
                     return volumeController.getPreferredVolumeForHour(hour);

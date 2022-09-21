@@ -44,20 +44,20 @@ const Playing = () => {
         setPlayingFromSources(spotifyControl().sourcesTracksLeft());
         //console.log("playing from sources = ", spotifyControl().sourcesTracksLeft());
 
+
         axios.get('https://api.spotify.com/v1/me/player/currently-playing', { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
-            if (response.status < 200 || response.status > 299) {
-                console.log("get currently playing track bad response");
-                return;
-            }
-
-            //console.log(JSON.stringify(response, null, 2));
-
-            if (!response.data) {
-                return;
-            }
-
             setAllStatesNull();
+
+            if (response.status < 200 || response.status > 299 || !response.data) {
+                setWarning("Something went wrong");
+                return;
+            }
+
+            if (response.status == 204) {
+                setWarning("Something went wrong, try using Spotify Web Player")
+            }
+
             setIsPlaying(response.data.is_playing);
             setCp(response.data.item.id);
 

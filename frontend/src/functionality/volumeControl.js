@@ -113,10 +113,15 @@ const volumeControl = () => {
 
         return new Promise(async(res, rej) => {
 
-            const originalVolume = await getCurrVolume()
+            let originalVolume = await getCurrVolume()
             .catch((err) => {
                 return rej("Could not smoothskip", err)
             });
+
+
+            if (!originalVolume) {
+                originalVolume = 50;
+            }
             
             const volume = await slowlyLowerVolume(originalVolume)
             .catch((err) => {
@@ -137,7 +142,7 @@ const volumeControl = () => {
                 rej(err);
             })
 
-            res("Skipped track");
+            return res("Skipped track");
         });
     }
 

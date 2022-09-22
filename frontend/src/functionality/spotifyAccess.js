@@ -31,7 +31,7 @@ const spotifyAccess = () => {
     /**
      * Localstores timeout for item
      */
-    const setTimeOut = (item, validDuration) => {
+    const storeTimeout = (item, validDuration) => {
         const now = new Date().getTime() / 1000; //now in seconds 
         const timeOut = now + validDuration;
 
@@ -63,7 +63,7 @@ const spotifyAccess = () => {
                 }
 
                 localStorage.setItem(SPOTIFY_ACCESSTOKEN, result.data.accessToken);
-                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, result.data.expiresIn);                    
+                storeTimeout(SPOTIFY_TOKEN_TIMEOUT, result.data.expiresIn);                    
                 return res(result.data.accessToken);
             })
             .catch((err) => {
@@ -109,7 +109,7 @@ const spotifyAccess = () => {
             axios.post('http://localhost:3002/refresh')
             .then((res) => {
                 console.log('refreshed token: ' + res.data.accessToken);
-                setTimeOut(SPOTIFY_TOKEN_TIMEOUT, res.data.expiresIn);
+                storeTimeout(SPOTIFY_TOKEN_TIMEOUT, res.data.expiresIn);
                 localStorage.setItem(SPOTIFY_ACCESSTOKEN, res.data.accessToken);
                 return res.data.accessToken;
             })

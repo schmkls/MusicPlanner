@@ -3,7 +3,7 @@ import spotifyControl from "./spotifyControl";
 import axios from "axios";
 
 const times = [6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4]   
-
+const UPDATE_INTERVAL = 5000;
 
 const volumeControl = () => {
 
@@ -18,6 +18,7 @@ const volumeControl = () => {
         return new Promise((res, rej) => {
             const accessToken = accessor.getSpotifyAccessToken();
 
+            console.log("ADJUSTING VOLUME TO: ", volume, " at time: ", new Date().getHours() + ":" + new Date().getMinutes());
             const putUrl = `https://api.spotify.com/v1/me/player/volume?volume_percent=${volume}`;
             axios.put(putUrl, null, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
@@ -156,44 +157,52 @@ const volumeControl = () => {
     }
 
     const getPreferredVolumeForHour = (hour) => {
-        console.log('pref volume for hour: ', hour, ": ", localStorage.getItem(`PREF_VOLUME_${hour}`));
         return localStorage.getItem(`PREF_VOLUME_${hour}`);
     }
 
-    //todo 
     const getPreferredVolumeNow = () => {
-        const hrNow = new Date().getHours();
-        const timeNow = new Date().getHours() + (new Date().getMinutes() / 60);
-        
         let preferredVolume;
-
         let leftPreferred;
-        let leftTime;
+        let leftIndex;
         let rightPreferred;
-        let rightTime;
+        let rightIndex;
+        let difference;
+        const hrNow = new Date().getHours();
+        let indexTimeNow;
+        let indexNow;    //index of time with current hour in the array of times
 
+        for (let i in times) {
+            if (times[i] === hrNow) indexNow = i;
+        }
         
-        for (let i = hrNow - 1; i >= 0; i--) {
-            leftPreferred = getPreferredVolumeForHour(i);
-            leftTime = i;
-            if (leftPreferred) break;
+        indexTimeNow = parseFloat(indexNow) + (new Date().getMinutes() / 60);
+        
+        for (let i = times[0]; i < times.length; i++) {
+            let temp;
+            if ((temp = getPreferredVolumeForHour(times[i])) && i <= indexNow) {
+                leftPreferred = temp;
+                leftIndex = i;
+            }
         }
 
         
-        for (let j = hrNow + 1; j <= 24; j++) {
-            rightPreferred = getPreferredVolumeForHour(j);
-            rightTime = j;
-            if (rightPreferred) break;
+        for (let j = times[0]; j < times.length; j++) {
+            let temp;
+            if ((temp = getPreferredVolumeForHour(times[j])) && j > indexNow) {
+                rightPreferred = temp;
+                rightIndex = j;
+                break;
+            }
         }
 
         if (!leftPreferred || !rightPreferred) {
             return null;
         }
 
-        console.log('left: ', leftPreferred, " , ", leftTime, 'right: ', rightPreferred, ", ", rightTime);
+        difference = rightIndex - leftIndex;
 
-        let lean = (parseFloat(rightPreferred) - parseFloat(leftPreferred)) / (rightTime - leftTime);
-        preferredVolume = parseFloat(leftPreferred) + lean * (timeNow - leftTime);
+        let lean = (parseFloat(rightPreferred) - parseFloat(leftPreferred)) / difference;
+        preferredVolume = parseFloat(leftPreferred) + lean * (indexTimeNow - leftIndex);
 
         return Math.round(preferredVolume);
     }
@@ -226,10 +235,9 @@ const volumeControl = () => {
 
         const prefVolume = getPreferredVolumeNow();
 
-        prefVolume ? adjustVolume(prefVolume) : console.log("preffered volume not set");
+        prefVolume ? adjustVolume(prefVolume) : console.log("preferred volume not set, pv: " + prefVolume);
         
-        console.log("preferred volume for now:", prefVolume);
-        setTimeout(() => controlVolume(), 5000);
+        setTimeout(() => controlVolume(), UPDATE_INTERVAL);
     }
 
 

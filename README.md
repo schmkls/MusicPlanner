@@ -10,11 +10,11 @@ https://www.figma.com/file/tuFSvCLYEiKLh4Nt9omDf7/MusicPlanner?node-id=0%3A1
 * Smooth skip tracks
 
 # User stories
-**A gym** uses MusicPlanner so that there is lower music during the day when older people usually visit for physiotherapy, and higher music in the evening.  
+*A student* pre plans music to be free from distractions. 
+*Someone at work* pre plans music to be free from distractions. 
 
-**A couple planning their wedding party** uses MusicPlanner. They want to play a specific playlist at low volume during the lunch, and then gradually play more party music at higher volume towards the night.  
-
-*A hotel restaurant* uses MusicPlanner so that every morning music from a calm playlist at a low volume is planned, and then gradually higher and more funky music. 
+#Similiar
+[soundtrack your brand](https://www.soundtrackyourbrand.com/)
 
 # Developer guide
 

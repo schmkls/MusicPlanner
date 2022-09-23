@@ -3,15 +3,30 @@ import axios from "axios";
 
 const times = [6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4]   
 
+const SCHEDULED_MUSIC = 'SCHEDULED_MUSIC';
+const SCHEDULED_TRACKS = 'SCHEDULED_TRACKS';
 
 const spotifyControl = () => {
 
     const accessor = spotifyAccess();
 
+
+    const skipTrack = async() => {
+        return new Promise((res, rej) => {
+            const accessToken = accessor.getSpotifyAccessToken();
+            const postUrl = `https://api.spotify.com/v1/me/player/next`;
+            axios.post(postUrl, null, { headers: { Authorization: `Bearer ${accessToken}`} })
+            .then((response) => {
+                if (response.status < 200 || response.status > 299) return rej("Skip track bad resonse");
+                res("Skipped track");
+            })
+            .catch((err) => {return rej("Skip track error", err)})
+        });
+    }
+
     const isAlbum = (uri) => {
         return (uri.includes(':album:'));
     }
-
 
     const isPlaylist = (uri) => {
         return (uri.includes(':playlist:'));
@@ -21,13 +36,18 @@ const spotifyControl = () => {
         return uri.substring(uri.lastIndexOf(':') + 1);
     }
 
-
-    //todo
-    const addTrackSources = (uri) => {
+    /**
+     * Schedules tracks of album or playlist
+     * 
+     * @param uri Spotify uri of playlist/album
+     * @param start from when track is scheduled (integer)
+     * @param end to what hour track is scheduled (integer)
+     */
+    const addScheduledTracks = (uri, start, end) => {
         
-        let tracks = localStorage.getItem('SOURCES_TRACKS') ? JSON.parse(localStorage.getItem('SOURCES_TRACKS')) : [];
+        let tracks = localStorage.getItem(SCHEDULED_TRACKS) ? JSON.parse(localStorage.getItem(SCHEDULED_TRACKS)) : [];
 
-        console.log("sources tracks: ", JSON.stringify(tracks));
+        console.log("scheduled tracks before adding new: ", JSON.stringify(tracks));
 
         let trackUri;
         const accessToken = accessor.getSpotifyAccessToken();
@@ -36,14 +56,14 @@ const spotifyControl = () => {
             const getUrl = `https://api.spotify.com/v1/playlists/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
-                console.log("in addTrackSources, playlist tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
+                console.log("in addScheduledTracks, playlist tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
                 
                 for (let track in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[track].track.uri;
-                    tracks.push({uri, trackUri});    
+                    tracks.push({uri, trackUri, start, end});    
                 }
                 
-                localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
+                localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(tracks));
             })
             .catch((err) => console.log("add track sources error: ", err));
         } 
@@ -53,14 +73,14 @@ const spotifyControl = () => {
             const getUrl = `https://api.spotify.com/v1/albums/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
-                console.log("in addTrackSources, album tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
+                console.log("in addScheduledTracks, album tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
                 
                 for (let item in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[item].uri;
-                    tracks.push({uri, trackUri});    
+                    tracks.push({uri, trackUri, start, end});    
                 }
                 
-                localStorage.setItem('SOURCES_TRACKS', JSON.stringify(tracks));
+                localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(tracks));
             })
             .catch((err) => console.log("add track sources error: ", err));
         } 
@@ -70,21 +90,16 @@ const spotifyControl = () => {
     /**
      * @param uri spotify playlist or album uri  
      */
-    const addSource = (uri) => {
-        console.log("ADDING SOURCE: ", uri);
-        if (isAlbum(uri)) {
-            let albumSources = JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) ? JSON.parse(localStorage.getItem("SOURCES_ALBUMS")) : [] ;
-            albumSources.push(uri);
-            localStorage.setItem("SOURCES_ALBUMS", JSON.stringify(albumSources));
-        }
+    const scheduleMusic = (uri, start, end) => {
+        console.log("SCHEDULING: ", uri);
+    
+        let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
+        scheduled.push(uri);
+        localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
+       
+        addScheduledTracks(uri, start, end);
 
-        if (isPlaylist(uri)) {
-            let playlistSources = JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS")) ? JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS")) : [] ;
-            playlistSources.push(uri);
-            localStorage.setItem("SOURCES_PLAYLISTS", JSON.stringify(playlistSources));
-        }
-
-        addTrackSources(uri);
+        console.log("scheduled: ", scheduled);
     }
 
 
@@ -118,23 +133,13 @@ const spotifyControl = () => {
     }
 
 
-    const skipTrack = async() => {
-        return new Promise((res, rej) => {
-            const accessToken = accessor.getSpotifyAccessToken();
-            const postUrl = `https://api.spotify.com/v1/me/player/next`;
-            axios.post(postUrl, null, { headers: { Authorization: `Bearer ${accessToken}`} })
-            .then((response) => {
-                if (response.status < 200 || response.status > 299) return rej("Skip track bad resonse");
-                res("Skipped track");
-            })
-            .catch((err) => {return rej("Skip track error", err)})
-        });
-    }
+    
 
 
     const sourcesTracksLeft = () => {
         return JSON.parse(localStorage.getItem("SOURCES_TRACKS"))?.length > 0;
     }
+
 
     const musicControlIsOn = () => {
         return localStorage.getItem("MUSIC_CONTROL") == "ON";
@@ -152,9 +157,9 @@ const spotifyControl = () => {
         controlMusic();
     }
 
+
     /**
-     * Keeps tracks in queue that is filtered according to prefered
-     * tempo/popularity, from added sources.  
+     * Keeps scheduled tracks in queue.
      */
     const controlMusic = () => {
         if (!musicControlIsOn()) return;
@@ -175,15 +180,15 @@ const spotifyControl = () => {
     }
 
 
-   const musicScheduled = () => {
-        return false;
+   const musicIsScheduledForNow = () => {
+        return true;
    }
 
-
+   
     return { 
-        musicScheduled,
+        musicIsScheduledForNow,
         spotifyIdFromUri, 
-        addSource,
+        scheduleMusic,
         deleteSource,
         skipTrack,
         startMusicControl,

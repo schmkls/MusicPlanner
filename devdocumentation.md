@@ -14,7 +14,16 @@
 *MUSIC_CONTROL* if equal to *ON* music control should be on 
 
 
-*SOURCES_TRACKS* tracks from added sources, should be updated so played tracks are not part of
-*SOURCES_ALBUMS* albums added as sources
-*SOURCES_PLAYLISTS* playlists added as sources
+*SCHEDULED_MUSIC* list of tuples like [(uri, start, end), (uri, start, end), ...] 
+where 
+    *uri can be a Spotify uri of playlist or album
+    start and end are integers representing start and end hours
+
+
+*SCHEDULED_TRACKS* list of tuples like [(uri, trackUri, start, end, isPlayed), ...] 
+where 
+    *uri is uri of album/playlist,j 
+    *trackUri is Spotify track id
+    *start and end are integers representing start and end hours 
+    *isPlayed is true if track has been added to the queue
 

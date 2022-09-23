@@ -1,0 +1,41 @@
+:root {
+    --outerHeight: 100px;
+
+  }
+
+.outer {
+    border-style: dashed;
+    border-radius: 2px;
+    border-color: black;
+
+    width: 50%;
+    height: var(--outerHeight);
+}
+
+
+.outer::-moz-range-thumb {
+    background: green;
+    -webkit-appearance: none;
+    appearance: none;
+
+    z-index: 2;
+}
+
+
+.myElement {
+    z-index: 3;
+    position: relative;
+    top: calc(var(--outerHeight) * -1);
+    width: 400px;
+    height: calc(var(--outerHeight) * -1);
+
+    background-color: grey;
+}
+
+.albumContainer {
+    background-color: grey;
+    border-style: dashed;
+    border-radius: 2px;
+    border-color: blue;
+
+}

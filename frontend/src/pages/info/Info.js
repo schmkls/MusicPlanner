@@ -29,13 +29,9 @@ const Info = () => {
                     2. wihu2<br/>
                 </p>
             }/>
-            <ExpandButton normalElement={<p>Give feedback/Report an error</p>} expandElement={
-                <div>
-                    
-                    <button onClick={() => {}}>Send</button>
-                </div>
-                
-            }/>
+            <hr/>
+            <br/>
+            <p>Give feedback / report errors to: mickels.martin@gmail.com</p>
         </div>
     )
 }   

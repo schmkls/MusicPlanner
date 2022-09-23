@@ -5,6 +5,8 @@ import Playlist from "../playlist/Playlist";
 import Album from "../album/Album";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
 import spotifyAccess from "../../functionality/spotifyAccess";
+import ScheduledMusic from "../scheduledMusic/ScheduledMusic";
+import spotifyControl from "../../functionality/spotifyControl";
 
 const UPDATE_INTERVAL = 10000;  //10 seconds
 
@@ -21,7 +23,10 @@ const Playing = () => {
     const [warning, setWarning] = useState(null); 
 
 
+    const [playingScheduled, setPlayingScheduled] = useState(false);
+
     const spotifyAccessor = spotifyAccess();
+    const spotifyController = spotifyControl();
 
 
     const setAllStatesNull = () => {
@@ -84,6 +89,7 @@ const Playing = () => {
 
     useEffect(() => {
         getPlayingData();
+        setPlayingScheduled(spotifyController.musicIsScheduledForNow());
     });
 
     return (
@@ -103,17 +109,20 @@ const Playing = () => {
             }
             from
             {
-                album ?
-                    <>
-                        <Album albumUri={album} openable={true}/>
-                    </>
+                playingScheduled ? 
+                    <ScheduledMusic/>
                 :
-                    playlist ?
+                    album ?
                         <>
-                            <Playlist playlistUri={playlist} openable={true}/>
+                            <Album albumUri={album} openable={true}/>
                         </>
                     :
-                        <p>Unknown/no source</p>
+                        playlist ?
+                            <>
+                                <Playlist playlistUri={playlist} openable={true}/>
+                            </>
+                        :
+                            <p>Unknown/no source</p>
             }
             {warning}
             <hr/>   

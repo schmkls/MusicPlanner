@@ -19,6 +19,7 @@ const AddSources = (props) => {
                     <FontAwesomeIcon icon={faClose}/>
                 </button>
                 <SearchSources onChoose={(uri) => {
+                    console.log("URI: " + uri);
                     props.onAdd(uri);
                     setIsExpanded(false);
                 }}/>      

@@ -15,12 +15,6 @@ export default function App() {
     const spotifyAccessor = spotifyAccess();
     const spotifyAccessToken = spotifyAccessor.getSpotifyAccessToken();
     
-
-    //start any background tasks that should run
-    volumeController.controlVolume();
-    spotifyController.controlMusic();
-
-
     
     if (!spotifyAccessToken) {
         console.log('No Spotify access token');
@@ -29,6 +23,10 @@ export default function App() {
         )
     }
 
+    
+    //start any background tasks that should run
+    volumeController.controlVolume();
+    spotifyController.controlMusic();
     
     return (
         <>

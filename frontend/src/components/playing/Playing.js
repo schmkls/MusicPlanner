@@ -40,15 +40,17 @@ const Playing = () => {
         .then((response) => {
             setAllStatesNull();
 
-            if (response.status < 200 || response.status > 299 || !response.data) {
+            if (response.status < 200 || response.status > 299) {
                 setWarning("Something went wrong");
                 return;
             }
 
-            if (response.status == 204) {
+            if (response.status === 204) {
                 setWarning("Something went wrong, try using Spotify Web Player")
             }
 
+            if (!response.data) return;
+            
             setIsPlaying(response.data.is_playing);
             setCp(response.data.item.id);
 
@@ -82,10 +84,7 @@ const Playing = () => {
 
     useEffect(() => {
         getPlayingData();
-    },[]);
-
-
-
+    });
 
     return (
         <div>

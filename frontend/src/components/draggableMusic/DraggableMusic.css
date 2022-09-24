@@ -1,41 +1,29 @@
-:root {
-    --outerHeight: 100px;
-
-  }
-
-.outer {
-    border-style: dashed;
-    border-radius: 2px;
-    border-color: black;
-
-    width: 400px;
-    height: var(--outerHeight);
+.background {
+    background-color: lightgray;
 }
 
-
-.outer::-moz-range-thumb {
-    background: green;
-    -webkit-appearance: none;
-    appearance: none;
-
-    z-index: 2;
-}
-
-
-.myElement {
-    z-index: 3;
+.swimLane {
+    width: 1200px;
+    height: 120px;
     position: relative;
-    top: calc(var(--outerHeight) * -1);
-    width: 400px;
-    height: calc(var(--outerHeight) * -1);
-
-    background-color: grey;
+    display: flex;
+    flex-direction: row;
 }
 
-.albumContainer {
-    background-color: grey;
-    border-style: dashed;
-    border-radius: 2px;
-    border-color: blue;
-    width: 150px;
+.box {
+    height: 120px;
+    width: 3000000000px;
+    border-radius: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border: 1px solid gray;
+    border-radius: 0%;
+}
+
+.hiddenBox {
+    height: 120px;
+    width: 3000000000px;
+    border-radius: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
 }

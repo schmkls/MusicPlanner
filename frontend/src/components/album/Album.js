@@ -35,7 +35,7 @@ const Album = (props) => {
     }, []);
 
     return (
-        <div className='albumContainer'>
+        <div className={props.className ? props.className : 'albumContainer'}>
             <p onClick={() => open()}>
                 {album?.name}
             </p>

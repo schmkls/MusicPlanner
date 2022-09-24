@@ -1,3 +1,9 @@
 .albumContainer {
     background: lightgray;
 }
+
+.minimal {
+    width: min-content;
+    height: 120px;
+    background: lightgray;
+}

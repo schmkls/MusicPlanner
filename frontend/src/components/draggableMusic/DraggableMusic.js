@@ -1,58 +1,69 @@
 import './DraggableMusic.css';
 import {useEffect, useState} from 'react';
-import Draggable from 'react-draggable';
 import Album from '../album/Album';
+import {Rnd} from 'react-rnd';
+import spotifyControl from '../../functionality/spotifyControl';
 
 const DRAG_WIDTH = 1200;
+const HEIGHT = 400;
+const MARGINTOP = 400;
+
+const times = spotifyControl().times;
+
+
+//    <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
 
 /**
  * Album or playlist that is draggable so it represents a time span when it is scheduled. 
  */
-const DraggableMusic = () => {
+const DraggableMusic = (props) => {
 
-    const [outerVal, setOuterVal] = useState();
-
-    const handleChangeOuter = (val) => {
-        setOuterVal(val);
-        
-    }
-
-    useEffect(() => {
-        console.log("outer val: " + outerVal);
-    }, [outerVal]);
-
+    const [left, setLeft] = useState(null);
+    const [right, setRight] = useState(null);
+    const [width, setWidth] = useState(null);
 
     const handleDragStop = (xVal) => {
         let val =   xVal > DRAG_WIDTH ? DRAG_WIDTH :
                     xVal < 0 ? 0 
                     : xVal;  
 
-        console.log("dragged to: " + val);
-        setOuterVal(val);
+        setLeft(val);
+        setRight(val + width);
     }
 
+    const handleResizeStop = (xPos, width) => {
+        setWidth(width);
+    }
+
+
+    useEffect(() => {
+
+    }, [left, right]);
+
     return (
-        <div className="outer">
-            <Draggable
-                bounds={{left: 0, right: 1200}}
-                axis="x"
-                handle=".handle"
-                defaultPosition={{x: 0, y: 0}}
-                position={null}
-                grid={[25, 25]}
-                scale={1}
-                onStart={() => {}}
-                onDrag={() => {}}
-                onStop={(e) => {handleDragStop(e.clientX)}}>
-                <div>
-                    <div className="handle">
-                        <div className='albumContainer'>
-                            <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
-                        </div>
+        <div>
+            <div className="swimLane">
+                <Rnd
+                bounds='parent'
+                default={{
+                    x: 0,
+                    y: 0,
+                }}
+                enableResizing={ {top:true, right:true, bottom:true, left:true, topRight:true, bottomRight:true, bottomLeft:true, topLeft:true }}
+                dragAxis={ 'x' }
+                onDragStop={(d) => { handleDragStop(d.x) }}
+                onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
+                >
+                    <div className="background" >
+                        <Album albumUri={"spotify:album:7rSZXXHHvIhF4yUFdaOCy9"} className="minimal"/>
                     </div>
-                </div>
-            </Draggable>
+                </Rnd>
+                {
+                    times.map((time) => (<div className="box"/>))
+                }
+            </div>
         </div>
+        
     )
 }
 

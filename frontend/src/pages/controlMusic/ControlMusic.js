@@ -1,10 +1,14 @@
 import AddSources from "../../components/sources/addSources/AddSources";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import DraggableMusic from "../../components/draggableMusic/DraggableMusic";
+import '../../components/draggableMusic/DraggableMusic.css';
 import spotifyControl from "../../functionality/spotifyControl";
+
+const times = spotifyControl().times;
 
 const ControlMusic = () => {
 
+    const spotifyController = spotifyControl();
     const handleGoHome = () => {
 
     }
@@ -20,6 +24,22 @@ const ControlMusic = () => {
 
             <hr/>
             <DraggableMusic/>
+            <DraggableMusic/>
+            <DraggableMusic/>
+            <div className='swimLane'>
+                {
+                    times.map((time) => (
+                        <div className="hiddenBox">
+                            {
+                                time.toString().length === 1 ? 
+                                    "0" + time + ":00"
+                                :
+                                    time + ":00"
+                            }
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     )
 }

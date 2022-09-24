@@ -35,7 +35,7 @@ const Playlist = (props) => {
     }, []);
 
     return (
-        <div className='playlist'>
+        <div className={props.className ? props.className : 'playlistContainer'}>
             <p onClick={() => open()}>
                 {playlist?.name}
             </p>

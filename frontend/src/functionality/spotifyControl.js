@@ -186,6 +186,8 @@ const spotifyControl = () => {
 
    
     return { 
+        isAlbum, 
+        isPlaylist,
         musicIsScheduledForNow,
         spotifyIdFromUri, 
         scheduleMusic,

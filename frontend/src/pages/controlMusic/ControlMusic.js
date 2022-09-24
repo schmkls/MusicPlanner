@@ -3,12 +3,15 @@ import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import DraggableMusic from "../../components/draggableMusic/DraggableMusic";
 import '../../components/draggableMusic/DraggableMusic.css';
 import spotifyControl from "../../functionality/spotifyControl";
+import { useState } from "react";
 
 const times = spotifyControl().times;
 
 const ControlMusic = () => {
 
     const spotifyController = spotifyControl();
+    const [uris, setUris] = useState([]);
+
     const handleGoHome = () => {
 
     }
@@ -19,17 +22,18 @@ const ControlMusic = () => {
             <h2>Control music WIIHUUU</h2>
 
             <AddSources onAdd={(uri) => {
-                spotifyControl().addSource(uri);
+                setUris(uris => [...uris, uri]);
             }}/>
-
             <hr/>
-            <DraggableMusic/>
-            <DraggableMusic/>
-            <DraggableMusic/>
+            {
+                uris.map((uri) => (
+                    <DraggableMusic uri={uri} key={uri}/>
+                ))
+            }
             <div className='swimLane'>
                 {
                     times.map((time) => (
-                        <div className="hiddenBox">
+                        <div className="hiddenBox" key={time}>
                             {
                                 time.toString().length === 1 ? 
                                     "0" + time + ":00"

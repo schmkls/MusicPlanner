@@ -1,22 +1,24 @@
 import './DraggableMusic.css';
 import {useEffect, useState} from 'react';
 import Album from '../album/Album';
+import Playlist from '../playlist/Playlist';
 import {Rnd} from 'react-rnd';
 import spotifyControl from '../../functionality/spotifyControl';
 
-const DRAG_WIDTH = 1200;
-const HEIGHT = 400;
-const MARGINTOP = 400;
-
-const times = spotifyControl().times;
+const DRAG_WIDTH = 1200;    //should correspond to width of the lanes in CSS
 
 
 //    <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
 
 /**
  * Album or playlist that is draggable so it represents a time span when it is scheduled. 
+ * 
+ * @param props.uri uri of album or playlist
  */
 const DraggableMusic = (props) => {
+
+    const spotifyController = spotifyControl();
+    const times = spotifyController.times;
 
     const [left, setLeft] = useState(null);
     const [right, setRight] = useState(null);
@@ -40,6 +42,12 @@ const DraggableMusic = (props) => {
 
     }, [left, right]);
 
+
+    if (!props.uri) {
+        console.error("No uri provided");
+        return <h2>Error</h2>
+    }
+
     return (
         <div>
             <div className="swimLane">
@@ -49,17 +57,26 @@ const DraggableMusic = (props) => {
                     x: 0,
                     y: 0,
                 }}
-                enableResizing={ {top:true, right:true, bottom:true, left:true, topRight:true, bottomRight:true, bottomLeft:true, topLeft:true }}
+                enableResizing={ {top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
                 dragAxis={ 'x' }
                 onDragStop={(d) => { handleDragStop(d.x) }}
                 onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
                 >
                     <div className="background" >
-                        <Album albumUri={"spotify:album:7rSZXXHHvIhF4yUFdaOCy9"} className="minimal"/>
+                        {
+                            spotifyController.isAlbum(props.uri) ? 
+                                <Album albumUri={props.uri} className="minimal"/>
+                            :
+                            spotifyController.isPlaylist(props.uri) ? 
+                                <Playlist playlistUri={props.uri} className="minimal"/>
+                            :
+                            <p>Something went wrong</p>
+                        }
+                        
                     </div>
                 </Rnd>
                 {
-                    times.map((time) => (<div className="box"/>))
+                    times.map((time) => (<div className="box" key={time}/>))
                 }
             </div>
         </div>

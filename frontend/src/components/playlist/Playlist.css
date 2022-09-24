@@ -2,3 +2,9 @@
     background: lightgray;
     max-width: 400px;
 }
+
+.minimal {
+    width: min-content;
+    height: 120px;
+    background: lightgray;
+}

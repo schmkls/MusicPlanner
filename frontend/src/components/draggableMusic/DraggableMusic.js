@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react';
 import Draggable from 'react-draggable';
 import Album from '../album/Album';
 
+const DRAG_WIDTH = 1200;
+
 /**
  * Album or playlist that is draggable so it represents a time span when it is scheduled. 
  */
@@ -21,21 +23,18 @@ const DraggableMusic = () => {
 
 
     const handleDragStop = (xVal) => {
-        console.log("stop val: " + JSON.stringify(xVal));
+        let val =   xVal > DRAG_WIDTH ? DRAG_WIDTH :
+                    xVal < 0 ? 0 
+                    : xVal;  
+
+        console.log("dragged to: " + val);
+        setOuterVal(val);
     }
 
     return (
-        <div>
-             <input 
-                val={outerVal}
-                type="range" 
-                min="0" 
-                max="100" 
-                className={ 'outer' }
-                onChange={(e) => handleChangeOuter(e.target.value)}
-            />
-
+        <div className="outer">
             <Draggable
+                bounds={{left: 0, right: 1200}}
                 axis="x"
                 handle=".handle"
                 defaultPosition={{x: 0, y: 0}}
@@ -47,11 +46,10 @@ const DraggableMusic = () => {
                 onStop={(e) => {handleDragStop(e.clientX)}}>
                 <div>
                     <div className="handle">
-                        <div className='albumContainer' style={{width: '100px'}}>
+                        <div className='albumContainer'>
                             <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
                         </div>
                     </div>
-                    
                 </div>
             </Draggable>
         </div>

@@ -10,11 +10,13 @@ const times = spotifyControl().times;
 const ControlMusic = () => {
 
     const spotifyController = spotifyControl();
-    const [scheduled, setScheduled] = useState([]);
+    const alreadyScheduled = spotifyController.getScheduledMusic();
+    const [scheduled, setScheduled] = useState(alreadyScheduled);
 
     const handleGoHome = async() => {
         return new Promise((res, rej) => {
             for (let i = 0; i < scheduled.length; i++) {
+                console.log("when going home, scheduled.length = " + scheduled.length);
                 spotifyController.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2]);
             }
     
@@ -23,19 +25,22 @@ const ControlMusic = () => {
         
     }
 
-    const handleChange = (uri, start, end) => {
+    const handleScheduling = (uri, start, end) => {
         console.log("HANDLING CHANGE");
         let temp = Array.from(scheduled);
 
         for (let i = 0; i < temp.length; i++) {
             if (temp[i][0] === uri) {
                 temp[i] = [uri, start, end];
+                console.log("rescheduling existing music");
                 setScheduled(temp);
                 return;
             } 
         }
 
+        console.log("scheduling new music");
         temp.push([uri, start, end]);
+        setScheduled(temp);
     }
 
     const handleRemove = (uri) => {
@@ -55,8 +60,9 @@ const ControlMusic = () => {
     }
 
     useEffect(() => {
-        console.log("scheduled changed: ", JSON.stringify(scheduled, null, 2));
+        console.log("scheduled changed: ", scheduled);
     }, [scheduled])
+
 
     return (
         <div>
@@ -69,7 +75,9 @@ const ControlMusic = () => {
             {
                 scheduled.map((scheduled, index) => (
                     <DraggableMusic 
-                    onChange={(uri, start, end) => handleChange(uri, start, end)} 
+                    left={scheduled[1]}
+                    right={scheduled[2]}
+                    onScheduling={(uri, start, end) => handleScheduling(uri, start, end)} 
                     onRemove={(uri) => handleRemove(uri)} 
                     uri={scheduled[0]} 
                     key={index}/>

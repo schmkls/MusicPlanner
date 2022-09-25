@@ -1,11 +1,11 @@
 import './DraggableMusic.css';
-import {useEffect, useState} from 'react';
+import { useState} from 'react';
 import MusicSource from '../musicSource/MusicSource';
 import {Rnd} from 'react-rnd';
 import spotifyControl from '../../functionality/spotifyControl';
 
 const DRAG_WIDTH = 1200;    //equal to pixel width of the lanes
-const DEFAULT_WIDTH = 50;   //equal to width of MusicSource
+const DEFAULT_WIDTH = 1200 / 24;   //MusicSource
 
 
 //    <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
@@ -17,18 +17,30 @@ const DEFAULT_WIDTH = 50;   //equal to width of MusicSource
  */
 const DraggableMusic = (props) => {
 
+    const uri = props.uri;
     const spotifyController = spotifyControl();
 
-    const [left, setLeft] = useState(null);
-    const [right, setRight] = useState(null);
+    const [left, setLeft] = useState(props.left ? props.left : 0);
+    const [right, setRight] = useState(props.right ? props.right : DEFAULT_WIDTH);
     const [width, setWidth] = useState(DEFAULT_WIDTH);
 
-    const translateToHour = (x) => {
+    const hourToX = (hr) => {
+        let x = 0;
+        let times = spotifyController.times;
+        for (let i = 0; i < times.length; i++) {
+            if (times[i] == Math.floor(hr)) {
+                x += DEFAULT_WIDTH * i;
+                x += hr - Math.floor(hr);
+            }
+        }   
+        return x;
+    }
+
+    const xToHour = (x) => {
         const offset = x / (DRAG_WIDTH / 24);
         const hr = spotifyController.times[Math.floor(offset)];
         const rest = offset % 1; 
-        console.log('hr+rest:', hr+rest);
-        return hr+rest;
+        return hr + rest;
     }
 
     const handleDragStop = (xVal) => {
@@ -37,23 +49,23 @@ const DraggableMusic = (props) => {
                     : xVal;  
         
         console.log("drag stop to: " + val);
-
-        setLeft(val);
-        setRight(val + width); 
+        const left = val;
+        const right = val + width;
+        setLeft(left);
+        setRight(right); 
+        props.onScheduling(props.uri, xToHour(left), xToHour(right));
     }
 
-    const handleResizeStop = (xPos, width) => {
+    const handleResizeStop = (pos, width) => {
         const widthVal = parseFloat(width.substring(0, width.length - 2));        
+        const left = pos.x;
+        const right = pos.x + widthVal;
         setWidth(widthVal);
-        setLeft(xPos.x);
-        setRight(xPos.x + widthVal); 
+        setLeft(left);
+        setRight(right); 
+        props.onScheduling(props.uri, xToHour(left), xToHour(right));
     }
 
-
-    useEffect(() => {
-        props.onChange(props.uri, translateToHour(left), translateToHour(right));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [left, right, width]);
 
 
     if (!props.uri) {
@@ -67,10 +79,11 @@ const DraggableMusic = (props) => {
                 <Rnd
                 bounds='parent'
                 default={{
-                    x: 0,
+                    x: hourToX(left),
                     y: 0,
+                    width: hourToX(right) - hourToX(left)
                 }}
-                minWidth='50px'
+                minWidth={DEFAULT_WIDTH}
                 enableResizing={ {top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
                 dragAxis={ 'x' }
                 onDragStop={(e, ref) => handleDragStop(ref.x)}

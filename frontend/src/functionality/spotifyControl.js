@@ -96,14 +96,29 @@ const spotifyControl = () => {
         console.log("SCHEDULING: ", uri, "from ", start, " to ", end);
     
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
-        scheduled.push([uri, start, end]);
+
+        let rescheduling = false;
+        for (let i = 0; i < scheduled.length; i++) {
+            if (scheduled[i][0] === uri) {
+                scheduled[i] = [uri, start, end];
+                rescheduling = true;
+                break;
+            }
+        }
+
+        if (!rescheduling) {
+            scheduled.push([uri, start, end]);
+        }
+        
         localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
-       
         //addScheduledTracks(uri, start, end);
-
-        console.log("scheduled: ", JSON.stringify(scheduled, null, 2));
     }
+    
 
+    const getScheduledMusic = () => {
+        let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
+        return scheduled;
+    }
 
     //todo
     const deleteSource = (sourceUri) => {
@@ -193,6 +208,7 @@ const spotifyControl = () => {
         musicIsScheduledForNow,
         spotifyIdFromUri, 
         scheduleMusic,
+        getScheduledMusic, 
         deleteSource,
         skipTrack,
         startMusicControl,

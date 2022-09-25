@@ -62,7 +62,7 @@ const DraggableMusic = (props) => {
                 onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
                 >
                     <div className="background" >
-                        <MusicSource uri={props.uri} minimal={true}/>
+                        <MusicSource uri={props.uri} minimal={true} closeable={true} onClose={() => props.onRemove(props.uri)}/>
                     </div>
                 </Rnd>
                 {

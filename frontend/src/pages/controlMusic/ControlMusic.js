@@ -3,7 +3,7 @@ import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import DraggableMusic from "../../components/draggableMusic/DraggableMusic";
 import '../../components/draggableMusic/DraggableMusic.css';
 import spotifyControl from "../../functionality/spotifyControl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const times = spotifyControl().times;
 
@@ -16,6 +16,24 @@ const ControlMusic = () => {
 
     }
 
+    const handleChange = () => {
+
+    }
+
+    const handleRemove = (uri) => {
+        console.log("handling remove of: ", uri);
+        let temp = Array.from(uris);
+        var index = temp.indexOf(uri);
+        if (index !== -1) {
+            temp.splice(index, 1);
+        }
+        setUris(temp);
+    }
+
+    useEffect(() => {
+        console.log("uris changed: ", uris);
+    }, [uris])
+
     return (
         <div>
             <GoHomeButton onGoHome={handleGoHome}/>
@@ -26,7 +44,7 @@ const ControlMusic = () => {
             <hr/>
             {
                 uris.map((uri) => (
-                    <DraggableMusic uri={uri} key={uri}/>
+                    <DraggableMusic onChange={() => handleChange()} onRemove={(uri) => handleRemove(uri)} uri={uri} key={uri}/>
                 ))
             }
             {

@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import spotifyAccess from "../../functionality/spotifyAccess";
 import spotifyControl from "../../functionality/spotifyControl";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import './MusicSource.css';
 
 const ALBUM = "album";
@@ -37,11 +39,12 @@ const INVALID = "invalid";
     
     const open = () => {
         if (!source) return;
+
         window.open(source.external_urls.spotify, '_blank').focus();
     }
 
-    useEffect(() => {
 
+    useEffect(() => {
         if (type === INVALID) return;
 
         const getUrl = 
@@ -77,6 +80,16 @@ const INVALID = "invalid";
             <div className='imageContainer'>
                 <img src={source?.images[0]?.url} width='50' height='50' alt=""/>
             </div>
+            {
+                props.closeable ? 
+                    <button onClick={() => props.onClose()} className="closeBtn">
+                        <FontAwesomeIcon icon={faWindowClose}/>
+                    </button>
+                :
+                    <></>
+            }
+
+            
         </div>
     )
 

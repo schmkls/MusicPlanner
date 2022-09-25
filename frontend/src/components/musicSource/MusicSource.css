@@ -1,6 +1,7 @@
-.playlist {
+.outmost {
     background: lightgray;
-    max-width: 400px;
+    width: 400px;
+    max-height: 120px;
 }
 
 .minimal {

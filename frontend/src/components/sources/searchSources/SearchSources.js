@@ -1,13 +1,11 @@
 
 import {React, useState} from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
-import Album from '../../album/Album';
-import Playlist from '../../playlist/Playlist';
+import MusicSource from '../../musicSource/MusicSource';
 import spotifyAccess from '../../../functionality/spotifyAccess';
 import './SearchSources.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import spotifyControl from '../../../functionality/spotifyControl';
 
 
 const SEARCHING = 1;
@@ -24,21 +22,19 @@ spotifyApi.setAccessToken(spotifyAccess().getSpotifyAccessToken(5));
 const SearchSources = (props) => {
 
     const [searchStr, setSearchStr] = useState();
-    const [albums, setAlbums] = useState([]);
-    const [playlists, setPlaylists] = useState([]);
+    const [music, setMusic] = useState([]);
     const [state, setState] = useState(NOT_SEARCHING);
     const [searchingFor, setSearchingFor] = useState('PLAYLISTS');
 
 
     const search = () => {
-        setAlbums([]);
-        setPlaylists([]);
-
+        setMusic([]);
+        
         if (searchingFor === 'ALBUMS') {
             setState(SEARCHING);
             spotifyApi.searchAlbums(searchStr)
             .then((data) => {
-                setAlbums(data.body.albums.items);
+                setMusic(data.body.albums.items);
                 setState(NOT_SEARCHING);
             })
             .catch((err) => {
@@ -51,7 +47,7 @@ const SearchSources = (props) => {
             setState(SEARCHING);
             spotifyApi.searchPlaylists(searchStr)
             .then((data) => {
-                setPlaylists(data.body.playlists.items);
+                setMusic(data.body.playlists.items);
                 setState(NOT_SEARCHING);
             })
             .catch((err) => {
@@ -81,33 +77,18 @@ const SearchSources = (props) => {
             <input placeholder='Search album' onChange={(e) => {
                 setSearchStr(e.target.value)
                 if (e.target.value.length == 0) {
-                    setAlbums(null);
+                    setMusic(null);
                 }
             }}/>
 
             <button onClick={() => search()}>Search</button>
             
             {
-                albums?.map((album, index) => (
+                music?.map((album, index) => (
                     <div className='album' key={index}>
-                        {
-                            <Album albumUri={album.uri} key={index}/>
-                        } 
+                        <MusicSource uri={album.uri} key={index} minimal={true}/> 
                         <button onClick={() => props.onChoose(album.uri)}>
                             Add album to sources
-                            <FontAwesomeIcon icon={faCirclePlus}/>
-                        </button>
-                    </div>
-                ))
-            }
-            {
-                 playlists?.map((playlist, index) => (
-                    <div className='album' key={index}>
-                        {
-                            <Playlist playlistUri={playlist.uri} key={index}/>
-                        } 
-                        <button onClick={() => props.onChoose(playlist.uri)}>
-                            Add playlist to sources
                             <FontAwesomeIcon icon={faCirclePlus}/>
                         </button>
                     </div>

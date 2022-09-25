@@ -1,7 +1,6 @@
 import './DraggableMusic.css';
 import {useEffect, useState} from 'react';
-import Album from '../album/Album';
-import Playlist from '../playlist/Playlist';
+import MusicSource from '../musicSource/MusicSource';
 import {Rnd} from 'react-rnd';
 import spotifyControl from '../../functionality/spotifyControl';
 
@@ -63,16 +62,7 @@ const DraggableMusic = (props) => {
                 onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
                 >
                     <div className="background" >
-                        {
-                            spotifyController.isAlbum(props.uri) ? 
-                                <Album albumUri={props.uri} className="minimal"/>
-                            :
-                            spotifyController.isPlaylist(props.uri) ? 
-                                <Playlist playlistUri={props.uri} className="minimal"/>
-                            :
-                            <p>Something went wrong</p>
-                        }
-                        
+                        <MusicSource uri={props.uri} minimal={true}/>
                     </div>
                 </Rnd>
                 {

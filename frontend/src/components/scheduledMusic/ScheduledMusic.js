@@ -1,5 +1,3 @@
-import Album from "../album/Album";
-import Playlist from "../playlist/Playlist";
 import { useState, useEffect } from "react";
 import spotifyControl from "../../functionality/spotifyControl";
 

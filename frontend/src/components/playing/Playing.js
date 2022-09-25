@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
-import Playlist from "../playlist/Playlist";
-import Album from "../album/Album";
+import MusicSource from "../musicSource/MusicSource";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
 import spotifyAccess from "../../functionality/spotifyAccess";
 import ScheduledMusic from "../scheduledMusic/ScheduledMusic";
@@ -16,8 +15,7 @@ const UPDATE_INTERVAL = 10000;  //10 seconds
 const Playing = () => {
 
     const [currPlaying, setCp] = useState(null);    //currently playing track
-    const [playlist, setPlaylist] = useState(null);
-    const [album, setAlbum] = useState(null);
+    const [source, setSource] = useState(null);     //album or playlist or null
     const [isPlaying, setIsPlaying] = useState(true); //true if playing, false if paused
     const [episode, setEpisode] = useState(false);  //true if episode being played
     const [warning, setWarning] = useState(null); 
@@ -31,8 +29,7 @@ const Playing = () => {
 
     const setAllStatesNull = () => {
         setCp(null);
-        setPlaylist(null);
-        setAlbum(null);
+        setSource(null);
         setEpisode(null);
         setWarning(null);
     }
@@ -66,16 +63,11 @@ const Playing = () => {
 
             if (response.data.context == null) {
                 setCp(response.data.item.id);
-
                 return;
             }
             
-            if (response.data.context.type == 'playlist') {
-                setPlaylist(response.data.context.uri);
-            }   
-
-            if (response.data.context.type == 'album') {
-                setAlbum(response.data.context.uri);
+            if (response.data.context.type == 'playlist' || response.data.context.type == 'album') {
+                setSource(response.data.context.uri);
             }            
         })
         .catch((err) => {
@@ -109,20 +101,12 @@ const Playing = () => {
             }
             from
             {
-                playingScheduled ? 
-                    <ScheduledMusic/>
-                :
-                    album ?
-                        <>
-                            <Album albumUri={album} openable={true}/>
-                        </>
-                    :
-                        playlist ?
-                            <>
-                                <Playlist playlistUri={playlist} openable={true}/>
-                            </>
-                        :
-                            <p>Unknown/no source</p>
+                playingScheduled ? <ScheduledMusic/> :
+
+                source ? <MusicSource uri={source}/> :
+
+                <p>Unknown source</p>
+
             }
             {warning}
             <hr/>   

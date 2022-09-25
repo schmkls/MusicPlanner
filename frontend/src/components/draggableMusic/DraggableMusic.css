@@ -13,11 +13,9 @@
 .box {
     height: 120px;
     width: 3000000000px;
-    border-radius: 4px;
+    border-right: 1px gray solid;
     margin-left: 0px;
-    margin-right: 0px;
-    border: 1px solid gray;
-    border-radius: 0%;
+    margin-right: -1px;
 }
 
 .hiddenBox {

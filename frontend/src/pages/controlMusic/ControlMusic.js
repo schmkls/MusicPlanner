@@ -10,45 +10,73 @@ const times = spotifyControl().times;
 const ControlMusic = () => {
 
     const spotifyController = spotifyControl();
-    const [uris, setUris] = useState([]);
+    const [scheduled, setScheduled] = useState([]);
 
-    const handleGoHome = () => {
-
+    const handleGoHome = async() => {
+        return new Promise((res, rej) => {
+            for (let i = 0; i < scheduled.length; i++) {
+                spotifyController.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2]);
+            }
+    
+            return res();
+        });
+        
     }
 
-    const handleChange = () => {
+    const handleChange = (uri, start, end) => {
+        console.log("HANDLING CHANGE");
+        let temp = Array.from(scheduled);
 
+        for (let i = 0; i < temp.length; i++) {
+            if (temp[i][0] === uri) {
+                temp[i] = [uri, start, end];
+                setScheduled(temp);
+                return;
+            } 
+        }
+
+        temp.push([uri, start, end]);
     }
 
     const handleRemove = (uri) => {
         console.log("handling remove of: ", uri);
-        let temp = Array.from(uris);
-        var index = temp.indexOf(uri);
+        let temp = Array.from(scheduled);
+        let index = -1;
+        for (let i = 0; i < temp.length; i++) {
+            if (temp[i][0] === uri) {
+                index = i;
+                break;
+            }
+        }
         if (index !== -1) {
             temp.splice(index, 1);
         }
-        setUris(temp);
+        setScheduled(temp);
     }
 
     useEffect(() => {
-        console.log("uris changed: ", uris);
-    }, [uris])
+        console.log("scheduled changed: ", JSON.stringify(scheduled, null, 2));
+    }, [scheduled])
 
     return (
         <div>
             <GoHomeButton onGoHome={handleGoHome}/>
             <h2>Add and schedule sources of music</h2>
             <AddSources onAdd={(uri) => {
-                setUris(uris => [...uris, uri]);
+                setScheduled(scheduled => [...scheduled, [uri, null, null]]);
             }}/>
             <hr/>
             {
-                uris.map((uri) => (
-                    <DraggableMusic onChange={() => handleChange()} onRemove={(uri) => handleRemove(uri)} uri={uri} key={uri}/>
+                scheduled.map((scheduled, index) => (
+                    <DraggableMusic 
+                    onChange={(uri, start, end) => handleChange(uri, start, end)} 
+                    onRemove={(uri) => handleRemove(uri)} 
+                    uri={scheduled[0]} 
+                    key={index}/>
                 ))
             }
             {
-                uris.length > 0 ?
+                scheduled.length > 0 ?
                     <div className='swimLane'>
                     {
                         times.map((time) => (

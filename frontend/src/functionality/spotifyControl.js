@@ -65,7 +65,7 @@ const spotifyControl = () => {
                 
                 localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(tracks));
             })
-            .catch((err) => console.log("add track sources error: ", err));
+            .catch((err) => console.error("add track sources error: ", err));
         } 
 
 
@@ -89,17 +89,19 @@ const spotifyControl = () => {
 
     /**
      * @param uri spotify playlist or album uri  
+     * @param start start time in hours (float), like 23.5 (for 23:30)
+     * @param end end time
      */
     const scheduleMusic = (uri, start, end) => {
-        console.log("SCHEDULING: ", uri);
+        console.log("SCHEDULING: ", uri, "from ", start, " to ", end);
     
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
-        scheduled.push(uri);
+        scheduled.push([uri, start, end]);
         localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
        
-        addScheduledTracks(uri, start, end);
+        //addScheduledTracks(uri, start, end);
 
-        console.log("scheduled: ", scheduled);
+        console.log("scheduled: ", JSON.stringify(scheduled, null, 2));
     }
 
 

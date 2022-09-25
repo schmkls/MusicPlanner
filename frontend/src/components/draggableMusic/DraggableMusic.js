@@ -4,7 +4,8 @@ import MusicSource from '../musicSource/MusicSource';
 import {Rnd} from 'react-rnd';
 import spotifyControl from '../../functionality/spotifyControl';
 
-const DRAG_WIDTH = 1200;    //should correspond to width of the lanes in CSS
+const DRAG_WIDTH = 1200;    //equal to pixel width of the lanes
+const DEFAULT_WIDTH = 50;   //equal to width of MusicSource
 
 
 //    <Album albumUri={"spotify:album:0urzz4PsqXHSYRIUmHeJom"}/>
@@ -17,29 +18,42 @@ const DRAG_WIDTH = 1200;    //should correspond to width of the lanes in CSS
 const DraggableMusic = (props) => {
 
     const spotifyController = spotifyControl();
-    const times = spotifyController.times;
 
     const [left, setLeft] = useState(null);
     const [right, setRight] = useState(null);
-    const [width, setWidth] = useState(null);
+    const [width, setWidth] = useState(DEFAULT_WIDTH);
+
+    const translateToHour = (x) => {
+        const offset = x / (DRAG_WIDTH / 24);
+        const hr = spotifyController.times[Math.floor(offset)];
+        const rest = offset % 1; 
+        console.log('hr+rest:', hr+rest);
+        return hr+rest;
+    }
 
     const handleDragStop = (xVal) => {
         let val =   xVal > DRAG_WIDTH ? DRAG_WIDTH :
                     xVal < 0 ? 0 
                     : xVal;  
+        
+        console.log("drag stop to: " + val);
 
         setLeft(val);
-        setRight(val + width);
+        setRight(val + width); 
     }
 
     const handleResizeStop = (xPos, width) => {
-        setWidth(width);
+        const widthVal = parseFloat(width.substring(0, width.length - 2));        
+        setWidth(widthVal);
+        setLeft(xPos.x);
+        setRight(xPos.x + widthVal); 
     }
 
 
     useEffect(() => {
-
-    }, [left, right]);
+        props.onChange(props.uri, translateToHour(left), translateToHour(right));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [left, right, width]);
 
 
     if (!props.uri) {
@@ -56,9 +70,10 @@ const DraggableMusic = (props) => {
                     x: 0,
                     y: 0,
                 }}
+                minWidth='50px'
                 enableResizing={ {top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
                 dragAxis={ 'x' }
-                onDragStop={(d) => { handleDragStop(d.x) }}
+                onDragStop={(e, ref) => handleDragStop(ref.x)}
                 onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
                 >
                     <div className="background" >
@@ -66,7 +81,7 @@ const DraggableMusic = (props) => {
                     </div>
                 </Rnd>
                 {
-                    times.map((time) => (<div className="box" key={time}/>))
+                    spotifyController.times.map((time) => (<div className="box" key={time}/>))
                 }
             </div>
         </div>

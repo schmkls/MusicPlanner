@@ -5,7 +5,7 @@
 }
 
 .minimal {
-    width: min-content;
+    width: 50px;
     height: 120px;
     background: lightgray;
 }

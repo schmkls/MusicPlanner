@@ -79,7 +79,6 @@ const ControlVolume = () => {
                 defaultValue={100}
                 onReset={() => handleReset()}
             />
-
         </div>
     )
 

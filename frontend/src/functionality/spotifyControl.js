@@ -181,7 +181,7 @@ const spotifyControl = () => {
 
 
    const musicIsScheduledForNow = () => {
-        return true;
+        return false;
    }
 
    

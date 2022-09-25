@@ -19,8 +19,7 @@ const ControlMusic = () => {
     return (
         <div>
             <GoHomeButton onGoHome={handleGoHome}/>
-            <h2>Control music WIIHUUU</h2>
-
+            <h2>Add and schedule sources of music</h2>
             <AddSources onAdd={(uri) => {
                 setUris(uris => [...uris, uri]);
             }}/>
@@ -30,20 +29,26 @@ const ControlMusic = () => {
                     <DraggableMusic uri={uri} key={uri}/>
                 ))
             }
-            <div className='swimLane'>
-                {
-                    times.map((time) => (
-                        <div className="hiddenBox" key={time}>
-                            {
-                                time.toString().length === 1 ? 
-                                    "0" + time + ":00"
-                                :
-                                    time + ":00"
-                            }
-                        </div>
-                    ))
-                }
-            </div>
+            {
+                uris.length > 0 ?
+                    <div className='swimLane'>
+                    {
+                        times.map((time) => (
+                            <div className="hiddenBox" key={time}>
+                                {
+                                    time.toString().length === 1 ? 
+                                        "0" + time + ":00"
+                                    :
+                                        time + ":00"
+                                }
+                            </div>
+                        ))
+                    }
+                    </div>
+                :
+                <></>
+            }
+            
         </div>
     )
 }

@@ -39,7 +39,9 @@ const Playlist = (props) => {
             <p onClick={() => open()}>
                 {playlist?.name}
             </p>
-            <img src={playlist?.images[0]?.url} width='50' height='50' alt=""/>
+            <div className='imageContainer'>
+                <img src={playlist?.images[0]?.url} width='50' height='50' alt=""/>
+            </div>
         </div>
     )
 

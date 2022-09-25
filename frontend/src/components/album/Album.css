@@ -4,6 +4,6 @@
 
 .minimal {
     width: min-content;
-    height: 120px;
+    max-height: 120px;
     background: lightgray;
 }

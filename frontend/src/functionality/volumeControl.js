@@ -2,7 +2,7 @@ import spotifyAccess from "./spotifyAccess";
 import spotifyControl from "./spotifyControl";
 import axios from "axios";
 
-const times = [6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4]   
+const times = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3]; 
 const UPDATE_INTERVAL = 5000;
 
 const volumeControl = () => {
@@ -215,6 +215,7 @@ const volumeControl = () => {
     const volumesScheduled = () => {
         for (let i = 0; i < times.length; i++) {
             if (!getPreferredVolumeForHour(times[i])) {
+                console.log("no volume scheduled for hour " + times[i]);
                 return false;
             }
         }
@@ -232,6 +233,11 @@ const volumeControl = () => {
      */
     const controlVolume = () => {
         if (!volumeControlIsOn()) return;
+
+        if (!volumesScheduled()) {
+            console.error("missing scheduled volume");
+            return;
+        }
 
         const prefVolume = getPreferredVolumeNow();
 

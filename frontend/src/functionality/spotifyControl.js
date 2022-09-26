@@ -113,7 +113,6 @@ const spotifyControl = () => {
 
     const getScheduledMusic = () => {
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
-        console.log("scheduled when getting: ", scheduled);
         return scheduled;
     }
 

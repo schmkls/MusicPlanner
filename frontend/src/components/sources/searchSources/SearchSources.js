@@ -85,8 +85,8 @@ const SearchSources = (props) => {
             
             {
                 music?.map((album, index) => (
-                    <div className='album' key={index}>
-                        <MusicSource uri={album.uri} key={index} minimal={true}/> 
+                    <div className='album' key={album.uri}>
+                        <MusicSource uri={album.uri} key={album.uri} minimal={true}/> 
                         <button onClick={() => props.onChoose(album.uri)}>
                             Add album to sources
                             <FontAwesomeIcon icon={faCirclePlus}/>

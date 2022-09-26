@@ -25,6 +25,7 @@ const ControlMusic = () => {
         
     }
 
+
     const handleScheduling = (uri, start, end) => {
         console.log("HANDLING CHANGE");
         let temp = Array.from(scheduled);
@@ -43,21 +44,16 @@ const ControlMusic = () => {
         setScheduled(temp);
     }
 
+    
     const handleRemove = (uri) => {
         spotifyController.unSchedule(uri);
-        
-        console.log("handling remove of: ", uri);
+
         let temp = Array.from(scheduled);
-        let index = -1;
-        for (let i = 0; i < temp.length; i++) {
-            if (temp[i][0] === uri) {
-                index = i;
-                break;
-            }
-        }
-        if (index !== -1) {
-            temp.splice(index, 1);
-        }
+        console.log("handling remove of: ", uri);
+        temp = temp.filter( function(sch) {
+            return sch[0] !== uri;
+        });
+
         setScheduled(temp);
     }
 
@@ -77,12 +73,12 @@ const ControlMusic = () => {
             {
                 scheduled.map((scheduled, index) => (
                     <DraggableMusic 
+                    uri={scheduled[0]} 
                     left={scheduled[1]}
                     right={scheduled[2]}
                     onScheduling={(uri, start, end) => handleScheduling(uri, start, end)} 
                     onRemove={(uri) => handleRemove(uri)} 
-                    uri={scheduled[0]} 
-                    key={index}/>
+                    key={scheduled[0] + index}/>
                 ))
             }
             {

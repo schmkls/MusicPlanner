@@ -44,6 +44,8 @@ const ControlMusic = () => {
     }
 
     const handleRemove = (uri) => {
+        spotifyController.unSchedule(uri);
+        
         console.log("handling remove of: ", uri);
         let temp = Array.from(scheduled);
         let index = -1;

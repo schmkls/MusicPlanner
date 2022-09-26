@@ -47,8 +47,6 @@ const spotifyControl = () => {
         
         let tracks = localStorage.getItem(SCHEDULED_TRACKS) ? JSON.parse(localStorage.getItem(SCHEDULED_TRACKS)) : [];
 
-        console.log("scheduled tracks before adding new: ", JSON.stringify(tracks));
-
         let trackUri;
         const accessToken = accessor.getSpotifyAccessToken();
         const id = spotifyIdFromUri(uri);
@@ -56,7 +54,6 @@ const spotifyControl = () => {
             const getUrl = `https://api.spotify.com/v1/playlists/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
-                console.log("in addScheduledTracks, playlist tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
                 
                 for (let track in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[track].track.uri;
@@ -73,7 +70,6 @@ const spotifyControl = () => {
             const getUrl = `https://api.spotify.com/v1/albums/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
-                console.log("in addScheduledTracks, album tracks: ", JSON.stringify(response.data.tracks.items, null, 2))
                 
                 for (let item in response.data.tracks.items) {
                     trackUri = response.data.tracks.items[item].uri;
@@ -117,36 +113,26 @@ const spotifyControl = () => {
 
     const getScheduledMusic = () => {
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
+        console.log("scheduled when getting: ", scheduled);
         return scheduled;
     }
 
+
     //todo
-    const deleteSource = (sourceUri) => {
-        if (isAlbum(sourceUri)) {
-            let albumSources = JSON.parse(localStorage.getItem("SOURCES_ALBUMS"));
-            if (!albumSources) return;
+    const unSchedule = (uri) => {
+        
+        let scheduled = getScheduledMusic();
 
-            //remove album from array of albums
-            let index = albumSources.indexOf(sourceUri);
-            if (index !== -1) {
-                albumSources.splice(index, 1);
-            }
-            localStorage.setItem("SOURCES_ALBUMS", JSON.stringify(albumSources, null, 2));
-            console.log("albumsources after remove: " + JSON.stringify(albumSources, null, 2));
-        }
+        if (!scheduled) return;
 
-        if (isPlaylist(sourceUri)) {
-            let playlistSources = JSON.parse(localStorage.getItem("SOURCES_PLAYLISTS"));
-            if (!playlistSources) return;
+        scheduled = scheduled.filter(function(sch) {
+            return sch[0] !== uri;
+        })
 
-            //remove playlist from array of playlists
-            let index = playlistSources.indexOf(sourceUri);
-            if (index !== -1) {
-                playlistSources.splice(index, 1);
-            }       
-            localStorage.setItem("SOURCES_PLAYLISTS", JSON.stringify(playlistSources, null, 2));
-            console.log("playlistsources after remove: " + JSON.stringify(playlistSources, null, 2));
-        }
+
+        localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
+        //console.log("scheduled after unscheduling", uri, ": " + JSON.stringify(scheduled, null, 2));
+
     }
 
 
@@ -209,7 +195,7 @@ const spotifyControl = () => {
         spotifyIdFromUri, 
         scheduleMusic,
         getScheduledMusic, 
-        deleteSource,
+        unSchedule,
         skipTrack,
         startMusicControl,
         controlMusic, 

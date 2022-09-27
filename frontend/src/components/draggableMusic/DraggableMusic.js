@@ -53,8 +53,9 @@ const DraggableMusic = (props) => {
         const right = val + width;
         setLeft(left);
         setRight(right); 
-        props.onScheduling(props.uri, xToHour(left), xToHour(right));
+        props.onScheduling(props.uri, xToHour(left), xToHour(right), props.id);
     }
+
 
     const handleResizeStop = (pos, width) => {
         const widthVal = parseFloat(width.substring(0, width.length - 2));        
@@ -63,7 +64,7 @@ const DraggableMusic = (props) => {
         setWidth(widthVal);
         setLeft(left);
         setRight(right); 
-        props.onScheduling(props.uri, xToHour(left), xToHour(right));
+        props.onScheduling(props.uri, xToHour(left), xToHour(right), props.id);
     }
 
 
@@ -90,7 +91,7 @@ const DraggableMusic = (props) => {
                 onResizeStop={(e, direction, ref, delta, position) => { handleResizeStop(position, ref.style.width)}}
                 >
                     <div className="background" >
-                        <MusicSource uri={props.uri} minimal={true} closeable={true} onClose={() => props.onRemove(props.uri)}/>
+                        <MusicSource uri={props.uri} minimal={true} closeable={true} onClose={() => props.onRemove(props.id)}/>
                     </div>
                 </Rnd>
                 {

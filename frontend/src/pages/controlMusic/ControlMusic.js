@@ -7,6 +7,12 @@ import { useEffect, useState } from "react";
 
 const times = spotifyControl().times;
 
+
+/**
+ * Scheduled period contains: [uri, start, end, uniqueId]
+ * 
+ * 
+ */
 const ControlMusic = () => {
 
     const spotifyController = spotifyControl();
@@ -17,7 +23,7 @@ const ControlMusic = () => {
         return new Promise((res, rej) => {
             for (let i = 0; i < scheduled.length; i++) {
                 console.log("when going home, scheduled.length = " + scheduled.length);
-                spotifyController.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2]);
+                spotifyController.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2], scheduled[i][3]);
             }
     
             return res();
@@ -26,35 +32,35 @@ const ControlMusic = () => {
     }
 
 
-    const handleScheduling = (uri, start, end) => {
+    const handleScheduling = async(uri, start, end, id) => {
         console.log("HANDLING CHANGE");
         let temp = Array.from(scheduled);
 
         for (let i = 0; i < temp.length; i++) {
-            if (temp[i][0] === uri) {
-                temp[i] = [uri, start, end];
+            console.log('temp: ' + temp[i]);
+            if (temp[i][3] == id) {
+                temp[i] = [uri, start, end, id];
                 console.log("rescheduling existing music");
                 setScheduled(temp);
                 return;
-            } 
+            }  
         }
 
-        console.log("scheduling new music");
-        temp.push([uri, start, end]);
+        console.log("scheduling new music, ", id, " not in: ", temp);
+        let uniqueId = spotifyController.makePeriodUniqueId(uri);
+        temp.push([uri, start, end, uri]);
         setScheduled(temp);
     }
 
     
-    const handleRemove = (uri) => {
-        spotifyController.unSchedule(uri);
-
+    const handleRemove = (id) => {
         let temp = Array.from(scheduled);
-        console.log("handling remove of: ", uri);
-        temp = temp.filter( function(sch) {
-            return sch[0] !== uri;
-        });
+        temp = temp.filter(function(sch) {
+            return sch[3] !== id;
+        }) 
 
         setScheduled(temp);
+        spotifyController.unSchedule(id);
     }
 
     useEffect(() => {
@@ -67,18 +73,21 @@ const ControlMusic = () => {
             <GoHomeButton onGoHome={handleGoHome}/>
             <h2>Add and schedule sources of music</h2>
             <AddSources onAdd={(uri) => {
-                setScheduled(scheduled => [...scheduled, [uri, null, null]]);
+                let uniqueId = spotifyController.makePeriodUniqueId(uri);
+                setScheduled(scheduled => [...scheduled, [uri, null, null, uniqueId]]);
             }}/>
             <hr/>
             {
-                scheduled.map((scheduled, index) => (
+                scheduled.map((scheduled) => (
                     <DraggableMusic 
                     uri={scheduled[0]} 
                     left={scheduled[1]}
                     right={scheduled[2]}
-                    onScheduling={(uri, start, end) => handleScheduling(uri, start, end)} 
-                    onRemove={(uri) => handleRemove(uri)} 
-                    key={scheduled[0] + index}/>
+                    onScheduling={(uri, start, end, id) => handleScheduling(uri, start, end, id)} 
+                    onRemove={(id) => handleRemove(id)} 
+                    key={scheduled[3]}
+                    id={scheduled[3]}
+                    />
                 ))
             }
             {

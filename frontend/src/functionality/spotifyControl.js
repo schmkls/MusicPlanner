@@ -87,23 +87,24 @@ const spotifyControl = () => {
      * @param uri spotify playlist or album uri  
      * @param start start time in hours (float), like 23.5 (for 23:30)
      * @param end end time
+     * @param id used to identify scheduled period, should be unique
      */
-    const scheduleMusic = (uri, start, end) => {
-        console.log("SCHEDULING: ", uri, "from ", start, " to ", end);
+    const scheduleMusic = (uri, start, end, id) => {
+        console.log("SCHEDULING: ", uri, "from ", start, " to ", end, " with id: ", id);
     
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
 
         let rescheduling = false;
         for (let i = 0; i < scheduled.length; i++) {
-            if (scheduled[i][0] === uri) {
-                scheduled[i] = [uri, start, end];
+            if (scheduled[i][3] === id) {
+                scheduled[i] = [uri, start, end, id];
                 rescheduling = true;
                 break;
             }
         }
 
         if (!rescheduling) {
-            scheduled.push([uri, start, end]);
+            scheduled.push([uri, start, end, id]);
         }
         
         localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
@@ -118,14 +119,14 @@ const spotifyControl = () => {
 
 
     //todo
-    const unSchedule = (uri) => {
+    const unSchedule = (id) => {
         
         let scheduled = getScheduledMusic();
 
         if (!scheduled) return;
 
         scheduled = scheduled.filter(function(sch) {
-            return sch[0] !== uri;
+            return sch[3] !== id;
         })
 
 
@@ -135,7 +136,9 @@ const spotifyControl = () => {
     }
 
 
-    
+    const makePeriodUniqueId = (uri) => {
+        return (uri + new Date().getTime());
+    }
 
 
     const sourcesTracksLeft = () => {
@@ -192,6 +195,7 @@ const spotifyControl = () => {
         isPlaylist,
         musicIsScheduledForNow,
         spotifyIdFromUri, 
+        makePeriodUniqueId,
         scheduleMusic,
         getScheduledMusic, 
         unSchedule,

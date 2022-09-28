@@ -2,7 +2,7 @@ import './DraggableMusic.css';
 import { useState} from 'react';
 import MusicSource from '../musicSource/MusicSource';
 import {Rnd} from 'react-rnd';
-import spotifyControl from '../../functionality/spotifyControl';
+import musicScheduling from '../../functionality/musicScheduling';
 
 const DRAG_WIDTH = 1200;    //equal to pixel width of the lanes
 const DEFAULT_WIDTH = 1200 / 24;   //MusicSource
@@ -18,7 +18,7 @@ const DEFAULT_WIDTH = 1200 / 24;   //MusicSource
 const DraggableMusic = (props) => {
 
     const uri = props.uri;
-    const spotifyController = spotifyControl();
+    const musicScheduler = musicScheduling();
 
     const [left, setLeft] = useState(props.left ? props.left : 0);
     const [right, setRight] = useState(props.right ? props.right : DEFAULT_WIDTH);
@@ -26,7 +26,7 @@ const DraggableMusic = (props) => {
 
     const hourToX = (hr) => {
         let x = 0;
-        let times = spotifyController.times;
+        let times = musicScheduler.times;
         for (let i = 0; i < times.length; i++) {
             if (times[i] == Math.floor(hr)) {
                 x += DEFAULT_WIDTH * i;
@@ -38,7 +38,7 @@ const DraggableMusic = (props) => {
 
     const xToHour = (x) => {
         const offset = x / (DRAG_WIDTH / 24);
-        const hr = spotifyController.times[Math.floor(offset)];
+        const hr = musicScheduler.times[Math.floor(offset)];
         const rest = offset % 1; 
         return hr + rest;
     }
@@ -95,7 +95,7 @@ const DraggableMusic = (props) => {
                     </div>
                 </Rnd>
                 {
-                    spotifyController.times.map((time) => (<div className="box" key={time}/>))
+                    musicScheduler.times.map((time) => (<div className="box" key={time}/>))
                 }
             </div>
         </div>

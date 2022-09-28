@@ -2,10 +2,10 @@ import AddSources from "../../components/sources/addSources/AddSources";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import DraggableMusic from "../../components/draggableMusic/DraggableMusic";
 import '../../components/draggableMusic/DraggableMusic.css';
-import spotifyControl from "../../functionality/spotifyControl";
+import musicScheduling from "../../functionality/musicScheduling";
 import { useEffect, useState } from "react";
 
-const times = spotifyControl().times;
+const times = musicScheduling().times;
 
 
 /**
@@ -15,15 +15,16 @@ const times = spotifyControl().times;
  */
 const ControlMusic = () => {
 
-    const spotifyController = spotifyControl();
-    const alreadyScheduled = spotifyController.getScheduledMusic();
+    const musicScheduler = musicScheduling();
+
+    const alreadyScheduled = musicScheduler.getScheduledMusic();
     const [scheduled, setScheduled] = useState(alreadyScheduled);
 
     const handleGoHome = async() => {
         return new Promise((res, rej) => {
             for (let i = 0; i < scheduled.length; i++) {
                 console.log("when going home, scheduled.length = " + scheduled.length);
-                spotifyController.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2], scheduled[i][3]);
+                musicScheduler.scheduleMusic(scheduled[i][0], scheduled[i][1], scheduled[i][2], scheduled[i][3]);
             }
     
             return res();
@@ -47,7 +48,7 @@ const ControlMusic = () => {
         }
 
         console.log("scheduling new music, ", id, " not in: ", temp);
-        let uniqueId = spotifyController.makePeriodUniqueId(uri);
+        let uniqueId = musicScheduler.makePeriodUniqueId(uri);
         temp.push([uri, start, end, uri]);
         setScheduled(temp);
     }
@@ -60,7 +61,7 @@ const ControlMusic = () => {
         }) 
 
         setScheduled(temp);
-        spotifyController.unSchedule(id);
+        musicScheduler.unSchedule(id);
     }
 
     useEffect(() => {
@@ -73,7 +74,7 @@ const ControlMusic = () => {
             <GoHomeButton onGoHome={handleGoHome}/>
             <h2>Add and schedule sources of music</h2>
             <AddSources onAdd={(uri) => {
-                let uniqueId = spotifyController.makePeriodUniqueId(uri);
+                let uniqueId = musicScheduler.makePeriodUniqueId(uri);
                 setScheduled(scheduled => [...scheduled, [uri, null, null, uniqueId]]);
             }}/>
             <hr/>

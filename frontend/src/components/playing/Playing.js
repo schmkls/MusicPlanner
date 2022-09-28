@@ -6,8 +6,9 @@ import SmoothSkip from "../smoothSkip/SmoothSkip";
 import spotifyAccess from "../../functionality/spotifyAccess";
 import ScheduledMusic from "../scheduledMusic/ScheduledMusic";
 import spotifyControl from "../../functionality/spotifyControl";
+import musicScheduling from "../../functionality/musicScheduling";
 
-const UPDATE_INTERVAL = 10000;  //10 seconds
+const UPDATE_INTERVAL = 5000;  
 
 /**
  * Display currently playing track
@@ -25,6 +26,8 @@ const Playing = () => {
 
     const spotifyAccessor = spotifyAccess();
     const spotifyController = spotifyControl();
+    const musicScheduler = musicScheduling();
+    
 
 
     const setAllStatesNull = () => {
@@ -73,15 +76,19 @@ const Playing = () => {
         .catch((err) => {
             console.log("get currently playing track error: " + err);
         });
-
-        setTimeout(() => {
-            getPlayingData();
-        }, UPDATE_INTERVAL);
     }
 
     useEffect(() => {
         getPlayingData();
-        setPlayingScheduled(spotifyController.musicIsScheduledForNow());
+    });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlayingScheduled(spotifyController.musicControlIsOn());
+            getPlayingData();
+        }, UPDATE_INTERVAL);
+
+        return () => clearInterval(interval);
     });
 
     return (

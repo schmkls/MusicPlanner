@@ -9,16 +9,14 @@ const times = musicScheduling().times;
 
 
 /**
- * Scheduled period contains: [uri, start, end, uniqueId]
- * 
- * 
+ * Page for scheduling music. 
  */
 const ControlMusic = () => {
 
     const musicScheduler = musicScheduling();
 
     const alreadyScheduled = musicScheduler.getScheduledMusic();
-    const [scheduled, setScheduled] = useState(alreadyScheduled);
+    const [scheduled, setScheduled] = useState(alreadyScheduled);   //(each element contains: uri, start, end, uniqueId)
 
     const handleGoHome = async() => {
         return new Promise((res, rej) => {
@@ -38,8 +36,7 @@ const ControlMusic = () => {
         let temp = Array.from(scheduled);
 
         for (let i = 0; i < temp.length; i++) {
-            console.log('temp: ' + temp[i]);
-            if (temp[i][3] == id) {
+            if (temp[i][3] === id) {
                 temp[i] = [uri, start, end, id];
                 console.log("rescheduling existing music");
                 setScheduled(temp);
@@ -47,10 +44,7 @@ const ControlMusic = () => {
             }  
         }
 
-        console.log("scheduling new music, ", id, " not in: ", temp);
-        let uniqueId = musicScheduler.makePeriodUniqueId(uri);
-        temp.push([uri, start, end, uri]);
-        setScheduled(temp);
+        console.error('Could not find music to schedule');
     }
 
     

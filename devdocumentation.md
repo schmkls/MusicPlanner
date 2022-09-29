@@ -20,10 +20,10 @@ where
     start and end are integers representing start and end hours
 
 
-*SCHEDULED_TRACKS* list of tuples like [(uri, trackUri, start, end, isPlayed), ...] 
+*SCHEDULED_TRACKS* list of tuples like [(trackUri, uri, start, end, isPlayed), ...] 
 where 
+    *trackUri is Spotify track uri
     *uri is uri of album/playlist,j 
-    *trackUri is Spotify track id
     *start and end are integers representing start and end hours 
     *isPlayed is true if track has been added to the queue
 

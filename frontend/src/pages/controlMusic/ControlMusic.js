@@ -68,7 +68,7 @@ const ControlMusic = () => {
             <GoHomeButton onGoHome={handleGoHome}/>
             <h2>Add and schedule sources of music</h2>
             <AddSources onAdd={(uri) => {
-                let uniqueId = musicScheduler.makePeriodUniqueId(uri);
+                let uniqueId = musicScheduler.makeUniqueId(uri);
                 setScheduled(scheduled => [...scheduled, [uri, null, null, uniqueId]]);
             }}/>
             <hr/>

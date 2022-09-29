@@ -42,17 +42,72 @@ const spotifyControl = () => {
         });
     }
 
+
     const isAlbum = (uri) => {
         return (uri.includes(':album:'));
     }
+
 
     const isPlaylist = (uri) => {
         return (uri.includes(':playlist:'));
     }
 
+
+    /**
+     * Returns array of track-uris in album identified by @param uri. 
+     */
+    const getTracksInAlbum = async(uri) => {
+        return new Promise((res, rej) => {
+            let tracks = [];
+
+            const accessToken = accessor.getSpotifyAccessToken();
+            const id = spotifyIdFromUri(uri);    
+            
+            const getUrl = `https://api.spotify.com/v1/albums/${id}`
+                axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
+                .then((response) => {
+                    for (let item in response.data.tracks.items) {
+                        tracks.push(response.data.tracks.items[item].uri);
+                    }
+
+                    return res(tracks);
+                })
+                .catch((err) => {
+                    return rej("Could not get tracks");
+                });
+
+        });
+        
+    }
+
+    const getTracksInPlaylist = async(uri) => {
+        /*
+
+        let trackUri;
+        const accessToken = accessor.getSpotifyAccessToken();
+        const id = spotifyIdFromUri(uri);
+        if (isPlaylist(uri)) {
+            const getUrl = `https://api.spotify.com/v1/playlists/${id}`
+            axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
+            .then((response) => {
+                
+                for (let track in response.data.tracks.items) {
+                    trackUri = response.data.tracks.items[track].track.uri;
+                    tracks.push({uri, trackUri, start, end});    
+                }
+                
+                localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(tracks));
+            })
+            .catch((err) => console.error("add track sources error: ", err));
+        } 
+        */
+    }
+
+    
     const spotifyIdFromUri = (uri) => {
         return uri.substring(uri.lastIndexOf(':') + 1);
     }
+
 
     const musicControlIsOn = () => {
         return localStorage.getItem("MUSIC_CONTROL") == "ON";
@@ -126,6 +181,8 @@ const spotifyControl = () => {
         getPlayingTrack,
         isAlbum, 
         isPlaylist,
+        getTracksInAlbum, 
+        getTracksInPlaylist,
         spotifyIdFromUri, 
         skipTrack,
         enqueueTrack, 

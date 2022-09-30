@@ -81,26 +81,30 @@ const spotifyControl = () => {
     }
 
     const getTracksInPlaylist = async(uri) => {
-        /*
+        return new Promise((res, rej) => {
+            let tracks = [];
 
-        let trackUri;
-        const accessToken = accessor.getSpotifyAccessToken();
-        const id = spotifyIdFromUri(uri);
-        if (isPlaylist(uri)) {
+            const accessToken = accessor.getSpotifyAccessToken();
+            const id = spotifyIdFromUri(uri);    
+
             const getUrl = `https://api.spotify.com/v1/playlists/${id}`
             axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
             .then((response) => {
                 
                 for (let track in response.data.tracks.items) {
-                    trackUri = response.data.tracks.items[track].track.uri;
-                    tracks.push({uri, trackUri, start, end});    
+                    tracks.push(response.data.tracks.items[track].track.uri);
                 }
                 
-                localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(tracks));
+                return res(tracks);
             })
-            .catch((err) => console.error("add track sources error: ", err));
-        } 
-        */
+            .catch((err) => {
+                return rej("Could not get tracks");
+            });
+
+        });
+ 
+           
+    
     }
 
     
@@ -136,7 +140,12 @@ const spotifyControl = () => {
 
         console.log("controlling music");
 
-        //todo: get some scheduled music (musisScheduler) and queue it (queueHandling)
+        let queueable = musicScheduler.getUnplayedScheduledForNow();
+        if (queueable.length === 0) queueable = musicScheduler.getPlayedScheduledForNow();
+
+        console.log("queueable for now: ", JSON.stringify(queueable, null, 2));
+
+        
 
         if (musicScheduler.musicIsScheduledForNow()) {
             setTimeout(() => controlMusic(), 30000);

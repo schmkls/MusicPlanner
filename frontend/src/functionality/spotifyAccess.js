@@ -80,6 +80,7 @@ const spotifyAccess = () => {
      * @param minimumValidMins minimum minutes the token must be valid 
      */
      const getSpotifyAccessToken = (minimumValidMins) => {
+
         let accessTokenMissing = false;
 
         //token valid atleast 5 minutes if no other minimum valid time given

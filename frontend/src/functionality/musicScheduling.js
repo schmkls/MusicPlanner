@@ -37,18 +37,31 @@ const musicScheduling = () => {
                     console.error("Could not schedule tracks, ", err);
                     return rej("Could not schedule tracks: ", err);
                 });
-                
             }
 
 
-            if (spotifyController.isPlaylist(uri)) {
-
+            else if (spotifyController.isPlaylist(uri)) {
+                spotifyController.getTracksInPlaylist(uri)
+                .then((tracks) => {
+                    console.log("tracks in album: ", tracks);
+                    for (let i = 0; i < tracks.length; i++) {
+                        scheduledTracks.push([tracks[i], uri, start, end, false]);
+                    }
+                    localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(scheduledTracks));
+                    return res("tracks scheduled");
+                })
+                .catch((err) => {
+                    console.error("Could not schedule tracks, ", err);
+                    return rej("Could not schedule tracks: ", err);
+                });
             }
 
+            else {
+                return rej("uri neither playlist or album");
+            }
         });
-        
-        
 
+        
     }
 
 
@@ -82,10 +95,9 @@ const musicScheduling = () => {
             .then(() => { return res("music scheduled successfully")})
             .catch((err) => { return rej(err) });
         });
-    
-        
     }
     
+
 
     const getScheduledMusic = () => {
         let scheduled = JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) ? JSON.parse(localStorage.getItem(SCHEDULED_MUSIC)) : [] ;
@@ -97,8 +109,38 @@ const musicScheduling = () => {
         return scheduled;
     }
 
+    const getTimeNow = () => {
+        const now = new Date();
+        let fullHr = now.getHours();
+        let hrPart = now.getMinutes() / 60;
+        return fullHr + hrPart;
+    }
 
-    //todo
+    const getScheduledForNow = () => {
+        let now = getTimeNow();
+        let scheduled = getScheduledMusic();
+        return scheduled.filter(function(sch) {
+            return sch[2] > now && sch[3] < now;
+        });
+    }
+
+    const getUnplayedScheduledForNow = () => {
+        let scheduledNow = getScheduledForNow();
+        return scheduledNow.filter(function(sch) {
+                return !sch[4];
+        });
+    }
+
+    const getPlayedScheduledForNow = () => {
+        let scheduledNow = getScheduledForNow();
+        
+        return scheduledNow.filter(function(sch) {
+            return sch[4];
+        });
+    }
+
+
+    //todo: unschedule tracks also
     const unSchedule = (id) => {
         
         let scheduled = getScheduledMusic();
@@ -131,8 +173,8 @@ const musicScheduling = () => {
         musicIsScheduledForNow,
         makeUniqueId,
         scheduleMusic,
-        getScheduledMusic, 
-        getScheduledTracks, 
+        getPlayedScheduledForNow, 
+        getUnplayedScheduledForNow, 
         unSchedule,
         times
     }

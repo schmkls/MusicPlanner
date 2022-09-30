@@ -12,65 +12,84 @@ const tests = () => {
     const musicScheduler = musicScheduling();
 
 
+    /**
+     * Test that schedule is stored in localStorage. 
+     * The album and the tracks in the album should be stored, else test fails. 
+     */
     const scheduleAlbumTest = async() => {
-        console.log('\n\n\n\n\nSCHEDULE ALBUM TEST');
 
-        const uri = 'spotify:album:4D7oCB4QYmLtyYNtJ1atpZ';
-        const expectedTrack = 'spotify:track:2VXccDfKpIhjS5yVO2GZOX';
+        return new Promise(async(res) => {
+            console.log('\n\n\n\n\nSCHEDULE ALBUM TEST');
 
-        const start = 11.5;
-        const end = 23.45;
-        await musicScheduler.scheduleMusic(uri, start, end)
-        .catch((err) => {
-            console.error("Test failed: ", err);
-            return;
-        })
+            const uri = 'spotify:album:4D7oCB4QYmLtyYNtJ1atpZ';
+            const expectedTrack = 'spotify:track:2VXccDfKpIhjS5yVO2GZOX';
 
-        const scheduled = musicScheduler.getScheduledMusic();
-        
-        let sourceIsScheduled = false;
-        
+            const thisHr = new Date().getHour();;
+            const nextHr = thisHr + 1;
+            await musicScheduler.scheduleMusic(uri, thisHr, nextHr)
+            .catch((err) => {
+                console.error("Test failed: ", err);
+                return res();
+            })
 
-        for (let i = 0; i < scheduled.length; i++) {
-            if (scheduled[i][0] === uri && scheduled[i][1] === start && scheduled[i][2] === end) {
-                sourceIsScheduled = true;
-                break;
+            let trackIsScheduled = false;
+            let scheduledTracks = musicScheduler.getUnplayedScheduledForNow();
+
+            console.log('scheduled tracks: ', scheduledTracks);
+
+            for (let i = 0; i < scheduledTracks.length; i++) {
+                if (scheduledTracks[i][0] === expectedTrack && scheduledTracks[i][1] === uri 
+                    && scheduledTracks[i][2] === thisHr && scheduledTracks[i][3] === nextHr
+                    && scheduledTracks[i][4] === false) {
+                        trackIsScheduled = true;
+                }
             }
-        }
-
-        if (!sourceIsScheduled) {
-            console.error('Test failed, album not scheduled');
-            return;
-        }
-
-
-        let trackIsScheduled = false;
-        let scheduledTracks = musicScheduler.getScheduledTracks();
-
-        console.log('scheduled tracks: ', scheduledTracks);
-
-        for (let i = 0; i < scheduledTracks.length; i++) {
-            if (scheduledTracks[i][0] === expectedTrack && scheduledTracks[i][1] === uri 
-                && scheduledTracks[i][2] === start && scheduledTracks[i][3] === end
-                && scheduledTracks[i][4] === false) {
-                    trackIsScheduled = true;
+            
+            if (!trackIsScheduled) {
+                console.error('Test failed, track in album not scheduled');
+                return res();
             }
-        }
-        
-        if (!trackIsScheduled) {
-            console.error('Test failed, track in album not scheduled');
-            return;
-        }
-
-        console.log('TEST PASSED!');
-        
+            
+            return res();
+        });
     }
 
 
 
+    const musicControlOnOffTest = () => {
+        localStorage.clear();
+        spotifyController.startMusicControl();
+        if (!spotifyController.musicControlIsOn()) {
+            console.error('Test failed, music control should be on');
+        };
 
-    const runTests = () => {
-        scheduleAlbumTest();
+        spotifyController.stopControlMusic();
+        if (spotifyController.musicControlIsOn()) {
+            console.error('Test failed, music control should be off');
+        }
+    }
+
+
+
+    const controlMusicTest = async() => {
+        localStorage.clear();   //?
+        const thisHr = new Date().getHours();
+        const nextHr = thisHr + 1;
+
+
+        const uri = 'spotify:album:4D7oCB4QYmLtyYNtJ1atpZ';
+        await musicScheduler.scheduleMusic(uri, thisHr, nextHr);
+        spotifyController.startMusicControl();
+        console.log('CHECK IN SPOTIFY THAT FEATHERYANK IS QUEUED!');
+    }
+
+    
+
+
+    const runTests = async() => {
+        //await scheduleAlbumTest();
+        //musicControlOnOffTest();
+        controlMusicTest();
     }
 
     return {

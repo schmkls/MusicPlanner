@@ -10,10 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
 
-    tests().runTests();
 
-    return;
     
+
     const navigator = navigate();
     const spotifyController = spotifyControl();
     const volumeController = volumeControl();
@@ -27,6 +26,11 @@ export default function App() {
             <SpotifyAuth/>
         )
     }
+
+
+    //OBS TESTS, COMMENT OUT    
+    tests().runTests();
+    return;
 
     
     //start any background tasks that should run

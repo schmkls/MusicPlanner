@@ -14,13 +14,13 @@
 *MUSIC_CONTROL* if equal to *ON* music control should be on 
 
 
-*SCHEDULED_MUSIC* list of tuples like [(uri, start, end), (uri, start, end), ...] 
+*SCHEDULED_MUSIC* array of arrays like [[uri, start, end], ...] 
 where 
     *uri can be a Spotify uri of playlist or album
     start and end are integers representing start and end hours
 
 
-*SCHEDULED_TRACKS* list of tuples like [(trackUri, uri, start, end, isPlayed), ...] 
+*SCHEDULED_TRACKS* array of arrays like [[trackUri, uri, start, end, isPlayed], ...] 
 where 
     *trackUri is Spotify track uri
     *uri is uri of album/playlist,j 

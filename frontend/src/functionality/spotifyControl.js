@@ -1,11 +1,12 @@
 import spotifyAccess from "./spotifyAccess"
 import axios from "axios";
 import musicScheduling from "./musicScheduling";
+import queueHandling from "./queueHandling";
 
 const spotifyControl = () => {
 
     const accessor = spotifyAccess();
-
+    const queueHandler = queueHandling();
 
     const getPlayingTrack = async() => {
         return new Promise((res, rej) => {
@@ -142,10 +143,8 @@ const spotifyControl = () => {
 
         let queueable = musicScheduler.getUnplayedScheduledForNow();
         if (queueable.length === 0) queueable = musicScheduler.getPlayedScheduledForNow();
-
-        console.log("queueable for now: ", JSON.stringify(queueable, null, 2));
-
         
+        queueHandler.fillQueue(queueable);
 
         if (musicScheduler.musicIsScheduledForNow()) {
             setTimeout(() => controlMusic(), 30000);

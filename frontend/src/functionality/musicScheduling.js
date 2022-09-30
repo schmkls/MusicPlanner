@@ -169,6 +169,22 @@ const musicScheduling = () => {
         return false;
     }
 
+    /**
+     * @param played played scheduled track, like: [[trackUri, uri, start, end, isPlayed]  
+     */
+    const markPlayed = (played) => {
+        let scheduled = getScheduledTracks();
+        for (let i = 0; i < played.length; i++) {
+            if (scheduled[i] === played[i]) {
+                console.log("marking ", scheduled[i], " as played");
+                scheduled[i][4] = true;
+            }
+        }
+
+        localStorage.setItem(SCHEDULED_TRACKS, JSON.stringify(scheduled));
+    }
+
+
     return {
         musicIsScheduledForNow,
         makeUniqueId,
@@ -176,6 +192,7 @@ const musicScheduling = () => {
         getPlayedScheduledForNow, 
         getUnplayedScheduledForNow, 
         unSchedule,
+        markPlayed,
         times
     }
 

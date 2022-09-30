@@ -1,12 +1,17 @@
 import spotifyControl from "./spotifyControl";
-
+import musicScheduling from "./musicScheduling";
 
 //sessionStorage-identifier for tracks (spotify track uris) that has been enqueued
 const ENQ_TRACKS = 'enqueuedTracks';   
+const PREF_QUEUE_SIZE = 5;
 
+/**
+ * Used for keeping tracks in queue.  
+ */
 const queueHandling = () =>{
 
     const spotifyController = spotifyControl();
+    const musicScheduler = musicScheduling();
     
 
     //gets enqueued tracks from sessionStorage
@@ -69,9 +74,27 @@ const queueHandling = () =>{
         })
     }
 
+    /**
+     * Makes sure PREF_QUEUE_SIZE number of tracks is kept in queue, 
+     * may fill queue with tracks from @param tracks, and lets musicScheduler know 
+     * they have been played. 
+     * 
+     * @param tracks array of tracks like [[trackUri, uri, start, end, isPlayed], ...]  
+     */
+    const fillQueue = (tracks) => {
+        console.log("queueHandler filling queue with: ", tracks);
+
+        let diff = PREF_QUEUE_SIZE - getQueueSize();
+        for (let i = 0; i < diff; i++) {
+            //queue a random track amongs tracks
+            //mark as played
+        } 
+
+    }
+
 
     return {
-        
+        fillQueue
     }
 
 }

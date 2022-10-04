@@ -2,7 +2,7 @@ import './DraggableMusic.css';
 import { useState} from 'react';
 import MusicSource from '../musicSource/MusicSource';
 import {Rnd} from 'react-rnd';
-import musicScheduling from '../../functionality/musicScheduling';
+import * as musicScheduler from '../../functionality/musicScheduling';
 
 const DRAG_WIDTH = 1200;    //equal to pixel width of the lanes
 const DEFAULT_WIDTH = 1200 / 24;   //MusicSource
@@ -18,7 +18,6 @@ const DEFAULT_WIDTH = 1200 / 24;   //MusicSource
 const DraggableMusic = (props) => {
 
     const uri = props.uri;
-    const musicScheduler = musicScheduling();
 
     const [left, setLeft] = useState(props.left ? props.left : 0);
     const [right, setRight] = useState(props.right ? props.right : DEFAULT_WIDTH);

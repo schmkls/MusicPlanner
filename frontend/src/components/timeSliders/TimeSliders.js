@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import './TimeSliders.css';
-import volumeControl from "../../functionality/volumeControl";
+import * as volumeController from "../../functionality/volumeControl";
 
 const TOUCHED = "touched";
 const UNTOUCHED ="unTouched"; 
 
-const times = volumeControl().times;
+const times = volumeController.times;
 /**
  * Sliders controlling some values in time.  
  * 

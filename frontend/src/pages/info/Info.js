@@ -1,11 +1,9 @@
 import ExpandButton from '../../components/expandButton/ExpandButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import navigate from '../../functionality/navigate';
+import * as navigator from '../../functionality/navigate';
 
 const Info = () => {
-
-    const navigator = navigate();
 
     return (
         <div>

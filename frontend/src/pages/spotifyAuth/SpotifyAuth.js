@@ -1,7 +1,7 @@
 import {React, useState} from 'react';
 import axios from 'axios';
-import navigate from '../../functionality/navigate';
-import spotifyAccess from '../../functionality/spotifyAccess';
+import * as navigator from '../../functionality/navigate';
+import * as spotifyAccessor from '../../functionality/spotifyAccess';
 
 const FAIL = -1;
 const clientId = 'fbf03b6da2bd4da1a0a5ae1905d8ee4b';
@@ -11,8 +11,6 @@ const clientId = 'fbf03b6da2bd4da1a0a5ae1905d8ee4b';
  */
 const SpotifyAuth = (props) => {
 
-    const navigator = navigate();
-    const spotifyAccessor = spotifyAccess();
     var authorizing = false;
 
     //where to direct after login 

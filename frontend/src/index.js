@@ -1,24 +1,17 @@
 import ReactDOM from 'react-dom/client';
-import navigate from './functionality/navigate';
-import spotifyAccess from './functionality/spotifyAccess';
+import * as navigator from './functionality/navigate';
+import * as spotifyAccessor from './functionality/spotifyAccess';
 import SpotifyAuth from './pages/spotifyAuth/SpotifyAuth';
-import spotifyControl from './functionality/spotifyControl';
-import volumeControl from './functionality/volumeControl';
+import * as spotifyController from './functionality/spotifyControl';
+import * as volumeController from './functionality/volumeControl';
 import tests from './functionality/tests/tests';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 export default function App() {
 
-
     
-
-    const navigator = navigate();
-    const spotifyController = spotifyControl();
-    const volumeController = volumeControl();
-    const spotifyAccessor = spotifyAccess();
     const spotifyAccessToken = spotifyAccessor.getSpotifyAccessToken();
-    
     
     if (!spotifyAccessToken) {
         console.log('No Spotify access token');
@@ -27,10 +20,9 @@ export default function App() {
         )
     }
 
-
     //OBS TESTS, COMMENT OUT    
-    tests().runTests();
-    return;
+    //tests().runTests();
+
 
     
     //start any background tasks that should run

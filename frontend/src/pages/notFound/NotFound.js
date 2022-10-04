@@ -1,9 +1,8 @@
-import navigate from "../../functionality/navigate";
+import * as navigator from "../../functionality/navigate";
 
 const NotFound = () => {
 
     const goHome= () => {
-        const navigator = navigate();
         window.location.href = navigator.getURL(navigator.pages.home);
     }
 

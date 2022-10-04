@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import spotifyAccess from "../../functionality/spotifyAccess";
-import spotifyControl from "../../functionality/spotifyControl";
+import * as spotifyAccessor from "../../functionality/spotifyAccess";
+import * as spotifyController from "../../functionality/spotifyControl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import './MusicSource.css';
@@ -20,7 +20,6 @@ const INVALID = "invalid";
  const MusicSource = (props) => {
 
     let type;
-    const spotifyController = spotifyControl();
     const id = spotifyController.spotifyIdFromUri(props.uri);
     const [source, setSource] = useState(null);
 
@@ -52,7 +51,7 @@ const INVALID = "invalid";
                 type === ALBUM ? `https://api.spotify.com/v1/albums/${id}` :
                 null;
 
-        const accessToken = spotifyAccess().getSpotifyAccessToken();
+        const accessToken = spotifyAccessor.getSpotifyAccessToken();
         axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
             if (response.status < 200 || response.status > 299) {

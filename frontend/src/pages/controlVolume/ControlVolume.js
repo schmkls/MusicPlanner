@@ -1,4 +1,4 @@
-import volumeControl from "../../functionality/volumeControl";
+import * as volumeController from "../../functionality/volumeControl";
 import "./ControlVolume.css";
 import React, {useEffect, useState} from "react";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
@@ -23,8 +23,6 @@ const ControlVolume = () => {
      */
     const [vals, setVals] = useState([]);        
     
-    const volumeController = volumeControl();
-
 
     const handleGoHome = async() => {
         return new Promise((res) => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import spotifyAccess from '../../functionality/spotifyAccess';
+import * as spotifyAccessor from '../../functionality/spotifyAccess';
 import './Track.css';
 
 /**
@@ -35,7 +35,7 @@ const Track = (props) => {
 
     useEffect(() => {
         const getUrl = `https://api.spotify.com/v1/tracks/${props.trackId}`;
-        const accessToken = spotifyAccess().getSpotifyAccessToken();
+        const accessToken = spotifyAccessor.getSpotifyAccessToken();
         axios.get(getUrl, { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
             if (response.status < 200 || response.status > 299) {

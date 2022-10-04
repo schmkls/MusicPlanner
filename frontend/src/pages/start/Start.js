@@ -1,10 +1,11 @@
 import Playing from "../../components/playing/Playing";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import spotifyAccess from "../../functionality/spotifyAccess";
-import navigate from "../../functionality/navigate";
-import volumeControl from "../../functionality/volumeControl";
-import spotifyControl from "../../functionality/spotifyControl";
+import * as spotifyAccessor from "../../functionality/spotifyAccess";
+import * as navigator from "../../functionality/navigate";
+import * as volumeController from "../../functionality/volumeControl";
+import * as spotifyController from "../../functionality/spotifyControl";
+import * as musicScheduler from "../../functionality/musicScheduling";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
@@ -20,14 +21,9 @@ const Start = () => {
     const [volumeWarning, setVolumeWarning] = useState(false);
     const [musicWarning, setMusicWarning] = useState(false);
 
-
-    const navigator = navigate();
-    const volumeController = volumeControl();
-    const spotifyController = spotifyControl();
-
  
     const checkIfDeviceActive = () => {
-        const accessToken = spotifyAccess().getSpotifyAccessToken();
+        const accessToken = spotifyAccessor.getSpotifyAccessToken();
         
         axios.get('https://api.spotify.com/v1/me/player', { headers: { Authorization: `Bearer ${accessToken}`} })
         .then((response) => {
@@ -67,7 +63,7 @@ const Start = () => {
         setMusicWarning();
         if (on) {
             spotifyController.startMusicControl();
-            if (!spotifyController.musicScheduled()) {
+            if (!musicScheduler.musicIsScheduledForNow()) {
                 setMusicWarning(
                     <div>
                         <p>Click here to make music schedule</p>

@@ -2,7 +2,7 @@
 import {React, useState} from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
 import MusicSource from '../../musicSource/MusicSource';
-import spotifyAccess from '../../../functionality/spotifyAccess';
+import * as spotifyAccessor from '../../../functionality/spotifyAccess';
 import './SearchSources.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +13,7 @@ const NOT_SEARCHING = 2;
 
 const spotifyApi = new SpotifyWebApi();
 
-spotifyApi.setAccessToken(spotifyAccess().getSpotifyAccessToken(5));
+spotifyApi.setAccessToken(spotifyAccessor.getSpotifyAccessToken(5));
 
 /**
  * @param props.chooseFunc function for choosing album that takes album uri

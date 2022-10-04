@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import spotifyControl from "../../functionality/spotifyControl";
+import * as spotifyController from "../../functionality/spotifyControl";
 
 
 /**
@@ -9,8 +9,6 @@ const ScheduledMusic = () => {
 
     const [scheduledNow, setScheduledNow] = useState([]);
     const [upcoming, setUpcoming] = useState([]);
-
-    const spotifyController = spotifyControl();
 
     useEffect(() => {
         

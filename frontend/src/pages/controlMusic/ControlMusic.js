@@ -2,18 +2,16 @@ import AddSources from "../../components/sources/addSources/AddSources";
 import GoHomeButton from "../../components/goHomeButton/GoHomeButton";
 import DraggableMusic from "../../components/draggableMusic/DraggableMusic";
 import '../../components/draggableMusic/DraggableMusic.css';
-import musicScheduling from "../../functionality/musicScheduling";
+import * as musicScheduler from "../../functionality/musicScheduling";
 import { useEffect, useState } from "react";
 
-const times = musicScheduling().times;
+const times = musicScheduler.times;
 
 
 /**
  * Page for scheduling music. 
  */
 const ControlMusic = () => {
-
-    const musicScheduler = musicScheduling();
 
     const alreadyScheduled = musicScheduler.getScheduledMusic();
     const [scheduled, setScheduled] = useState(alreadyScheduled);   //(each element contains: uri, start, end, uniqueId)

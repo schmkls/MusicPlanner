@@ -1,16 +1,11 @@
-import spotifyAccess from "../spotifyAccess";
-import spotifyControl from "../spotifyControl";
-import musicScheduling from "../musicScheduling";
+import * as spotifyAccessor from "../spotifyAccess";
+import * as spotifyController from "../spotifyControl";
+import * as musicScheduler from "../musicScheduling";
 
 /**
  * Functionality tests
  */
 const tests = () => {
-
-    const spotifyAccessor = spotifyAccess();
-    const spotifyController = spotifyControl();
-    const musicScheduler = musicScheduling();
-
 
     /**
      * Test that schedule is stored in localStorage. 
@@ -72,7 +67,6 @@ const tests = () => {
 
 
     const controlMusicTest = async() => {
-        localStorage.clear();   //?
         const thisHr = new Date().getHours();
         const nextHr = thisHr + 1;
 
@@ -85,11 +79,10 @@ const tests = () => {
 
     
 
-
     const runTests = async() => {
         //await scheduleAlbumTest();
         //musicControlOnOffTest();
-        controlMusicTest();
+        //controlMusicTest();
     }
 
     return {

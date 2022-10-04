@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import Track from "../track/Track";
 import MusicSource from "../musicSource/MusicSource";
 import SmoothSkip from "../smoothSkip/SmoothSkip";
-import spotifyAccess from "../../functionality/spotifyAccess";
+import * as spotifyAccessor from "../../functionality/spotifyAccess";
 import ScheduledMusic from "../scheduledMusic/ScheduledMusic";
-import spotifyControl from "../../functionality/spotifyControl";
-import musicScheduling from "../../functionality/musicScheduling";
+import * as spotifyController from "../../functionality/spotifyControl";
+import * as musicScheduler from "../../functionality/musicScheduling";
 
 const UPDATE_INTERVAL = 5000;  
 
@@ -23,10 +23,6 @@ const Playing = () => {
 
 
     const [playingScheduled, setPlayingScheduled] = useState(false);
-
-    const spotifyAccessor = spotifyAccess();
-    const spotifyController = spotifyControl();
-    const musicScheduler = musicScheduling();
     
 
 

@@ -27,3 +27,8 @@ where
     *start and end are integers representing start and end hours 
     *isPlayed is true if track has been added to the queue
 
+
+*ENQUEUED_TRACKS* tracks that has been enqueued
+
+*PLAYED_INDEX* index of last track in *ENQUEUED_TRACKS* that has been played
+

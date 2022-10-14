@@ -21,7 +21,6 @@ const Playing = () => {
     const [episode, setEpisode] = useState(false);  //true if episode being played
     const [warning, setWarning] = useState(null); 
 
-
     const [playingScheduled, setPlayingScheduled] = useState(false);
     
 

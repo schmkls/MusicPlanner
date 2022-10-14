@@ -61,21 +61,28 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const timeout = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("Timeout!");
+    }, 2000);
+});
 
 const slowlyLowerVolume = async(originalVolume) => {
     return new Promise(async(res, rej) => {
         let nTimes = 8;
         let currVolume = originalVolume;
-
+        
         await repeat(async() => {
-            await adjustVolume(Math.round(currVolume - (originalVolume / nTimes)))
-            .catch((err) => rej(err));
+            let prefVolume = Math.round(currVolume - (originalVolume / nTimes));
+            await Promise.race([adjustVolume(prefVolume), timeout])
+            //.catch((err) => console.log(err));
+
             currVolume = currVolume - (originalVolume / nTimes);
             await sleep(100);
         }, nTimes)
 
 
-        return res(currVolume);
+        return res();
     });
 }
 
@@ -83,6 +90,7 @@ const slowlyLowerVolume = async(originalVolume) => {
 const slowlyHigherVolume = async(currVolume, maxVolume) => {
     let nTimes = 8;
     let step = (maxVolume - currVolume) / nTimes;
+    console.log('step: ' + step);
 
     return new Promise(async(res, rej) => {
         let originalVolume = await getCurrVolume()
@@ -92,15 +100,19 @@ const slowlyHigherVolume = async(currVolume, maxVolume) => {
 
         let currVolume = originalVolume;
 
+        console.log('highering volume from: ', currVolume);
+
         await repeat(async() => {
-            console.log("controlling volume to: " + Math.round(currVolume + step));
-            await adjustVolume(Math.round(currVolume + step));
+            let prefVolume = Math.round(currVolume + step);
+            console.log('highering to: ', prefVolume);
+            await Promise.race([adjustVolume(prefVolume), timeout])
+            //.catch((err) => console.log(err));
             currVolume = currVolume + step;
-            await sleep(500);
+            await sleep(100);
         }, nTimes)
 
 
-        return res("Volume lowered");
+        return res();
     });
 }
 
@@ -120,7 +132,7 @@ export const smoothSkip = async() => {
             originalVolume = 50;
         }
         
-        const volume = await slowlyLowerVolume(originalVolume)
+        await slowlyLowerVolume(originalVolume)
         .catch((err) => {
             console.log("Could not smoothskip ", err);
             rej(err);
@@ -132,6 +144,7 @@ export const smoothSkip = async() => {
             rej(err);
         })
 
+        const volume = await getCurrVolume();
 
         await slowlyHigherVolume(volume, originalVolume)
         .catch((err) => {

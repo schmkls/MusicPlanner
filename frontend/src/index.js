@@ -30,7 +30,7 @@ export default function App() {
     spotifyController.controlMusic();
     
     return (
-        <>
+        <div>
             {
                 navigator.getElements().map((elem, index) => (
                     <div key={index}>
@@ -38,7 +38,7 @@ export default function App() {
                     </div>
                 ))
             }
-        </>
+        </div>
     );
 }
 

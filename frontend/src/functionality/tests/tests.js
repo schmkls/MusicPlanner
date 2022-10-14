@@ -70,7 +70,6 @@ const tests = () => {
         const thisHr = new Date().getHours();
         const nextHr = thisHr + 1;
 
-
         const uri = 'spotify:album:4D7oCB4QYmLtyYNtJ1atpZ';
         await musicScheduler.scheduleMusic(uri, thisHr, nextHr);
         spotifyController.startMusicControl();

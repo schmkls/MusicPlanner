@@ -25,7 +25,6 @@ const ControlMusic = () => {
     
             return res();
         });
-        
     }
 
 
@@ -56,6 +55,7 @@ const ControlMusic = () => {
         musicScheduler.unSchedule(id);
     }
 
+    
     useEffect(() => {
         console.log("scheduled changed: ", scheduled);
     }, [scheduled])

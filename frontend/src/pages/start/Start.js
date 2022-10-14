@@ -18,8 +18,11 @@ const UPDATE_INTERVAL = 10000;
 const Start = () => {
 
     const [deviceActive, setDeviceActive] = useState(true);
+    const [volumeControlIsOn, setVolumeControlIsOn] = useState(false);
+    const [musicControlIsOn, setMusicControlIsOn] = useState(false);
     const [volumeWarning, setVolumeWarning] = useState(false);
     const [musicWarning, setMusicWarning] = useState(false);
+
 
  
     const checkIfDeviceActive = () => {
@@ -39,6 +42,8 @@ const Start = () => {
 
     useEffect(() => {
         checkIfDeviceActive();
+        setVolumeControlIsOn(volumeController.volumeControlIsOn());
+        setMusicControlIsOn(musicScheduler.musicIsScheduledForNow());
     }, []);
 
     
@@ -63,10 +68,10 @@ const Start = () => {
         setMusicWarning();
         if (on) {
             spotifyController.startMusicControl();
-            if (!musicScheduler.musicIsScheduledForNow()) {
+            if (!musicScheduler.musicIsScheduledForNow  ()) {
                 setMusicWarning(
                     <div>
-                        <p>Click here to make music schedule</p>
+                        <p>No music scheduled for now, click here to schedule</p>
                         <FontAwesomeIcon icon={faArrowDown}/>
                     </div>
                 )
@@ -87,28 +92,37 @@ const Start = () => {
     }
     //todo: displaya sources
     return (
-        <>
+        <div>
             <button onClick={() => window.location.assign(navigator.getURL(navigator.pages.info))}>
                 Help
                 <FontAwesomeIcon icon={faInfoCircle}/>
             </button>  
-            <br/>
-            <br/>
-            {
-                deviceActive ?
-                    <>
-                        <Playing/>
-                    </> 
+            <div className="top">
+                <br/>
+                <br/>
+                {
+                    deviceActive ?
+                        <>
+                            <Playing/>
+                        </> 
+                
+                    :
+                        <h2>Not playing anything in Spotify right now</h2>
+                }
+                {volumeWarning}
+                {
+                    volumeControlIsOn ? 
+                        <p>Volume planned for now: </p>
+                    :
+                        <></>
+                }
+            </div>
             
-                :
-                    <h2>Not playing anything in Spotify right now</h2>
-            }
-            {volumeWarning}
             <button onClick={() => navigator.navigate(navigator.pages.volumeControl)}>
                 Volume control
             </button>
             <BootstrapSwitchButton
-                checked={volumeController.volumeControlIsOn()}
+                checked={volumeControlIsOn}
                 onlabel='ON'
                 offlabel='OFF'
                 size='lg'
@@ -133,7 +147,7 @@ const Start = () => {
             />
             <br/>
 
-        </>
+        </div>
     )
 
 }

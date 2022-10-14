@@ -132,12 +132,14 @@ export const controlMusic = () => {
     console.log("controlling music");
 
     let queueable = musicScheduler.getUnplayedScheduledForNow();
-    if (queueable.length === 0) queueable = musicScheduler.getPlayedScheduledForNow();
+    if (queueable.length === 0)  {
+        queueable = musicScheduler.getPlayedScheduledForNow();
+    }
     
     queueHandler.fillQueue(queueable);
 
     if (musicScheduler.musicIsScheduledForNow()) {
-        setTimeout(() => controlMusic(), 30000);
+        setTimeout(() => controlMusic(), 12000);
     }
 }
 

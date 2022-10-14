@@ -2,7 +2,8 @@ import * as spotifyController from "./spotifyControl";
 import * as musicScheduler from "./musicScheduling";
 
 //sessionStorage-identifier for tracks (spotify track uris) that has been enqueued
-const ENQ_TRACKS = 'enqueuedTracks';   
+const ENQ_TRACKS = 'ENQUEUED_TRACKS';
+const PLAYED_INDEX= 'PLAYED_INDEX';    
 const PREF_QUEUE_SIZE = 5;
 
 /**
@@ -87,5 +88,8 @@ export const fillQueue = (tracks) => {
         //queue a random track amongs tracks
         //mark as played
     } 
+
+
+
 
 }

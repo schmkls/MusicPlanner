@@ -15,12 +15,12 @@ export const getPlayingTrack = async() => {
         })
         .then((response) => {
             if (response.status < 200 || response.status > 299) {
-                rej(response);
+                return rej(null);
             }
-            res(response.data.item.uri);
+            return res(response.data.item.uri);
         })
         .catch((err) => {
-            rej(err);
+            return rej(null);
         });
     });
 }
@@ -100,6 +100,27 @@ export const getTracksInPlaylist = async(uri) => {
     });
 }
 
+export const getTracksInResource = async(uri) => {
+
+    return new Promise((res, rej) => {
+        if (isPlaylist(uri))  {
+            getTracksInPlaylist(uri)
+            .then(tracks => res(tracks))
+            .catch(err => rej(err));
+        }
+
+        else if (isAlbum(uri)) {
+            getTracksInAlbum(uri)
+            .then(tracks => res(tracks))
+            .catch(err => rej(err));
+        }
+    
+        else rej("invalid uri: ", uri);
+    })
+    
+
+}
+
 
 export const spotifyIdFromUri = (uri) => {
     return uri.substring(uri.lastIndexOf(':') + 1);
@@ -126,20 +147,39 @@ export const startMusicControl = () => {
 /**
  * Keeps scheduled tracks in queue.
  */
-export const controlMusic = () => {
+export const controlMusic = async() => {
     if (!musicControlIsOn()) return;
 
     console.log("controlling music");
 
-    let queueable = musicScheduler.getUnplayedScheduledForNow();
-    if (queueable.length === 0)  {
-        queueable = musicScheduler.getPlayedScheduledForNow();
+    let scheduled = musicScheduler.getScheduledForNow();
+
+    console.log("scheduled for now: ", scheduled);
+
+    let queueable = [];
+    let uri;
+
+    for (let sch in scheduled) {
+        uri = scheduled[sch][0];
+        console.log("sch = ", sch);
+        console.log('length = ', scheduled.length);    
+        getTracksInResource(uri)
+        .then((tracks) => {
+
+            //store all queueable tracks for now
+            queueable = [...queueable, ...tracks];
+
+            //if last source to queue from, actually fill queue
+            if (sch == scheduled.length - 1) {
+                queueHandler.fillQueue(queueable);
+            }
+        })
+        .catch(err => console.log("could not schedule", err));
     }
-    
-    queueHandler.fillQueue(queueable);
+
 
     if (musicScheduler.musicIsScheduledForNow()) {
-        setTimeout(() => controlMusic(), 12000);
+        setTimeout(() => controlMusic(), 30000);
     }
 }
 
@@ -161,14 +201,16 @@ export const enqueueTrack = async(trackUri) => {
         })
         .then((response) => {
             if (response.status < 200 || response.status > 299) {
-                console.log('enqueue bad response: ' + JSON.stringify(response));
+                console.log('enqueue bad response');
                 rej(response);
             }
             res(trackUri);
         })
         .catch((err) => {
-            console.log('enqueue track error: ' + JSON.stringify(err));
-            rej(err)
+            console.log('enqueue track error');
+
+            //todo: dont reject if error because of device not active
+            rej(err);
         });
     });
 }

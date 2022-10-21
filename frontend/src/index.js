@@ -20,10 +20,6 @@ export default function App() {
         )
     }
 
-    //OBS TESTS, COMMENT OUT    
-    //tests().runTests();
-
-
     
     //start any background tasks that should run
     volumeController.controlVolume();

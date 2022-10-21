@@ -68,7 +68,7 @@ const Start = () => {
         setMusicWarning();
         if (on) {
             spotifyController.startMusicControl();
-            if (!musicScheduler.musicIsScheduledForNow  ()) {
+            if (!musicScheduler.musicIsScheduledForNow()) {
                 setMusicWarning(
                     <div>
                         <p>No music scheduled for now, click here to schedule</p>

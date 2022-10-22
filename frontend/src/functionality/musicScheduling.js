@@ -19,7 +19,7 @@ export const scheduleMusic = (uri, start, end, id) => {
 
     let rescheduling = false;
     for (let i = 0; i < scheduled.length; i++) {
-        if (scheduled[i][3] === id) {
+        if (scheduled[i][3] == id) {
             scheduled[i] = [uri, start, end, id];
             rescheduling = true;
             break;
@@ -53,11 +53,11 @@ const getTimeNow = () => {
  * @returns scheduled music for now (see devdocumentation.md)
  */
 export const getScheduledForNow = () => {
-    let now = getTimeNow();
+    let now = parseFloat(getTimeNow());
     let scheduled = getScheduledMusic();
-    console.log('all scheduled: ', scheduled);
+
     return scheduled.filter(function(sch) {
-        return sch[1] > now && sch[2] < now;
+        return parseFloat(sch[1]) < now && parseFloat(sch[2]) > now;
     });
 }
 
@@ -67,7 +67,7 @@ export const unSchedule = (id) => {
     if (!scheduled) return;
 
     scheduled = scheduled.filter(function(sch) {
-        return sch[3] !== id;
+        return sch[3] != id;
     })
 
     localStorage.setItem(SCHEDULED_MUSIC, JSON.stringify(scheduled));
@@ -80,8 +80,9 @@ export const makeUniqueId = (uri) => {
 
 
 export const musicIsScheduledForNow = () => {
-    let scheduled = getScheduledForNow();
-    return scheduled.length > 0;
+    let sch = getScheduledForNow();
+    if (!sch) return false;
+    return sch.length > 0;
 }
 
 

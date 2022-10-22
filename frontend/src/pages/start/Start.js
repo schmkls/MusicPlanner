@@ -43,53 +43,56 @@ const Start = () => {
     useEffect(() => {
         checkIfDeviceActive();
         setVolumeControlIsOn(volumeController.volumeControlIsOn());
-        setMusicControlIsOn(musicScheduler.musicIsScheduledForNow());
+        setMusicControlIsOn(spotifyController.musicControlIsOn());
     }, []);
-
     
-    const handleVolumeControl = (on) => {
-        setVolumeWarning();
-        if (on) {
-            volumeController.startVolumeControl();
-            if (!volumeController.volumesScheduled()) {
-                setVolumeWarning(
-                    <div>
-                        <p>Click here to make volume schedule</p>
-                        <FontAwesomeIcon icon={faArrowDown}/>
-                    </div>
-                )
-            } 
-        } else {
-            volumeController.stopControlVolume()
-        }
-    }
 
-    const handleMusicControl = (on) => {
-        setMusicWarning();
-        if (on) {
+    useEffect(() => {
+        console.log("setting mc to: ", musicControlIsOn);
+
+        let musicIsScheduled = musicScheduler.musicIsScheduledForNow();
+        if (musicControlIsOn && !musicIsScheduled) {
+            setMusicWarning(
+                <p>
+                    No music scheduled for now, click here to schedule
+                </p>
+            )
+        } else {
+            setMusicWarning(<></>)
+        }
+
+        if (musicControlIsOn) {
             spotifyController.startMusicControl();
-            if (!musicScheduler.musicIsScheduledForNow()) {
-                setMusicWarning(
-                    <div>
-                        <p>No music scheduled for now, click here to schedule</p>
-                        <FontAwesomeIcon icon={faArrowDown}/>
-                    </div>
-                )
-            }
         } else {
             spotifyController.stopControlMusic()
         }
-    }
+    }, [musicControlIsOn]);
 
 
-    const handleSourceAdd = () => {
-
-    }
-
-
-    if (!deviceActive) {
+    useEffect(() => {
+        console.log("setting vc to: ", volumeControlIsOn);
         
-    }
+        let volumesScheduled = volumeController.volumesScheduled();
+
+        if (volumeControlIsOn && !volumesScheduled) {
+            setVolumeWarning(
+                <div>
+                    <p>Click here to make volume schedule</p>
+                    <FontAwesomeIcon icon={faArrowDown}/>
+                </div>
+            )
+        } else {
+            setVolumeWarning(<></>);
+        }
+
+        if (volumeControlIsOn) {
+            volumeController.startVolumeControl();
+        } else {
+            volumeController.stopControlVolume();
+        }
+    }, [volumeControlIsOn]);
+    
+
     //todo: displaya sources
     return (
         <div>
@@ -110,12 +113,6 @@ const Start = () => {
                         <h2>Not playing anything in Spotify right now</h2>
                 }
                 {volumeWarning}
-                {
-                    volumeControlIsOn ? 
-                        <p>Volume planned for now: </p>
-                    :
-                        <></>
-                }
             </div>
             
             <button onClick={() => navigator.navigate(navigator.pages.volumeControl)}>
@@ -127,7 +124,7 @@ const Start = () => {
                 offlabel='OFF'
                 size='lg'
                 onChange={(e) => {
-                    handleVolumeControl(e);
+                    setVolumeControlIsOn(e);
                 }}
             />
             <br/>
@@ -137,12 +134,12 @@ const Start = () => {
                 Music control
             </button>
             <BootstrapSwitchButton
-                checked={false}
+                checked={musicControlIsOn}
                 onlabel='ON'
                 offlabel='OFF'
                 size='lg'
                 onChange={(e) => {
-                    handleMusicControl(e);
+                    setMusicControlIsOn(e);
                 }}
             />
             <br/>

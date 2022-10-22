@@ -2,7 +2,7 @@ import * as spotifyController from "./spotifyControl";
 
 const SCHEDULED_MUSIC = 'SCHEDULED_MUSIC';
 const SCHEDULED_TRACKS = 'SCHEDULED_TRACKS';
-export const times = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3];   
+export const times = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];   
 
 
 
@@ -56,9 +56,15 @@ export const getScheduledForNow = () => {
     let now = parseFloat(getTimeNow());
     let scheduled = getScheduledMusic();
 
-    return scheduled.filter(function(sch) {
-        return parseFloat(sch[1]) < now && parseFloat(sch[2]) > now;
+    let scheduledForNow = scheduled.filter(function(sch) {
+        if (parseFloat(sch[1]) < now && parseFloat(sch[2]) > now) return true;
+
     });
+
+    console.log("all scheduled: ", scheduled);
+    console.log("scheduled for now (", now, "): ", scheduledForNow);
+
+    return scheduledForNow; 
 }
 
 

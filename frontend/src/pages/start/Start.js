@@ -53,9 +53,10 @@ const Start = () => {
         let musicIsScheduled = musicScheduler.musicIsScheduledForNow();
         if (musicControlIsOn && !musicIsScheduled) {
             setMusicWarning(
-                <p>
-                    No music scheduled for now, click here to schedule
-                </p>
+                <>
+                    <p>No music scheduled for now, click here to schedule music</p>
+                    <FontAwesomeIcon icon={faArrowDown}/>
+                </>
             )
         } else {
             setMusicWarning(<></>)
@@ -100,6 +101,7 @@ const Start = () => {
                 Help
                 <FontAwesomeIcon icon={faInfoCircle}/>
             </button>  
+            <h2>todo: big pause/play-button</h2>
             <div className="top">
                 <br/>
                 <br/>
@@ -112,9 +114,8 @@ const Start = () => {
                     :
                         <h2>Not playing anything in Spotify right now</h2>
                 }
-                {volumeWarning}
             </div>
-            
+            {volumeWarning}
             <button onClick={() => navigator.navigate(navigator.pages.volumeControl)}>
                 Volume control
             </button>
@@ -128,8 +129,8 @@ const Start = () => {
                 }}
             />
             <br/>
-            <br/>
             {musicWarning}
+            <br/>
             <button onClick={() => navigator.navigate(navigator.pages.musicControl)}>
                 Music control
             </button>

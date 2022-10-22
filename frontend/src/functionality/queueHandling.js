@@ -1,10 +1,8 @@
 import * as spotifyController from "./spotifyControl";
-import * as musicScheduler from "./musicScheduling";
 
 
 //identifiers
 const ENQ_TRACKS = 'ENQUEUED_TRACKS';   //tracks that has been enqueued
-const PLAYED_INDEX = 'PLAYED_INDEX';     //best guess of index of played tracks
 
 
 const PREF_QUEUE_SIZE = 5;
@@ -35,37 +33,16 @@ const markQueued = (trackUri) => {
     localStorage.setItem(ENQ_TRACKS, JSON.stringify(enqueued));
 }
 
+/**
+ * Update which tracks has been played or are still in queue. 
+ */
+const updateEnqueued = () => {
+    let queue = getEnqueuedTracks();
+    let playingUri = spotifyController.getPlayingTrack();
 
-//gets index of last played tracks amongs enqueued tracks (may update index first)
-const updatePlayedIndex = async() => {
-    
-    let index = localStorage.getItem(PLAYED_INDEX);
-    let enqueued = getEnqueuedTracks();
-    let playingTrack = await spotifyController.getPlayingTrack();
+    //todo: markera fram till nuvarande spelande som played
 
-    if (playingTrack) {
-        for (let i = index; i < enqueued.length; i++) {
-            if (enqueued[i] == playingTrack) {
-                index = i;
-                break;
-            }
-        }
-    }
-
-    localStorage.setItem(PLAYED_INDEX, index);
 }
-
-
-const getQueueSize = () => {
-    let enqueued = JSON.parse(localStorage.getItem(ENQ_TRACKS));
-    let playedIndex = JSON.parse(localStorage.getItem(PLAYED_INDEX));
-
-    if (!enqueued) return 0;
-    if (!playedIndex) return enqueued.length;
-
-    return enqueued.length - playedIndex;
-}
-
 
 //gets enqueued tracks from localStorage
 const getEnqueuedTracks = () => {
@@ -73,9 +50,28 @@ const getEnqueuedTracks = () => {
     if (enqueued) {
         return enqueued;
     }
-
+    
     return [];
 }
+
+const getQueueSize = () => {
+    return getEnqueuedTracks().length - getPlayedTracks().length;
+}
+
+
+/**
+ * returns enqueued and played tracks in order most recently played to least recently played
+ */
+const getPlayedTracks = () => {
+    let enqueued = getEnqueuedTracks();
+
+    let played = enqueued.filter((track) => {
+        return track[1] === 'true';
+    });
+
+    return played;
+}
+
 
 /**
  * Makes sure PREF_QUEUE_SIZE number of tracks is kept in queue, 
@@ -85,13 +81,30 @@ const getEnqueuedTracks = () => {
  * @param tracks Spotify-uris of tracks
  */
 export const fillQueue = (tracks) => {
+    let queueProspects = Array.from(tracks);
+    
     console.log("queueHandler filling queue with: ", tracks);
 
     let diff = PREF_QUEUE_SIZE - getQueueSize();
 
     console.log('queue size: ', getQueueSize());
-
     console.log('should queue ' + diff + ' tracks');
+
+    let playedTracks = getPlayedTracks();
+    let playedUris = [];
+
+    for (let i = 0; i < playedTracks.length; i++) {
+        playedUris.push(playedTracks[i][0]);
+    }
+
+
+    let j = 0;
+    while (queueProspects.length >= diff) {
+        if (playedUris.includes(queueProspects[j])) {
+            queueProspects.splice(j, 1);
+        }
+        j++;
+    }
 
     //todo: köa i första hand längesedan spelade 
     for (let i = 0; i < diff; i++) {
@@ -99,6 +112,4 @@ export const fillQueue = (tracks) => {
         .catch((err) => console.log("Could not fill queue", err));
         markQueued(tracks[i]);
     } 
-
-    updatePlayedIndex();
 }

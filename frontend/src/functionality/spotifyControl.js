@@ -150,6 +150,8 @@ export const startMusicControl = () => {
 export const controlMusic = async() => {
     if (!musicControlIsOn()) return;
 
+    return;
+    
     console.log("controlling music");
 
     let scheduled = musicScheduler.getScheduledForNow();
